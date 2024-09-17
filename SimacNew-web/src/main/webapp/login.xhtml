@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <link rel="apple-touch-icon" sizes="128x128" href="#{facesContext.externalContext.request.contextPath}/imagenes/favicon.png" type="image/x-icon"/>
+        <link rel="shortcut icon" href="#{facesContext.externalContext.request.contextPath}/imagenes/favicon.png" type="image/x-icon"></link>
+        <title>SIMAC Auter - Login</title>
+    </h:head>
+
+    <h:body styleClass="login-body">
+
+        <div class="login-panel"></div>
+
+        <div class="login-content">
+            <p:graphicImage name="images/logo-black.png" library="babylon-layout" />
+
+            <h1><span>INGRESO</span> SIMAC</h1>
+            <p>Bienvenido, por favor inicie sesión.</p>
+            <h:form id="login" onsubmit="action = 'j_security_check';" prependId="false">
+                <div class="login-input-wrapper">
+                    <p:inputText id="j_username" placeholder="Usuario" required="true" requiredMessage="Debe ingresar un nombre de usuario válido"/>
+                    <c:if test="${param['wrongCredentials'] != null and empty param.j_username}">
+                        <i class="fa fa-user" style="top: 30% !important;" />
+                    </c:if>
+                    <c:if test="${param['wrongCredentials'] == null and not empty param.j_username}">
+                        <i class="fa fa-user" style="top: 50% !important;"/>
+                    </c:if>
+                    <p:panelGrid rendered="${param['wrongCredentials'] != null and empty param.j_username}" style="background: transparent !important; border:0;">
+                        <h:outputText value="Debe ingresar un nombre de usuario" style="color: red;"/>
+                    </p:panelGrid>
+                </div>
+                <div class="login-input-wrapper">
+                    <p:inputText type="password" id="j_password" placeholder="Contraseña" required="true"  requiredMessage="Debe ingresar una contraseña válida" />
+                    <c:if test="${param['wrongCredentials'] != null and empty param.j_password}">
+                        <i class="fa fa-lock" style="top: 30% !important;" />
+                    </c:if>
+                    <c:if test="${param['wrongCredentials'] == null and not empty param.j_password}">
+                        <i class="fa fa-lock" style="top: 50% !important;"/>
+                    </c:if>
+                     <p:panelGrid rendered="${param['wrongCredentials'] != null and empty param.j_password}" style="background: transparent !important; border:0;">
+                        <h:outputText value="Debe ingresar una contraseña" style="color: red; ;"/>
+                    </p:panelGrid>
+                </div>
+                <p:panelGrid rendered="${param['wrongCredentials'] != null and not empty param.j_username and not empty param.j_password}" style="background: transparent !important; border:0;">
+                    <h:outputText value="Usuario o contraseña inválido" style="color: red;"/>
+                </p:panelGrid>
+                <p:commandButton id="submit" value="Ingresar" ajax="false"/>
+
+            </h:form>           
+        </div>
+
+        <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="babylon-layout" />
+
+    </h:body>
+
+</html>

@@ -1,0 +1,580 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBchYS1XkDRE3tgSDTMDaR4NUWM3Hd3JlA"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+        <script type="text/javascript">
+            /*function skinPie() {
+                this.cfg.shadow = false;
+                this.cfg.title = '';
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#ffffff',
+                    gridLineColor: '#cdcbfe',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#a6a6a6'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    renderer: $.jqplot.PieRenderer,
+                    shadow: false,
+                    lineWidth: 1,
+                    markerOptions: {
+                        shadow: false,
+                        size: 7,
+                        style: 'circle'
+                    }
+                }
+                this.cfg.legend = {
+                    show: false
+                };
+            } */
+            function skinApa() {
+                // this = chart widget instance        
+                // this.cfg = options   
+                this.cfg.seriesDefaults.rendererOptions.varyBarColor = true;
+                this.cfg.seriesDefaults.rendererOptions.barWidth = 8;
+                this.cfg.sortData = true;
+                this.cfg.legend = {
+                    show: false
+                };
+            }
+            function removeLegend()
+            {
+                this.cfg.legend = {
+                    show: false
+                };
+            }
+        </script>
+        <h:outputStylesheet>
+            .C-1 .ui-chkbox-box {
+            background: #008000 !important;
+            }
+
+            .C-2 .ui-chkbox-box {
+            background: #017BCB !important;
+            }
+
+            .C-3 .ui-chkbox-box {
+            background: #C62829 !important;
+            }
+            .C-4 .ui-chkbox-box {
+            background: #7F7F7F !important;
+            }
+            .C-5 .ui-chkbox-box {
+            background: #212121 !important;
+            }
+            .ui-datagrid-content{
+            border: 0px !important;
+            border-color: white !important;
+            }
+
+
+            .ui-panelgrid-header{
+            background: #001970 !important;
+            font-weight: bold !important;
+            color: white !important;
+            }
+
+            .tableBorder{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+            .tableBorder th{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+            .tableBorder td{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+
+            .pnl{
+            background-color: transparent !important; 
+            border: 0 !important;
+            }
+
+            .ui-panel .ui-panel-content{
+            background-color: transparent !important; 
+            border: 0 !important;
+            }
+
+            .colUno {
+            background-color:  #{mapaPrimeBacking.bg_uoct} !important;
+            font-weight: bold;
+            }
+            .colDos {
+
+            }
+
+            .rowUno td{
+            background-color: #{mapaPrimeBacking.bg_uoct} !important;
+            text-align: center;
+            font-weight: bold;
+            }
+            .rowDos {
+            background-color:  transparent !important;
+            text-align: center;
+            font-weight: bold;
+            }
+
+            .rowUnoSL td{
+            background-color:  #{mapaPrimeBacking.bg_uoct} !important;
+            text-align: center;
+            font-weight: bold;
+            }
+
+            .rowDosSL {
+            text-align: center;
+            font-weight: bold;
+            }  
+            @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important; height: 85% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { max-width: 70% !important; }
+            }
+        </h:outputStylesheet>
+        <h:outputScript>
+            function handleComplete(xhr, status, args,k)
+            {
+            if(typeof PF('gMapWV') !== "undefined")
+            {
+            var gmap = PF('gMapWV').getMap();
+            for(var i in gmap.markers)
+            {
+
+            gmap.markers[i].setMap(null); 
+            var newMarker = eval("args.marker"+i);
+            var newPosition = eval("args.position"+i);
+            var oldMarker = gmap.markers[i];
+            if(typeof newMarker !== "undefined")
+            {
+            oldMarker.icon = newMarker.icon;
+            oldMarker.setPosition(newPosition);
+            oldMarker.setMap(gmap); 
+            }
+            } 
+
+
+            }
+            }
+            function handleError(){
+            document.clear();
+            document.write('Error de conexión.. Favor volver a conectar.');
+            }
+        </h:outputScript>
+    </ui:define>
+
+    <ui:define name="viewname">
+        <li>
+            <p:link outcome="dashboard">Dashboard</p:link>
+        </li>
+    </ui:define>
+
+    <ui:define name="content"> 
+        <p:dialog id="dlgEstOpe" widgetVar="dlgEstOpe" closeOnEscape="true"  header="#{dashboardBacking.titulo}"                 
+                  styleClass="modalResponsivo"  modal="true">
+            <p:outputPanel id="panelContactos"  style="height: 100%; width: 100%">
+
+                <h:form id="form0">
+                    <p:dataTable id="tblEstados" value="#{dashboardBacking.listaDetalleEstado}" var="cruce" scrollable="true" 
+                                 paginator="true" rows="6"
+                                 reflow="true"
+                                 scrollHeight="350"
+                                 style="font-size: smaller;"
+                                 emptyMessage="No existen registros"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                 paginatorPosition="bottom">
+                        <p:column  headerText="Id"  filterBy="#{cruce.idCruce}" filterStyle="width:90%" sortBy="#{cruce.idCruce}" filterMatchMode="contains" >                                
+                            <h:outputText value="#{cruce.idCruce}"/>
+                        </p:column>
+                        <p:column  headerText="Comuna"  filterBy="#{cruce.descripcionComuna}" filterStyle="width:90%" sortBy="#{cruce.descripcionComuna}" filterMatchMode="contains"  >                                
+                            <h:outputText value="#{cruce.descripcionComuna}"/>
+                        </p:column>
+                        <p:column  headerText="Ubicación"  filterBy="#{cruce.ubicacion}" filterStyle="width:90%" sortBy="#{cruce.ubicacion}" filterMatchMode="contains" >                                
+                            <h:outputText value="#{cruce.ubicacion}"/>
+                        </p:column>
+                        <p:column  headerText="Tipo"  filterBy="#{cruce.tipo_monitoreo_desc}" filterStyle="width:90%" sortBy="#{cruce.tipo_monitoreo_desc}" filterMatchMode="contains" >                                
+                            <h:outputText value="#{cruce.tipo_monitoreo_desc}"/>
+                        </p:column>
+                        <p:column  headerText="Código"  filterBy="#{cruce.codigoSistema}" filterStyle="width:90%" sortBy="#{cruce.codigoSistema}" filterMatchMode="contains" >                                
+                            <h:outputText value="#{cruce.codigoSistema}"/>
+                        </p:column>
+                        <p:column  headerText="Dispositivo"  filterBy="#{cruce.idDispositivo}" filterStyle="width:90%" sortBy="#{cruce.idDispositivo}" filterMatchMode="contains" >                                
+                            <h:outputText value="#{cruce.idDispositivo}"/>
+                        </p:column>
+                        <p:column  headerText="Fecha"  filterBy="#{cruce.fechaAct}" filterStyle="width:90%" sortBy="#{cruce.fechaAct}" filterMatchMode="contains" >                                
+                            <h:outputText value="#{cruce.fechaAct}"/>
+                        </p:column>
+                        <p:column  headerText="Diagnostico"  filterBy="#{cruce.descripcionEstadoOperativo}" filterStyle="width:90%" sortBy="#{cruce.descripcionEstadoOperativo}" filterMatchMode="contains" >                                
+                            <h:outputText value="#{cruce.descripcionEstadoOperativo}"/>
+                        </p:column>
+                        <p:column  headerText="Sensor 220"  filterBy="#{cruce.valModo220}" filterStyle="width:90%" sortBy="#{cruce.valModo220}" filterMatchMode="contains" >                                
+                            <h:outputLabel rendered="#{cruce.valModo220Int == 1}">
+                                <i style="font-size: 18px !important; color: green;"  class="fas fa-check-circle" ></i>
+                            </h:outputLabel> 
+                            <h:outputLabel rendered="#{cruce.valModo220Int == 0}">
+                                <i style="font-size: 18px !important; color: red;"  class="fas fa-times-circle"></i>
+                            </h:outputLabel> 
+                            <h:outputLabel rendered="#{cruce.valModo220Int == -1}">
+                                <i style="font-size: 18px !important; color: lightgray;"  class="fas fa-exclamation-circle"></i>
+                            </h:outputLabel> 
+                        </p:column>
+                        <p:column  headerText="Sensor UPS"  filterBy="#{cruce.valModoUps}" filterStyle="width:90%" sortBy="#{cruce.valModoUps}" filterMatchMode="contains" >                                
+                            <h:outputLabel rendered="#{cruce.valModoUpsInt == 1}">
+                                <i style="font-size: 18px !important; color: green;"  class="fas fa-check-circle" ></i>
+                            </h:outputLabel> 
+                            <h:outputLabel rendered="#{cruce.valModoUpsInt == 0}">
+                                <i style="font-size: 18px !important; color: red;"  class="fas fa-times-circle"></i>
+                            </h:outputLabel> 
+                            <h:outputLabel rendered="#{cruce.valModoUpsInt == -1}">
+                                <i style="font-size: 18px !important; color: lightgray;"  class="fas fa-exclamation-circle"></i>
+                            </h:outputLabel> 
+                        </p:column>
+                        <p:column  headerText="Sensor Lam"  filterBy="#{cruce.valModoLam}" filterStyle="width:90%" sortBy="#{cruce.valModoLam}" filterMatchMode="contains" >                                
+                            <h:outputLabel rendered="#{cruce.valModoLamInt == 1}">
+                                <i style="font-size: 18px !important; color: green;"  class="fas fa-check-circle" ></i>
+                            </h:outputLabel> 
+                            <h:outputLabel rendered="#{cruce.valModoLamInt == 0}">
+                                <i style="font-size: 18px !important; color: red;"  class="fas fa-times-circle"></i>
+                            </h:outputLabel> 
+                            <h:outputLabel rendered="#{cruce.valModoLamInt == -1}">
+                                <i style="font-size: 18px !important; color: lightgray;"  class="fas fa-exclamation-circle"></i>
+                            </h:outputLabel> 
+                        </p:column>
+                        <p:column  headerText="Sensor UTC"  filterBy="#{cruce.valModoUtcInt}" filterStyle="width:90%" sortBy="#{cruce.valModoUtcInt}" filterMatchMode="contains" >                                
+                            <h:outputLabel rendered="#{cruce.valModoUtcInt == 1}">
+                                <i style="font-size: 18px !important; color: green;"  class="fas fa-check-circle" ></i>
+                            </h:outputLabel> 
+                            <h:outputLabel rendered="#{cruce.valModoUtcInt == 0}">
+                                <i style="font-size: 18px !important; color: red;"  class="fas fa-times-circle"></i>
+                            </h:outputLabel> 
+                            <h:outputLabel rendered="#{cruce.valModoUtcInt == -1}">
+                                <i style="font-size: 18px !important; color: lightgray;"  class="fas fa-exclamation-circle"></i>
+                            </h:outputLabel> 
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:outputPanel>
+        </p:dialog>
+       <!-- <p:poll id="pollMsg" update="messages messagesMap" interval="120" listener="#{dashboardBacking.warn()}" /> -->
+        <p:poll interval="60" listener="#{dashboardBacking.refresco}"  oncomplete="handleComplete(xhr, status, args)" update="pnl1 pnl2 pnl3 pnl4" process="@this" onerror="handleError()"/>
+        <!-- <p:messages for="pnl1" id="messages" showDetail="true" closable="true"  /> -->
+        <div class="layout-dashboard">            
+            <div class="p-grid">
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <p:panel id="pnl1" styleClass="pnl">
+                        <div class="overview-box views">
+                            <p:commandLink  actionListener="#{dashboardBacking.cargaDetalleCruces('3')}" update="dlgEstOpe" oncomplete="PF('dlgEstOpe').show();">
+                                <i class="overview-icon far fa-times-circle"></i>
+                                <span class="overview-title" style="color: white;">Cruces Apagados</span>
+                                <i class="overview-arrow  fa fa-chevron-circle-up"></i>
+                                <div class="overview-numbers" style="color: white;">
+                                    #{dashboardBacking.contEstDimac.apagado}
+                                </div>
+                            </p:commandLink>
+                        </div>
+                    </p:panel>
+                </div>
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <p:panel id="pnl2" styleClass="pnl">
+                        <p:commandLink  actionListener="#{dashboardBacking.cargaDetalleCruces('2')}" update="dlgEstOpe" oncomplete="PF('dlgEstOpe').show();">
+                            <div class="overview-box sales">
+                                <i class="overview-icon far fa-eye"></i>
+                                <span class="overview-title" style="color: white;">Cruces con Observación</span>
+                                <i class="overview-arrow fa fa-chevron-circle-up"></i>
+                                <div class="overview-numbers" style="color: white;">
+                                    #{dashboardBacking.contEstDimac.observacion}
+                                </div>               
+                            </div>
+                        </p:commandLink>
+                    </p:panel>
+                </div>
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <p:panel id="pnl3" styleClass="pnl">
+                        <div class="overview-box checkin">
+                            <p:commandLink  actionListener="#{dashboardBacking.cargaDetalleCruces('1')}" update="dlgEstOpe" oncomplete="PF('dlgEstOpe').show();">
+                                <i class="overview-icon far fa-lightbulb"></i>
+                                <span class="overview-title" style="color: white;">Cruces Encendidos</span>
+                                <i class="overview-arrow fa fa-chevron-circle-up"></i>
+                                <div class="overview-numbers" style="color: white;">
+                                    #{dashboardBacking.contEstDimac.encendidos}
+                                </div>
+                            </p:commandLink>
+                        </div>
+                    </p:panel>
+                </div>
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <p:panel id="pnl4" styleClass="pnl">
+                        <div class="overview-box users">
+                            <p:commandLink  actionListener="#{dashboardBacking.cargaDetalleCruces('4')}" update="dlgEstOpe" oncomplete="PF('dlgEstOpe').show();">
+                                <i class="overview-icon fas fa-exclamation-triangle"></i>
+                                <span class="overview-title" style="color: white;">Cruces Inválidos</span>
+                                <i class="overview-arrow fa fa-chevron-circle-up"></i>
+                                <div class="overview-numbers" style="color: white;">
+                                    #{dashboardBacking.contEstDimac.invalidos}
+                                </div>
+                            </p:commandLink>
+                        </div>
+                    </p:panel>
+                </div>               
+                <div class="p-col-12 p-lg-8">
+                    <div class="card card-w-title">
+                        <!-- <p:messages for="gMapWV" id="messagesMap" escape="false"  showDetail="true" closable="true" /> -->
+                        <p:gmap widgetVar="gMapWV" id="gMapWV"
+                                fitBounds="#{dashboardBacking.fitBounds}"
+                                mapTypeControl="false" navigationControl="false"
+                                disableDefaultUI="true"                                
+                                center="#{dashboardBacking.centro}" 
+                                zoom="#{dashboardBacking.tamanoMapa}" type="ROADMAP" 
+                                style="width:100%;height: 600px;"
+                                model="#{dashboardBacking.marcadores}">
+                            <p:ajax event="overlaySelect" listener="#{dashboardBacking.onMarkerSelect}" />
+                            <p:gmapInfoWindow >
+                                <h:panelGrid columns="1">
+                                    <c:if test="#{dashboardBacking.marker.data.idCruce > 0 and dashboardBacking.marker.data.tipoMonitoreo == 1}">
+                                        <div class="ui-g-12">
+                                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                         columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                                <f:facet name="header" >
+                                                    <h:outputText value="Información del Dispositivo"/>
+                                                </f:facet>
+                                                <h:outputText id="idCruce" value="Id Cruce:"/>
+                                                <h:outputText value="#{dashboardBacking.marker.data.idCruce}"/>
+                                                <h:outputText value="Ubicación:"/>
+                                                <h:outputText value="#{dashboardBacking.marker.data.ubicacion}" />
+                                                <h:outputText value="Tipo: " rendered="#{dashboardBacking.mostrarInfoConf}"/> 
+                                                <h:outputText value="Semáforo" rendered="#{dashboardBacking.mostrarInfoConf}"/>
+                                                <h:outputText value="Código Sistema: " rendered="#{dashboardBacking.mostrarInfoConf}"/>
+                                                <h:outputText value="#{dashboardBacking.marker.data.codigoSistema}" rendered="#{dashboardBacking.mostrarInfoConf}"/>
+                                                <h:outputText value="Nombre de Red:" rendered="#{dashboardBacking.mostrarInfoConf}"/>
+                                                <h:outputText value="#{dashboardBacking.marker.data.red}" rendered="#{dashboardBacking.mostrarInfoConf}"/>
+                                                <h:outputText value="Controlador:" rendered="#{dashboardBacking.mostrarInfoConf}"/>
+                                                <h:outputText value="#{dashboardBacking.marker.data.controlador}" rendered="#{dashboardBacking.mostrarInfoConf}"/>
+                                            </p:panelGrid>
+
+                                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                         columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                                <f:facet name="header">
+                                                    <h:outputText value="Información del Sistema"/>
+                                                </f:facet>
+                                                <h:outputText value="Estado Cruce:  "/>
+                                                <c:choose>
+                                                    <c:when  test='#{dashboardBacking.marker.data.indLamFault and dashboardBacking.marker.data.estadoOperativoInt lt 3 and dashboardBacking.marker.data.valModoUtc4Int eq 1}'>
+                                                        <h:outputText value="#{dashboardBacking.marker.data.descripcionEstadoOperativo} (Lámpara Fundida)"/>
+                                                    </c:when>  
+                                                    <c:otherwise>
+                                                        <h:outputText value="#{dashboardBacking.marker.data.descripcionEstadoOperativo}"/>
+                                                    </c:otherwise>
+                                                </c:choose>   
+                                                <h:outputText value="Informado a :  "/>
+                                                <h:outputText value="#{dashboardBacking.marker.data.descripcionFecha}" />
+                                                <h:outputText value="Diagnóstico:   "/>
+                                                <h:outputText value="#{dashboardBacking.marker.data.observacion}" />
+                                            </p:panelGrid>
+
+                                            <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                                                         columnClasses="ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3,ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3">
+                                                <f:facet name="header">
+                                                    <h:outputText value="Detalle Sensores"/>
+                                                </f:facet>                                                         
+                                                <h:outputText value="Sensor 220" />
+                                                <h:outputText value="#{dashboardBacking.marker.data.descripcionValModo220}" />
+                                                <h:outputText value="Sensor UPS" />
+                                                <h:outputText value="#{dashboardBacking.marker.data.descripcionValModoUps}" />
+                                                <h:outputText value="Sensor Luces"/>
+                                                <h:outputText value="#{dashboardBacking.marker.data.descripcionValModoLam}" />
+                                                <h:outputText value="Sensor UTC"/>
+                                                <h:outputText value="#{dashboardBacking.marker.data.descripcionValModoUtc}" />
+
+                                            </p:panelGrid>
+                                            Nota: Sensor UTC podría tener hasta 5min de retraso.
+
+                                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                         columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                                <h:outputText id="nombreUsuario" value="Usuario: "/>
+                                                <h:outputText value="#{loginBacking.usuario.nombre} #{loginBacking.usuario.apellidoPaterno}"/>
+                                            </p:panelGrid>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="#{dashboardBacking.marker.data.idCruce > 0 and dashboardBacking.marker.data.tipoMonitoreo == 2}">
+                                        <h:panelGrid styleClass="tableBorder" columns="2" cellpadding="0" cellspacing="0"
+                                                     headerClass="header" captionClass="caption"
+                                                     columnClasses="colUno, colDos">
+                                            <f:facet name="header">
+                                                <h:outputText value="Información del Dispositivo"/>
+                                            </f:facet>
+                                            <h:outputText id="idCruce" value="Id Cruce:"/>
+                                            <h:outputText value="#{dashboardBacking.marker.data.idCruce}"/>
+                                            <h:outputText value="Ubicación:"/>
+                                            <h:outputText value="#{dashboardBacking.marker.data.ubicacion}" />
+                                            <h:outputText value="Tipo: "/>
+                                            <h:outputText value="Señal Luminosa" />
+                                        </h:panelGrid>
+                                        <br></br>
+                                        <h:panelGrid styleClass="tableBorder" columns="2" cellpadding="0" cellspacing="0"
+                                                     headerClass="header" captionClass="caption"
+                                                     columnClasses="colUno, colDos">
+                                            <f:facet name="header">
+                                                <h:outputText value="Información del Sistema"/>
+                                            </f:facet>
+                                            <h:outputText value="Estado:  "/>
+                                            <h:outputText value="#{dashboardBacking.marker.data.descripcionEstadoOperativo}"/>
+                                            <h:outputText value="Informado a :  "/>
+                                            <h:outputText value="#{dashboardBacking.marker.data.descripcionFecha}" />
+                                            <h:outputText value="Diagnóstico:   "/>
+                                            <h:outputText value="#{dashboardBacking.marker.data.observacion}" />
+                                        </h:panelGrid>
+                                        <br></br>
+                                        <h:panelGrid styleClass="tableBorder" columns="3" cellpadding="0" cellspacing="0"
+                                                     headerClass="header" captionClass="caption"
+                                                     rowClasses="rowUnoSL, rowDosSL">
+                                            <f:facet name="header">
+                                                <h:outputText value="Detalle Sensores"/>
+                                            </f:facet>
+
+                                            <h:outputText value="Sensor 220"/>
+                                            <h:outputText value="Sensor Fotocelda"/>
+                                            <h:outputText value="Sensor Intermitencia" />
+
+                                            <h:outputText value="#{dashboardBacking.marker.data.descripcionValModo220}"/>
+                                            <h:outputText value="#{dashboardBacking.marker.data.descripcionValModoLam}"/>
+                                            <h:outputText value="#{dashboardBacking.marker.data.descripcionValModoUtc}"/>
+
+                                        </h:panelGrid>
+                                        <br></br>
+                                        <h:panelGrid styleClass="tableBorder" columns="2" cellpadding="0" cellspacing="0"
+                                                     headerClass="header" captionClass="caption"
+                                                     columnClasses="colUno, colDos">
+                                            <f:facet name="header">
+                                                <h:outputText value="Información de Equipo Monitor"/>
+                                            </f:facet>
+                                            <h:outputText value="Nº de Equipo Monitor:"/>
+                                            <h:outputText value="#{dashboardBacking.marker.data.numeroEquipo}"/>
+                                            <h:outputText value="IP Asignado:"/>
+                                            <h:outputText value="#{dashboardBacking.marker.data.direccionIP}" />
+                                            <h:outputText value="Nº de Télefono"/>
+                                            <h:outputText value="#{dashboardBacking.marker.data.telefono}" />
+                                        </h:panelGrid>
+                                    </c:if>
+                                </h:panelGrid>
+                            </p:gmapInfoWindow>
+                        </p:gmap>
+                    </div>
+                </div>
+                
+                <div class="p-col-12 p-lg-4">
+                    <p:panel rendered="#{dashboardBacking.verInfMonitoreo}" >
+                        <div class="card" style="border: 0 !important;">
+                            <h1 class="centerText">Dispositivos apagados en el último mes</h1>
+                            <p:chart type="bar" model="#{dashboardBacking.apagadosMesChart}" responsive="true" />
+                        </div>
+                    </p:panel> 
+                </div>
+            </div>
+
+        </div>
+
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>           
+                <p:tabView id="config-form-tabs" >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Filtros"/>                             
+                        </f:facet>
+                        <div class="ui-g-12">
+
+                            <div class="card card-w-title">
+                                <h:form id="config-form" rendered="#{dashboardBacking.verFiltroBusqueda}">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel rendered="#{dashboardBacking.verFiltroRegion}" value="Región" ></h:outputLabel>
+                                        <p:selectOneMenu id="regiones" rendered="#{dashboardBacking.verFiltroRegion}" appendTo="@this" label="Seleccionar Región" value="#{dashboardBacking.id_region}"
+                                                         valueChangeListener="#{dashboardBacking.onRegionChange}">
+                                            <f:selectItem itemLabel="Seleccionar Región" itemValue="0" />
+                                            <f:selectItems value="#{dashboardBacking.regiones}" var="region" itemValue="#{region.id_region}" itemLabel="#{region.nombre}"   />
+                                            <p:ajax event="change" process="@this" update="menu" />
+                                        </p:selectOneMenu>
+                                        <h:outputLabel value="Comuna" ></h:outputLabel>
+                                        <p:selectCheckboxMenu id="menu" appendTo="@this" value="#{dashboardBacking.comunaSeleccionadas}" panelStyleClass="#{dashboardBacking.panelStyle}" label="Seleccionar Comunas"
+                                                              filter="true" filterMatchMode="startsWith" > <!-- panelStyleClass="without-selectall" -->
+                                            <f:selectItems value="#{dashboardBacking.listaComunasMonitoreo}" var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"/>
+                                            <p:ajax event="change" process="@form" />
+                                            <p:ajax event="toggleSelect" listener="#{dashboardBacking.onToggleSelect}" />
+                                        </p:selectCheckboxMenu>
+                                        <p:commandButton value="Cargar" actionListener="#{dashboardBacking.cargarMapa}" update="gMapWV display pnl1 pnl2 pnl3 pnl4 config-form-tabs" immediate="true" process="@this" onclick="$('.layout-config-button').click()" />
+                                        <p:outputPanel id="display" >
+                                            <h:outputLabel value="#{dashboardBacking.lstComunaSeleccionada}" ></h:outputLabel>
+                                        </p:outputPanel>  
+                                    </p:panelGrid>   
+                                </h:form>
+                            </div>
+
+                            <h:form>
+                                <div class="card card-w-title">
+                                    <h:outputLabel value="Estado operativo"/>
+                                    <p:dataGrid id="dataCheck"  columns="1"   value="#{dashboardBacking.listaEstadoOperativo}" var="item" rowIndexVar="index">
+                                        <p:column>
+                                            <p:selectBooleanCheckbox  value="#{dashboardBacking.check1[index]}" styleClass="#{dashboardBacking.getColorDash(index)}">
+                                                <p:ajax event="change" listener="#{dashboardBacking.processChecked(item)}" immediate="true" oncomplete="handleComplete(xhr, status, args)" process="@this" />
+                                            </p:selectBooleanCheckbox>
+                                            <h:outputText value="#{item.descripcion}"/>
+                                        </p:column>
+                                    </p:dataGrid>
+                                </div>
+                            </h:form>
+                        </div>
+                    </p:tab>
+                    <p:tab id="tabCruce" rendered="#{dashboardBacking.verBuscarCruce}" >             
+                        <f:facet name="title">
+                            <i class="fas fa-compress"></i>
+                            <h:outputText value="Buscar Cruce" style="margin-left: 10px;"/>                             
+                        </f:facet>
+                        <h:form id="config-form2">
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4,ui-g-12 ui-md-8">
+                                        <h:outputLabel for ="idCompletoDash"  value="Cruce:" /> 
+                                        <p:autoComplete id="idCompletoDash"  
+                                                        value="#{dashboardBacking.idCruce}" 
+                                                        converter="puntoConvertir"
+                                                        completeMethod="#{dashboardBacking.filtroCruce}"
+                                                        var="cruce" 
+                                                        appendTo="@this"
+                                                        effect="fade"
+                                                        queryDelay="700"
+                                                        scrollHeight="300"
+                                                        itemValue="#{cruce}"
+                                                        itemLabel="#{cruce.ubicacion}"
+                                                        placeholder="Buscar un Cruce...">
+                                            <p:column>
+                                                <h:outputText value="#{cruce.ubicacion}" />
+                                            </p:column>
+                                            <p:ajax  global="false" event="itemSelect" listener="#{dashboardBacking.cambioValorAutoComplete}" process="@this" oncomplete="$('.layout-config-button').click()"/>
+                                        </p:autoComplete>
+                                        <p:commandButton value="Buscar Cruce" action="#{dashboardBacking.buscar}" process="@form" update="gMapWV config-form-tabs" immediate="true" onclick="$('.layout-config-button').click()" />
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>
+                </p:tabView>  
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

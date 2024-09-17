@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="Georeferencia" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>java:/jboss/georeferenciaDS</jta-data-source>
+    <class>cl.auter.ejb.entity.bmp.CodigoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.ComunaEntity</class>
+    <class>cl.auter.ejb.entity.bmp.CruceDocumentoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.CrucepprEntity</class>
+    <class>cl.auter.ejb.entity.bmp.CruceEntity</class>
+    <class>cl.auter.ejb.entity.bmp.DispositivoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.DocumentoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.InstalacionEntity</class>
+    <class>cl.auter.ejb.entity.bmp.MovilEntity</class>
+    <class>cl.auter.ejb.entity.bmp.PoligonoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.RolUsuarioEntity</class>
+    <class>cl.auter.ejb.entity.bmp.SolicitudEntity</class>
+    <class>cl.auter.ejb.entity.bmp.UsuarioEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaCruceDocumentoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaCruceEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaCruceHistoricoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaMovilHistoricoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaInformeDiarioEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaMovilEntity</class>
+    <class>cl.auter.ejb.entity.bmp.FasePPREntity</class>
+    <class>cl.auter.ejb.entity.bmp.DispositivoGenericoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.RegionEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaRegionesMonitoreoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaContEstadoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaSolicitudesEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaDispApaMesEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaSolicitudesPendientesEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaInstalacionEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaRegionComunaEntity</class>
+    <class>cl.auter.ejb.entity.bmp.PoligonoComunalEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
+    </properties>
+  </persistence-unit>
+  <!--  <persistence-unit name="TDV" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>java:/jboss/tdv</jta-data-source>
+    <class>cl.auter.ejb.entity.bmp.VectorEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VRutaTiempoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.NodoEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="Enlace" transaction-type="JTA">
+    <jta-data-source>java:/jboss/EnlacesDS</jta-data-source>
+    <class>cl.auter.ejb.entity.bmp.EnlaceEntity</class>
+    <class>cl.auter.ejb.entity.bmp.VistaReclamoCoordinacionEntity</class>
+    <class>cl.auter.ejb.entity.bmp.ReclamoEntity</class>
+    <class>cl.auter.ejb.entity.bmp.CodigoEnlaceEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="SMA2016" transaction-type="JTA">
+    <jta-data-source>java:/jboss/auterDS</jta-data-source>
+    <class>cl.auter.ejb.entity.bmp.VistaTareaWebEntity</class>
+    <class>cl.auter.ejb.entity.bmp.AtencionArchivoEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties/>
+  </persistence-unit> -->
+</persistence>

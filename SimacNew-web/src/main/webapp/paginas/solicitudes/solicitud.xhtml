@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="viewname">
+        <li>Solicitudes</li>
+        <li>/</li>
+        <li><p:link outcome="ingreso">Ingreso de Solicitud</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <h:outputStylesheet>
+            .ui-fileupload .ui-fileupload-buttonbar{
+                border: 1px solid #ffffff !important;
+                background-color: #ffffff !important;
+            }
+            .ui-fileupload .ui-fileupload-content{
+                border: 1px solid #ffffff !important;
+                background-color: #ffffff !important;
+                color: #ffffff !important;
+            }
+            
+        </h:outputStylesheet>
+        <script src="../../resources/validaciones.js" type="text/javascript"></script>
+        <h:form id="form1" enctype="multipart/form-data">
+
+            <p:growl id="growl" life="1000"  />
+            <p:growl id="messages" showDetail="true" />
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="card card-w-title">
+                        <p:panelGrid columns="2" id="grid" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-6">
+                            <h:outputLabel id="comunaLabel" for="comuna" value="Comuna:" style="font-weight:bold"/> 
+                            <p:selectOneMenu id="comuna"  value="#{solicitudBacking.idComuna}" disabled="#{solicitudBacking.comboHabilitada}" >
+                                <f:selectItems value="#{parametrosBacking.listaComunas}"  var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"  />
+                            </p:selectOneMenu> 
+
+                            <h:outputLabel  for="idSolicitante" value="Solicitante:" style="font-weight:bold"/> 
+                            <p:inputText id="idSolicitante" label="solicitante"  value="#{solicitudBacking.solicitudTO.nombreSolicitante}"  onkeydown="eventoSalidaLetra(this, event, '', '');" onkeypress="return validarLetras(this, event);" ></p:inputText>       
+
+                            <h:outputLabel id="idEmailOut" for="email" value="Email:" style="font-weight:bold"/> 
+                            <p:inputText  id="email" label="email" value="#{solicitudBacking.solicitudTO.emailSolicitante}" ></p:inputText>                       
+
+                            <h:outputLabel for="telefono" value="Telefono:" style="font-weight:bold"/> 
+                            <p:inputText id="telefono" label="telefono" value="#{solicitudBacking.solicitudTO.fonoSolicitante}" onkeydown="eventoSalidaNumero(this, event, '', '', '');" onkeypress="return validarNumero(this, event, 15, 0);"></p:inputText>   
+
+                            <h:outputLabel for="Asunto" value="Asunto:" style="font-weight:bold" /> 
+                            <p:inputText id="Asunto" label="Asunto" value="#{solicitudBacking.solicitudTO.asunto}">
+                                <f:validateRequired/>
+                                <p:keyFilter regEx="/[a-zA-ZÀ-ú\\s\\' ]+/"/>
+                            </p:inputText>
+
+                            <h:outputLabel for="observacion" value="Observacion:" style="font-weight:bold"/> 
+                            <p:inputTextarea id="observacion" label="observacion" value="#{solicitudBacking.observacionSolicitante}"  cols="45" rows="5"  />
+
+                            <h:outputLabel value="Archivos Adjuntos:" style="font-weight:bold"/> 
+                            <p:commandButton  id="loadImg" value="Cargar" onclick="$('input[type=file]').click();" rendered="#{!cruceBacking.verCruce}"  icon="fas fa-file-upload" title="Cargar"  />
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-0 ui-md-3,ui-g-0 ui-md-3">
+                            <h:outputLabel value=""/>
+                            <p:commandButton value="Enviar" ajax="false" action="#{solicitudBacking.guardarSolicitud}"/>
+                        </p:panelGrid>
+                        <p:fileUpload id="upload" auto="true" fileUploadListener="#{solicitudBacking.upload}" style="visibility: hidden;" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|doc|docx|xls|xlsx|xlsm)$/i" accept="image/x-png,image/gif,image/jpegh" />
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="layout-topbar">
+        <h:link outcome="dashboard" styleClass="layout-topbar-logo">
+            <p:graphicImage name="images/#{guestPreferences.darkLogo ? 'logo-black.png' : 'logo-white.png'}"
+                            library="babylon-layout" />
+        </h:link>
+
+        <a class="layout-menu-button" href="#">
+            <i class="fa fa-bars" />
+        </a>
+
+        <a id="topbar-menu-button" href="#">
+            <i class="fa fa-ellipsis-v"></i>
+        </a>
+        <p:graphicImage name="images/logo.png" class="logo-custom" library="babylon-layout" />
+        <ul class="topbar-menu fadeInDown">
+            <ui:fragment rendered="#{guestPreferences.profileMode == 'popup' ? true : false}">
+                <li class="user-profile">
+                    <a href="#">
+                        <p:graphicImage name="images/auter-circle.png" library="babylon-layout" />
+                        <span class="layout-profile-name">#{loginBacking.usuarioAutenticado.nombre} #{loginBacking.usuarioAutenticado.apellidoPaterno}</span>
+                        <span class="layout-profile-role">#{loginBacking.usuarioAutenticado.nombre_tipo}</span>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-fw fa-user"></i>
+                                <span>Perfil</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${request.contextPath}/paginas/Logout" >
+                                <i class="fa fa-fw fa-sign-out"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ui:fragment>
+
+          <li>
+                <a href="#" >
+                    <i class="topbar-icon fas fa-phone-square-alt"></i>
+                    <span class="topbar-item-name">Contacto</span>
+                </a>
+                <ul>
+                    <li role="menuitem">
+                         <a href="tel:#{loginBacking.obtTelefonoMan()}" title="#{loginBacking.obtTelefonoMan()}">
+                            <i class="topbar-icon fas fa-phone-alt" ></i>
+                            <span class="topbar-item-name">#{loginBacking.obtTelefonoMan()}</span>
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                         <a href="mailto:#{loginBacking.getEmail()}" title="#{loginBacking.getEmail()}">
+                            <i class="topbar-icon fas fa-at"></i>
+                            <span class="topbar-item-name">#{loginBacking.getEmail()}</span>
+                         </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</ui:composition>

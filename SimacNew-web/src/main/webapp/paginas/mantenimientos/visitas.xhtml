@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:define name="viewname">
+        <li>Mantenimiento</li>
+        <li>/</li>
+        <li><p:link outcome="visitas">Pasadas por Cruce</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <script src="../../resources/calendar_es.js" type="text/javascript"></script>
+        <h:outputStylesheet>
+        </h:outputStylesheet>
+        <h:form id="form1">
+            <f:facet name="header">
+                VISITAS POR CRUCE
+            </f:facet>    
+            <p:panel id="pnlExp" rendered="#{visitasBacking.verExportar}">
+                <p:commandButton icon="fa fa-file-excel-o" ajax="false"  immediate="true" title="Excel">
+                    <p:dataExporter type="xls" target="form1:tableMovil" pageOnly="false" fileName="listaMovilHistorico" />
+                </p:commandButton>
+                <p:commandButton icon="fa fa-file-pdf-o" ajax="false" title="PDF" immediate="true" style=" margin-left: 5px;">
+                    <p:dataExporter type="pdf" target="form1:tableMovil" pageOnly="false" fileName="listaMovilHistorico" preProcessor="#{visitasBacking.preProcessPDF}"/>
+                </p:commandButton>
+                <p:commandButton type="button" icon="fa fa-print" title="Imprimir"
+                    style="margin-left: 5px;">
+                    <p:printer target="form1:tableMovil" />
+                </p:commandButton>
+            </p:panel>
+            <p:dataTable value="#{visitasBacking.listaTabla}" var="monitor"  
+                         paginator="true" rows="25"
+                         reflow="true"        
+                         emptyMessage="No existen registros"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                         id="tableMovil"
+                         paginatorPosition="bottom"
+                         >                     
+                <p:column  headerText="ID Registro" filterMatchMode="contains"  filterBy="#{monitor.idreg}" sortBy="#{monitor.idreg}" >
+                    <h:outputText value="#{monitor.idreg}"/>
+                </p:column>
+                <p:column  headerText="Código Móvil" filterMatchMode="contains"  filterBy="#{monitor.codigoMovil}" sortBy="#{monitor.codigoMovil}" >
+                    <h:outputText value="#{monitor.codigoMovil}"/>
+                </p:column>
+                <p:column  headerText="Fecha lectura" filterMatchMode="contains"  filterBy="#{monitor.fecultLec}" sortBy="#{monitor.fecultLec}">
+                    <h:outputText value="#{monitor.fecultLec}"/>
+                </p:column>
+                <p:column  headerText="Latitud" filterMatchMode="contains"  filterBy="#{monitor.latitud}" sortBy="#{monitor.latitud}" >
+                    <h:outputText value="#{monitor.latitud}"/>
+                </p:column>
+                <p:column  headerText="Longitud" filterMatchMode="contains"  filterBy="#{monitor.longitud}" sortBy="#{monitor.longitud}">
+                    <h:outputText value="#{monitor.longitud}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>
+                <p:tabView id="config-form-tabs" >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Busqueda"/>                             
+                        </f:facet>
+                        <h:form id="config-form">
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel for="idCruce" value="Cruce: " /> 
+                                        <p:autoComplete id="idCruce" 
+                                                        value="#{visitasBacking.cruce}" 
+                                                        converter="cruceConvertir"
+                                                        completeMethod="#{visitasBacking.filtroCruce}"
+                                                        appendTo="@this"
+                                                        var="cruce" 
+                                                        effect="fade"
+                                                        queryDelay="700"
+                                                        scrollHeight="300"
+                                                        itemValue="#{cruce}"
+                                                        itemLabel="#{cruce.ubicacion}">
+                                            <p:column>
+                                                <h:outputText value="#{cruce.ubicacion}" />
+                                            </p:column>
+                                            <p:ajax event="itemSelect" listener="#{visitasBacking.cambioValorAutoComplete}"  immediate="true" process="@form"/>
+                                        </p:autoComplete>
+                                        <h:outputText value="" />
+                                        <p:message for="idCruce"/>     
+                                        <h:outputLabel for="idDesde" value="Fecha: "/>    
+                                        <p:calendar  id="idDesde" value="#{visitasBacking.fechaDesde}" pattern="dd-MM-yyyy" mask="true" locale="es">
+                                            <p:ajax event="change" listener="#{visitasBacking.startDateFilter}"/>
+                                            <p:ajax event="dateSelect" listener="#{visitasBacking.startDateFilter}"/>
+                                        </p:calendar>
+                                        <h:outputText value="" />
+                                        <p:message for="idDesde" />    
+
+                                        <p:outputLabel for="idHoraDesde" value="Hora Desde: "/>
+                                        <p:calendar id="idHoraDesde" value="#{visitasBacking.horaDesde}" pattern="HH:mm" timeOnly="true" >
+                                            <p:ajax event="change" listener="#{visitasBacking.cambiarHoraDesde}" immediate="true"/>
+                                            <p:ajax event="dateSelect" listener="#{visitasBacking.cambiarHoraDesde}"/>
+                                        </p:calendar>
+                                        <h:outputText value="" />
+                                        <p:message for="idHoraDesde" />
+
+                                        <p:outputLabel for="idHoraHasta" value="Hora Hasta "/>
+                                        <p:calendar id="idHoraHasta"  value="#{visitasBacking.horaHasta}" pattern="HH:mm" timeOnly="true" >
+                                            <p:ajax event="change" listener="#{visitasBacking.cambiarHoraHasta}" immediate="true"/>
+                                            <p:ajax event="dateSelect" listener="#{visitasBacking.cambiarHoraHasta}"/>                    
+                                        </p:calendar>
+                                        <h:outputText value="" />
+                                        <p:message for="idHoraHasta" />
+
+                                        <p:commandButton value="Buscar" actionListener="#{visitasBacking.buscarMovil}" icon="ui-icon-check" onclick="$('.layout-config-button').click()" update="form1 config-form-tabs"/>
+                                    </p:panelGrid>    
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>
+                </p:tabView>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                    $('#ui-datepicker-div').appendTo('#layout-config');
+            });
+        </script>
+    </ui:define>
+</ui:composition>

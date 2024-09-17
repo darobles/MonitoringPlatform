@@ -1,0 +1,264 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:define name="viewname">
+        <li>Mantenimiento</li>
+        <li>/</li>
+        <li><p:link outcome="mantenimientos">Informe diario</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <script src="../../resources/calendar_es.js" type="text/javascript"></script>
+        <h:outputStylesheet>
+             @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { width: 60% !important; }
+            }
+            .ui-panelgrid-header{
+            background: #001970 !important;
+            font-weight: bold !important;
+            color: white !important;
+            }
+
+            .tableBorder{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+            .tableBorder th{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+            .tableBorder td{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+
+            .colUno {
+            font-weight: bold;
+            }
+        </h:outputStylesheet>
+        <h:form id="form1" >
+            <p:dialog id="dlg1" header="Documentos"
+                      styleClass="modalResponsivo"  modal="true"
+                      responsive="true"
+                      widgetVar="dlg1" hideEffect="drop">
+                <h:panelGrid columns="2" cellpadding="0" cellspacing="0"
+                             headerClass="ui-state-default" columnClasses="ui-state-default,ui-state-default">
+                    <f:facet name="header">
+                        <h:outputText value="Documentos de Instalación"/>
+                    </f:facet>
+                    <h:outputText value="Id Cruce:"/>
+                    <h:outputText value="#{mantenimientoBacking.cruce.idCruce}"/>
+                    <h:outputText value="Ubicación: "/>
+                    <h:outputText value="#{mantenimientoBacking.cruce.ubicacion}" />
+                </h:panelGrid>
+                <br></br>
+                <p:dataTable id="tabla" var="doc"
+                             reflow="true" value="#{mantenimientoBacking.listaDocumentos}">
+                    <p:column headerText="Fecha" filterMatchMode="contains"  filterBy="#{doc.descripcionFecha}" filterStyle="width:120px;">
+                        <h:outputText value="#{doc.descripcionFecha}" />
+                    </p:column>
+                    <p:column headerText="Tipo" filterMatchMode="contains"  filterBy="#{doc.descripcionTipo}" filterStyle="width:120px;">
+                        <h:outputText value="#{doc.descripcionTipo}" />
+                    </p:column>
+                    <p:column headerText="Asunto" filterMatchMode="contains"  filterBy="#{doc.observacion}" filterStyle="width:120px;">
+                        <h:outputText value="#{doc.observacion}" />
+                    </p:column>
+                    <p:column headerText="Acción">
+                        <p:commandButton id="descargarlink"  title="Descargar" ajax="false" icon="fas fa-file-download" actionListener="#{mantenimientoBacking.prepDownload(doc.archivo)}" >
+                            <p:fileDownload value="#{mantenimientoBacking.download}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable> 
+            </p:dialog>
+            <p:dialog id="dlg2" header="Documentos MTT"
+                      styleClass="modalResponsivo"  modal="true"
+                      responsive="true"
+                      widgetVar="dlg2" hideEffect="drop">
+                <h:panelGrid columns="2" cellpadding="0" cellspacing="0"
+                             headerClass="ui-state-default" columnClasses="ui-state-default,ui-state-default">
+                    <h:outputText value="Id Cruce:"/>
+                    <h:outputText value="#{mantenimientoBacking.cruce.idCruce}"/>
+                    <h:outputText value="Ubicación: "/>
+                    <h:outputText value="#{mantenimientoBacking.cruce.ubicacion}" />
+                </h:panelGrid>
+                <br></br>
+                <p:dataTable id="tablaMTT" var="doc"
+                             reflow="true" value="#{mantenimientoBacking.listaAtenArchivos}">
+                     <p:column headerText="Nombre" filterMatchMode="contains"  filterBy="#{doc.archivo_origen}" filterStyle="width:120px;">
+                        <h:outputText value="#{doc.archivo_origen}" />
+                    </p:column>
+                    <p:column headerText="Tipo" filterMatchMode="contains"  filterBy="#{doc.tipo_nombre}" filterStyle="width:120px;">
+                        <h:outputText value="#{doc.tipo_nombre}" />
+                    </p:column>
+                    <p:column headerText="Fecha" filterMatchMode="contains"  filterBy="#{doc.fecha}" filterStyle="width:120px;">
+                        <h:outputText value="#{doc.fecha}" />
+                    </p:column>
+
+                    <p:column headerText="Acción">
+                        <p:commandButton id="descargarlink"  title="Descargar" ajax="false" icon="fas fa-file-download" actionListener="#{mantenimientoBacking.prepDownload(doc.rutaFinal)}" >
+                            <p:fileDownload value="#{mantenimientoBacking.download}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable> 
+            </p:dialog>
+
+            <p:dialog id="dlgEstado" header="Estado" widgetVar="dlgEstado" 
+                      styleClass="modalResponsivo"  modal="true"
+                      responsive="true" hideEffect="drop">
+                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                    <f:facet name="header">
+                        <h:outputText value="Detalle de Atención"/>
+                    </f:facet>
+                    <h:outputText value="Nro Intersección:"/>
+                    <h:outputText value="#{mantenimientoBacking.informeDiarioTO.idCruce}"/>
+                    <h:outputText value="Ubicación:"/>
+                    <h:outputText value="#{mantenimientoBacking.informeDiarioTO.ubicacion}" />
+                    <h:outputText value="Tipo:"/>
+                    <h:outputText value="#{mantenimientoBacking.informeDiarioTO.tipo}" />
+                    <h:outputText value="Origen: "/>
+                    <h:outputText value="#{mantenimientoBacking.informeDiarioTO.nombreTipoOrigen}" />
+                    <h:outputText value="Llamado:"/>
+                    <h:outputText value="#{mantenimientoBacking.informeDiarioTO.llamada}" />
+                    <h:outputText value="Fecha y Hora revisión:"/>
+                    <h:outputText value="#{mantenimientoBacking.informeDiarioTO.fechaLlegadaFormateada}" />
+                    <h:outputText value="Estado Inicial:"/>
+                    <h:outputText value="#{mantenimientoBacking.informeDiarioTO.estadoInicial}" />
+                    <h:outputText value="Estado Final:"/>
+                    <h:outputText value="#{mantenimientoBacking.informeDiarioTO.estadoFinal}" />
+                    <h:outputText value="Horario reparación:"/>
+                    <h:outputText value="#{mantenimientoBacking.informeDiarioTO.fechaSalidaFormateada}" />
+                    <h:outputText value="Reparación Efectuada:"/>
+                    <h:outputText value="#{mantenimientoBacking.informeDiarioTO.observacion}" />
+                </p:panelGrid>
+            </p:dialog>
+            <h:panelGroup id="panelDatos">
+
+            </h:panelGroup>
+            <p:panel id="pnlExp" rendered="#{mantenimientoBacking.verExportar}">
+                <p:commandButton icon="fa fa-file-excel-o" ajax="false"  immediate="true" title="Excel">
+                    <p:dataExporter type="xls" target="form1:dtDiario" pageOnly="false" fileName="InformeDiario" />
+                </p:commandButton>
+                <p:commandButton icon="fa fa-file-pdf-o" ajax="false" title="PDF" action="#{mantenimientoBacking.imprimirPDF}" immediate="true" style=" margin-left: 5px;"/>
+                <p:commandButton type="button" icon="fa fa-print" title="Imprimir"
+                    style="margin-left: 5px;">
+                    <p:printer target="form1:dtDiario" />
+                </p:commandButton>
+            </p:panel>
+            <p:panel >
+                <p:dataTable value="#{mantenimientoBacking.listaInformeDiarioTO}" var="monitor" 
+                             reflow="true"
+                             paginator="true" rows="100"
+                             emptyMessage="No existen registros"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                             id="dtDiario"
+                             paginatorPosition="bottom">
+                    <p:column  headerText="Cruce" filterMatchMode="contains" filterBy="#{monitor.idCruce}" sortBy="#{monitor.idCruce}">
+                        <h:outputText value="#{monitor.idCruce}"/>
+                    </p:column>
+                    <p:column  headerText="Ubicación" filterMatchMode="contains"  filterBy="#{monitor.ubicacion}" sortBy="#{monitor.ubicacion}" >
+                        <h:outputText value="#{monitor.ubicacion}"/>
+                    </p:column>
+                    <p:column  headerText="Fecha" filterMatchMode="contains"  filterBy="#{monitor.fechaLlegadaFormateada}" sortBy="#{monitor.fechaLlegadaFormateada}">
+                        <h:outputText value="#{monitor.fechaLlegadaFormateada}"/>
+                    </p:column>
+                    <p:column  headerText="Tipo" filterMatchMode="contains"  filterBy="#{monitor.tipo}" sortBy="#{monitor.tipo}">
+                        <h:outputText value="#{monitor.tipo}"/>
+                    </p:column>
+                    <p:column  headerText="Estado" filterMatchMode="contains"  filterBy="#{monitor.estadoInicial}" sortBy="#{monitor.estadoInicial}" >                    
+                        <p:commandLink id="c2" value="#{monitor.estadoInicial}" actionListener="#{mantenimientoBacking.cargarEstado(monitor.idAtencion)}" oncomplete="PF('dlgEstado').show();"  process="@form" immediate="true" update=":form1:dlgEstado"/>
+                    </p:column>
+                    <p:column id="tca"  headerText="Acción" >
+                        <p:commandButton id="cl" icon="fas fa-folder-open"  title="Ver Documentos" actionListener="#{mantenimientoBacking.cargarCruce(monitor.idCruce)}" oncomplete="PF('dlg1').show();"  process="@form" immediate="true" update=":form1:dlg1 ">
+                        </p:commandButton>
+                        <p:commandButton id="folder" style="margin-left: 5px;" rendered="#{mantenimientoBacking.verMtt}" icon="fas fa-file"  title="Ver Archivos" actionListener="#{mantenimientoBacking.cargaDocAtencion(monitor)}" oncomplete="PF('dlg2').show();"  process="@form" immediate="true" update=":form1:dlg2 ">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>                
+            </p:panel>
+        </h:form>
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>
+                <p:tabView id="config-form-tabs"   >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Busqueda"/>                             
+                        </f:facet>
+                        <h:form id="config-form" >
+
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid id="pnlSearch" columns="2" layout="grid"  styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel for="idDesde" value="Fecha Desde:" style="font-weight:bold"/>    
+                                        <p:calendar id="idDesde" value="#{mantenimientoBacking.fechaDesde}"    
+                                                    pattern="dd-MM-yyyy" mask="true" locale="es" >
+                                            <p:ajax event="change" listener="#{mantenimientoBacking.startDateFilter}"/>
+                                            <p:ajax event="dateSelect" listener="#{mantenimientoBacking.startDateFilter}"/>
+                                        </p:calendar>
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idDesde" style="font-size: 13px; color: red;"  />                                   
+                                        <h:outputLabel for="idHasta" value="Fecha Hasta:" style="font-weight:bold"/>    
+                                        <p:calendar id="idHasta" value="#{mantenimientoBacking.fechaHasta}" pattern="dd-MM-yyyy" mask="true" locale="es" >
+                                            <p:ajax event="change" listener="#{mantenimientoBacking.startDateFilter}"/>
+                                            <p:ajax event="dateSelect" listener="#{mantenimientoBacking.startDateFilter}"/>
+                                        </p:calendar>
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idHasta" style="font-size: 13px; color: red;"  />  
+                                        <h:outputLabel for="idComuna" value="Comuna:" style="font-weight:bold"/> 
+                                        <p:selectOneMenu  id="idComuna" value="#{mantenimientoBacking.idComuna}" appendTo="@this" valueChangeListener="#{mantenimientoBacking.cambioComuna}" disabled="#{mantenimientoBacking.comboHabilitada}"> 
+                                            <f:selectItems value="#{parametrosBacking.listaComunas}"  var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"   />
+                                            <p:ajax />
+                                        </p:selectOneMenu> 
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idComuna" style="font-size: 13px; color: red;"  />        
+                                        <h:outputLabel for ="idCompleto"  value="Cruce:" style="font-weight:bold"/> 
+                                        <p:autoComplete id="idCompleto" 
+                                                        value="#{mantenimientoBacking.idCruce}" 
+                                                        converter="instalacionConvertir"
+                                                        completeMethod="#{mantenimientoBacking.filtroCruce}"
+                                                        var="cruce" 
+                                                        size="100"
+                                                        effect="fade"
+                                                        queryDelay="700"
+                                                        itemValue="#{cruce}"
+                                                        itemLabel="#{cruce.ubicacion}"
+                                                        scrollHeight="300"
+                                                        styleClass="estilo-flat-componentes">
+                                            <p:column>
+                                                <h:outputText value="#{cruce.ubicacion}" />
+                                            </p:column>
+                                            <p:ajax event="itemSelect" listener="#{mantenimientoBacking.cambioValorAutoComplete}"  immediate="true" process="@form" />
+                                        </p:autoComplete>
+                                        <p:commandButton value="Buscar" immediate="true" process="@this" ajax="false" action="#{mantenimientoBacking.buscar}"  update="table pnlExp" />
+                                        <p:commandButton value="Limpiar" ajax="true"  action="mantenimientos" />
+                                        <p:message for="idCompleto" style="font-size: 13px; color: red;"  /> 
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>
+                </p:tabView>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                    $('#ui-datepicker-div').appendTo('#layout-config');
+            });
+        </script>
+    </ui:define>
+</ui:composition>

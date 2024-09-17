@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"  
+        >
+    <head>       
+    </head>
+<body>
+    <ui:composition>
+        <h:outputStylesheet>
+            a:hover{}
+            a:visited{}
+            
+            /*MENUS*/
+            h3[role=tab]{
+                background: #ffffff;
+                font-family: 'Open Sans', sans-serif;
+                cursor: pointer;               
+                color: #3c3c3c;
+                font-size: 14px !important;
+                font-weight: normal;
+                border-bottom: 1px solid #d9d9d9 !important;
+                border:0;
+            }
+            
+            h3[role=tab] a{
+                border:0;
+                padding: 15px !important;;
+                font-size:15px;   
+                font-family: 'Open Sans', sans-serif;
+            }
+            
+            h3[role=tab] span.ui-icon{              
+                left: 10.5em !important;
+                margin-top: -17px !important;
+                width: 24px !important;
+                height: 24px !important;
+            }
+            h3[role=tab] span.ui-icon-triangle-1-e{
+                background-image: url("/AuterOnLine/imagenes/arrowDown.png") !important;
+                background-size: 35px;
+                background-position: 0px 0px;                 
+            }   
+            
+            h3[role=tab] span.ui-icon-triangle-1-s{
+                background-image: url("/AuterOnLine/imagenes/arrowTop.png") !important;
+                background-size: 35px;
+                background-position: 0px 0px;                 
+            }   
+            
+            li[role=menuitem] a{
+                border:0;
+                padding: 10px !important;
+                padding-left: 25px !important;
+                font-size: 12px;
+                font-family: 'Open Sans', sans-serif;
+                width: 80% !important;
+            }
+            
+            div[role=tabpanel]{
+                overflow: hidden !important;
+            }
+            
+            .menu .ui-state-hover{
+                background: #3c3c3c !important;
+                color: #ffffff !important;
+                border:0;
+                border-radius:0;
+                transition:0.40s;
+            }
+            
+            .menu .ui-state-hover:hover a{
+                background: #3c3c3c !important;
+                color: #ffffff !important;
+                border:0;
+                border-radius:0;
+                transition:0.40s;
+            }
+            
+            .ui-state-hover a{
+                background: #3c3c3c !important;
+                color: #ffffff !important;
+                border:0;
+                border-radius:0;
+                transition: 0.40s;
+            }
+            .menu .ui-state-active{
+                background: #ffffff !important;
+                border:0;
+            }
+            .menu .ui-state-active:hover{
+                background: #3c3c3c !important;
+                color: #ffffff !important;
+                border:0;
+                border-radius:0;
+                transition:0.40s;
+            }
+            .menu .ui-state-default{
+                background:#ffffff !important;
+                border:0;
+            }
+            .menu .ui-state-default:hover{
+                background: #3c3c3c !important;
+                color: #ffffff !important;
+                border:0;
+                border-radius:0;
+                transition: 0.10s;
+            }
+            
+            /*SUBMENU */
+            li[role=menuitem]:hover{
+                background:#f1f1f1;
+                width:100%;
+                cursor: pointer;
+            }
+            li[role=menuitem] a:hover{
+                background:#f1f1f1 !important;
+                color:#3c3c3c !important;
+                cursor: pointer;
+            }
+            /*FIN SUBMENU*/
+            .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited{
+                color: #000000;
+            }
+            
+            .ui-panelmenu-content{
+                background: #e7e7e7;
+            }
+            
+            .ui-state-default:hover a{
+                color:#ffffff !important;
+            }
+            
+            .ui-state-active:hover a{
+                color:#ffffff !important;
+            }
+            
+            .ui-state-active, .ui-widget-content .ui-state-active{
+                border:0;
+            }
+            .ui-widget-content{
+                border:0;
+            }
+            
+        </h:outputStylesheet>        
+        <h:form id="imagen" style="margin-bottom:100px;">
+            <h:panelGroup layout="block" style="position: absolute;" >
+                <p:graphicImage value="#{loginBacking.usuario.urlImagenComuna}" width="100%"/>
+            </h:panelGroup>  
+        </h:form>
+	<h:form id="navegador">
+            <!--<h:panelGrid styleClass="vertical-menu-cell" columnClasses="optionList" columns="1" cellspacing="0" cellpadding="0">-->
+            <p:panelMenu id="panelMenu" widgetVar="hbPanelMenu">
+                        <p:submenu label="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','01','00')}" rendered="#{parametrosBacking.verMenu('01','00')}" >
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','01','01')}"  ajax="true"  action="mapaPrime" rendered="#{parametrosBacking.verMenu('01','01')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','01','02')}" ajax="true" action="lista" rendered="#{parametrosBacking.verMenu('01','02')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','01','03')}"  ajax="true" action="historico" rendered="#{parametrosBacking.verMenu('01','03')}"/>
+                        </p:submenu>
+                        <p:submenu label="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','02','00')}" rendered="#{parametrosBacking.verMenu('02','00')}">
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','02','01')}"  ajax="true" action="instalaciones" rendered="#{parametrosBacking.verMenu('02','01')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','02','02')}" ajax="true"  action="mantenimientos" rendered="#{parametrosBacking.verMenu('02','02')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','02','03')}" ajax="true" action="recorrido" rendered="#{parametrosBacking.verMenu('02','03')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','02','04')}" ajax="true" action="visitas" rendered="#{parametrosBacking.verMenu('02','04')}"/>
+                        </p:submenu>
+                        <p:submenu label="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','03','00')}" rendered="#{parametrosBacking.verMenu('03','00')}">
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','03','01')}" ajax="true" action="ingreso" rendered="#{parametrosBacking.verMenu('03','01')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','03','02')}" ajax="true" action="atenciones" rendered="#{parametrosBacking.verMenu('03','02')}"/>
+                        </p:submenu>
+                        <p:submenu label="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','04','00')}" rendered="#{parametrosBacking.verMenu('04','00')}">
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','04','01')}" ajax="true" action="consultar" rendered="#{parametrosBacking.verMenu('04','01')}"/>
+                        </p:submenu>  
+                        <p:submenu label="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','05','00')}" rendered="#{parametrosBacking.verMenu('05','00')}">
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','05','01')}" ajax="true" action="cruce" rendered="#{parametrosBacking.verMenu('05','01')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','05','02')}" ajax="true" action="documento" rendered="#{parametrosBacking.verMenu('05','02')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','05','03')}" ajax="true" action="instalacion" rendered="#{parametrosBacking.verMenu('05','03')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','05','04')}" ajax="true" action="usuario" rendered="#{parametrosBacking.verMenu('05','04')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','05','05')}" ajax="true" action="dispositivo" rendered="#{parametrosBacking.verMenu('05','05')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','05','05')}" ajax="true" action="comunas" rendered="#{parametrosBacking.verMenu('05','06')}"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','05','05')}" ajax="true" action="poligonos" rendered="#{parametrosBacking.verMenu('05','07')}"/>
+                        </p:submenu>    
+                        <p:submenu label="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','06','00')}" rendered="false">
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','06','01')}" ajax="true" action="#" rendered="false"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','06','02')}" ajax="true" action="#" rendered="false"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','06','03')}" ajax="true" action="#" rendered="false"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','06','04')}" ajax="true" action="#" rendered="false"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','06','05')}" ajax="true" action="#" rendered="false"/>
+                            <p:menuitem value="#{parametrosBacking.buscaDominio('MENU_GEOREFERENCIA','06','06')}" ajax="true" action="#" rendered="false"/>
+                        </p:submenu>   
+            </p:panelMenu>
+            <h:outputScript>
+            $(document).ready(function(){                
+                $('.ui-layout-resizer-west').remove();                   
+                    PF('hbPanelMenu').headers.each(function() {
+                        var header = $(this);
+                        PF('hbPanelMenu').collapseRootSubmenu(header);
+                        header.removeClass('ui-state-hover');                       
+                    });
+                 
+            });  
+            PF('hbPanelMenu').headers.click(function(e) {
+                var currHeader = $(this);
+                PF('hbPanelMenu').headers.each(function() {
+                   var header = $(this);
+                   if(header.text() != currHeader.text()) {
+                      PF('hbPanelMenu').collapseRootSubmenu(header);
+                      header.removeClass('ui-state-hover');
+                   }
+                });
+             });
+            </h:outputScript>
+            </h:form>
+        </ui:composition>	
+    </body>
+</html>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    
+    <name>primefaces_babylon</name>
+    
+    <component>
+        <component-type>org.primefaces.component.BabylonMenu</component-type>
+        <component-class>org.primefaces.babylon.component.BabylonMenu</component-class>
+    </component>
+    
+    <render-kit>
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.BabylonMenuRenderer</renderer-type>
+            <renderer-class>org.primefaces.babylon.component.BabylonMenuRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+    <navigation-rule>
+        <display-name>Menu</display-name>
+        <from-view-id>/paginas/*</from-view-id>
+        <navigation-case>
+            <from-outcome>historico</from-outcome>
+            <to-view-id>/paginas/online/listaMonitoreoHistorico.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>dashboard</from-outcome>
+            <to-view-id>/paginas/dashboard.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>index</from-outcome>
+            <to-view-id>/paginas/index.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>lista</from-outcome>
+            <to-view-id>/paginas/online/listaMonitoreo.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>mapaPrime</from-outcome>
+            <to-view-id>/paginas/online/mapaPrime.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>instalaciones</from-outcome>
+            <to-view-id>/paginas/mantenimientos/mapaInstalaciones.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>mantenimientos</from-outcome>
+            <to-view-id>/paginas/mantenimientos/listaMatenimiento.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>recorrido</from-outcome>
+            <to-view-id>/paginas/mantenimientos/recorrido.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>visitas</from-outcome>
+            <to-view-id>/paginas/mantenimientos/visitas.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>     
+        <navigation-case>
+            <from-outcome>estadistica</from-outcome>
+            <to-view-id>/paginas/estadisticas/listaEstadisticas.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>ingreso</from-outcome>
+            <to-view-id>/paginas/solicitudes/solicitud.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>atenciones</from-outcome>
+            <to-view-id>/paginas/solicitudes/listaAtenciones.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>consultar</from-outcome>
+            <to-view-id>/paginas/estadisticas/listaEstadisticas.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>cruce</from-outcome>
+            <to-view-id>/paginas/administracion/cruce.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>usuario</from-outcome>
+            <to-view-id>/paginas/administracion/usuarios.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>documento</from-outcome>
+            <to-view-id>/paginas/administracion/documento.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>instalacion</from-outcome>
+            <to-view-id>/paginas/administracion/instalacion.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>dispositivo</from-outcome>
+            <to-view-id>/paginas/administracion/dispositivo.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>comuna</from-outcome>
+            <to-view-id>/paginas/administracion/comunas.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>perfil</from-outcome>
+            <to-view-id>/paginas/administracion/perfil.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>menu</from-outcome>
+            <to-view-id>/paginas/index.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule> 
+    <application>
+        <el-resolver>
+            org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver
+        </el-resolver>
+    </application>
+    <factory>
+        <exception-handler-factory>
+            org.primefaces.application.exceptionhandler.PrimeExceptionHandlerFactory
+        </exception-handler-factory>
+    </factory>
+</faces-config>

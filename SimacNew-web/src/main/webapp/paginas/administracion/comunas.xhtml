@@ -1,0 +1,265 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="viewname">
+        <li>Administración</li>
+        <li>/</li>
+        <li><p:link outcome="comuna">Comunas</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <h:outputStylesheet>            
+            .ui-fileupload .ui-fileupload-buttonbar {
+            border: 0px !important;
+            padding: 0 !important;
+            background-color: #FFFFFF !important;
+            }
+            .ui-fileupload-content{
+            border: 0px !important;
+            background-color: #FFFFFF !important;
+            }
+            .card-w-title{
+            border: 0px !important; 
+            }
+
+            .ui-panel .ui-panel-content
+            {
+            border-top: 1px !important;
+            }
+
+            @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important; height: 80% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { width: 80% !important; }
+            }
+        </h:outputStylesheet>
+        <h:outputScript>
+            function handleComplete(xhr, status, args,k)
+            {
+            if(typeof PF('gmap') !== "undefined")
+            {
+            var gmap = PF('gmap').getMap();
+            for(var i in gmap.markers)
+            {
+
+            gmap.markers[i].setMap(null); 
+            var newMarker = eval("args.marker"+i);
+            var newPosition = eval("args.position"+i);
+            var oldMarker = gmap.markers[i];
+            if(typeof newMarker !== "undefined")
+            {
+            oldMarker.icon = newMarker.icon;
+            oldMarker.setPosition(newPosition);
+            oldMarker.setMap(gmap); 
+            }
+            } 
+
+
+            }
+            }
+            function handleCompletePoly(xhr, status, args,k)
+            {
+            console.log('test');
+            if(typeof PF('gmap') !== "undefined")
+            {
+            var gmap = PF('gmap').getMap();
+            console.log(gmap.polygons.lengh );
+            for(var i in gmap.polygons)
+            {
+            console.log('123');
+            gmap.polygons[i].setMap(null); 
+            var newMarker = eval("args.markerP");
+            var arr = [];
+            arr.push(eval("args.positionP0"));
+            arr.push(eval("args.positionP1"));
+            arr.push(eval("args.positionP2"));
+            arr.push(eval("args.positionP3"));
+            arr.push(eval("args.positionP4"));
+            arr.push(eval("args.positionP5"));
+            arr.push(eval("args.positionP6"));
+            
+            
+            var oldMarker = gmap.polygons[i];
+            if(typeof newMarker !== "undefined")
+            {
+            oldMarker.setPath(arr);
+            oldMarker.setMap(gmap); 
+            }
+            console.log('largo ' + i);
+            } 
+
+
+            }
+            }
+            function handleError(){
+            document.clear();
+            document.write('Error de conexión.. Favor volver a conectar.');
+            }
+        </h:outputScript>
+        <script src="../../resources/validaciones.js" type="text/javascript"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBchYS1XkDRE3tgSDTMDaR4NUWM3Hd3JlA"></script>
+        <script src="../../resources/calendar_es.js" type="text/javascript"></script>
+        <h:form id="form1">   
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="drop">
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes"  />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no"  />
+                </h:panelGrid>
+            </p:confirmDialog>
+            <p:dialog id="popup" widgetVar="popup"
+                      header="Actualizar Comuna"
+                      visible="#{comunaBacking.verPopup}"
+                      closeOnEscape="true"
+                      modal="true"
+                      height="500"
+                      styleClass="modalResponsivo"                     
+                      hideEffect="drop">
+                <p:accordionPanel id="aCord" activeIndex="#{comunaBacking.activeIndex}">
+                    <p:tab title="Datos de la Comuna" >
+                        <div class="ui-g-12">
+                            <p:panelGrid  id="grid" columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4">
+                                <h:outputLabel value="id :"/>    
+                                <p:inputText id="id_comuna" value="#{comunaBacking.comunaTO.id_comuna}" readonly="#{comunaBacking.bloqIdComuna}" onkeyup="javascript:this.value = this.value.toUpperCase();" />                           
+                                <h:outputLabel value="Nombre :"/>    
+                                <p:inputText id="nombre_comuna" value="#{comunaBacking.comunaTO.nombre_comuna}" style="background: white;" onkeydown="eventoSalidaLetra(this, event, '', '');" onkeypress="return validarLetras(this, event);" onkeyup="javascript:this.value = this.value.toUpperCase();" />  
+
+                                <h:outputLabel value="Región :"/>    
+                                <p:selectOneMenu  id="id_region" value="#{comunaBacking.comunaTO.id_region}" style="background: white;" >
+                                    <f:selectItems value="#{comunaBacking.listaRegiones}"  var="valor" itemValue="#{valor.id_region}" itemLabel="#{valor.nombre}"/>
+                                    <p:ajax event="change" process="@this"/>
+                                </p:selectOneMenu> 
+                                <h:outputLabel value="URL Logo :"/>    
+                                <p:inputText id="url_logo_comuna" value="#{comunaBacking.comunaTO.url_logo}"  style="background: white;"  />  
+
+                                <h:outputLabel value="Latitud :"/>    
+                                <p:inputText id="idLatitud" value="#{comunaBacking.comunaTO.latitud}"  />
+                                <h:outputLabel value="Longitud :"/>    
+                                <p:inputText id="idLongitud" value="#{comunaBacking.comunaTO.longitud}" />
+
+                                <h:outputLabel value="Mail :"/>    
+                                <p:inputText id="email_comuna" value="#{comunaBacking.comunaTO.email}" style="background: white;" /> 
+                                <h:outputLabel value="Teléfono :"/>    
+                                <p:inputText id="tel_comuna" value="#{comunaBacking.comunaTO.telefono}" style="background: white;"/> 
+
+                                <h:outputLabel value="Monitoreo :"/>    
+                                <p:selectOneMenu  id="ind_mon_comuna" value="#{comunaBacking.comunaTO.ind_mon}" style="background: white;" >
+                                    <f:selectItems value="#{comunaBacking.listaMonitoreo}"  var="valor" itemValue="#{valor.descripcion}" itemLabel="#{valor.descripcion}"/>
+                                    <p:ajax event="change" process="@this"/>
+                                </p:selectOneMenu> 
+                                <h:outputLabel value="Zoom Mapa :"/>    
+                                <p:inputNumber id="idEmail" value="#{comunaBacking.comunaTO.zoom}" minValue="0" maxValue="19" /> 
+
+                                <h:outputLabel value="Permiso UOCT :"/>    
+                                <p:selectOneMenu  id="ind_per_uoct" value="#{comunaBacking.comunaTO.aut_uoct}" style="background: white;" >
+                                    <f:selectItems value="#{comunaBacking.listaMonitoreo}"  var="valor" itemValue="#{valor.descripcion}" itemLabel="#{valor.descripcion}"/>
+                                    <p:ajax event="change" process="@this"/>
+                                </p:selectOneMenu> 
+
+                                <h:outputLabel/>    
+                                <h:outputLabel/> 
+                            </p:panelGrid>
+                            <h:panelGrid width="100%">
+                                <p:message for="id_comuna"   />
+                            </h:panelGrid>
+                        </div>
+                    </p:tab>
+                    <p:tab title="Poligono Comunal" rendered="#{comunaBacking.verPoligono}">
+                        <div class="ui-g-12">
+                            <p:panelGrid  id="gridPol" columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-4,ui-g-12 ui-md-2">
+                                <h:outputLabel value="" />
+                                <h:outputLabel value="Latitud"/>  
+                                <h:outputLabel value="Longitud"/> 
+                                <h:outputLabel value="" />
+                                <h:outputLabel value="Coordenada 1 :"/>  
+                                <p:inputNumber id="pol1Lat" decimalPlaces="7" value="#{comunaBacking.listaPoligono[0].latitud}" style="background: white;" /> 
+                                <p:inputNumber id="pol1Lon" decimalPlaces="7" value="#{comunaBacking.listaPoligono[0].longitud}" style="background: white;" /> 
+                                <p:commandButton icon="fa fa-map-marker" process="@this" action="#{comunaBacking.posMarcador(0)}" oncomplete="handleComplete(xhr, status, args)"/>
+                                <h:outputLabel value="Coordenada 2 :"/> 
+                                <p:inputNumber id="pol2Lat" decimalPlaces="7" value="#{comunaBacking.listaPoligono[1].latitud}" style="background: white;" /> 
+                                <p:inputNumber id="pol2Lon" decimalPlaces="7" value="#{comunaBacking.listaPoligono[1].longitud}" style="background: white;" /> 
+                                <p:commandButton icon="fa fa-map-marker" process="@this" action="#{comunaBacking.posMarcador(1)}" oncomplete="handleComplete(xhr, status, args)"/>
+                                <h:outputLabel value="Coordenada 3 :"/> 
+                                <p:inputNumber id="pol3Lat" decimalPlaces="7" value="#{comunaBacking.listaPoligono[2].latitud}" style="background: white;" /> 
+                                <p:inputNumber id="pol3Lon" decimalPlaces="7" value="#{comunaBacking.listaPoligono[2].longitud}" style="background: white;" /> 
+                                <p:commandButton icon="fa fa-map-marker" process="@this" action="#{comunaBacking.posMarcador(2)}" oncomplete="handleComplete(xhr, status, args)"/>                                <h:outputLabel value="Coordenada 4 :"/>
+                                <p:inputNumber id="pol4Lat" decimalPlaces="7" value="#{comunaBacking.listaPoligono[3].latitud}" style="background: white;" /> 
+                                <p:inputNumber id="pol4Lon" decimalPlaces="7" value="#{comunaBacking.listaPoligono[3].longitud}" style="background: white;" /> 
+                                <p:commandButton icon="fa fa-map-marker" process="@this" action="#{comunaBacking.posMarcador(3)}" oncomplete="handleComplete(xhr, status, args)"/>                                <h:outputLabel value="Coordenada 5 :"/> 
+                                <p:inputNumber id="pol5Lat" decimalPlaces="7" value="#{comunaBacking.listaPoligono[4].latitud}" style="background: white;" /> 
+                                <p:inputNumber id="pol5Lon" decimalPlaces="7" value="#{comunaBacking.listaPoligono[4].longitud}" style="background: white;" /> 
+                                <p:commandButton icon="fa fa-map-marker" process="@this" action="#{comunaBacking.posMarcador(4)}" oncomplete="handleComplete(xhr, status, args)"/>
+                                <h:outputLabel value="Coordenada 6 :"/> 
+                                <p:inputNumber id="pol6Lat" decimalPlaces="7" value="#{comunaBacking.listaPoligono[5].latitud}" style="background: white;" /> 
+                                <p:inputNumber id="pol6Lon" decimalPlaces="7" value="#{comunaBacking.listaPoligono[5].longitud}" style="background: white;" /> 
+                                <p:commandButton icon="fa fa-map-marker" process="@this" action="#{comunaBacking.posMarcador(5)}" oncomplete="handleComplete(xhr, status, args)"/>
+                                <h:outputLabel value="Coordenada 7 :"/>
+                                <p:inputNumber id="pol7Lat" decimalPlaces="7" value="#{comunaBacking.listaPoligono[6].latitud}" style="background: white;" /> 
+                                <p:inputNumber id="pol7Lon" decimalPlaces="7" value="#{comunaBacking.listaPoligono[6].longitud}" style="background: white;" />     
+                                <p:commandButton icon="fa fa-map-marker" process="@this" action="#{comunaBacking.posMarcador(6)}" oncomplete="handleComplete(xhr, status, args)"/>
+                            </p:panelGrid>
+                        </div>
+                        <br></br>
+                        <p:gmap id="gmap" widgetVar="gmap" center="#{comunaBacking.centro}" 
+                                model="#{comunaBacking.marcadores}"
+                                draggable="true"                                 
+                                disableDefaultUI="true"
+                                zoom="12"  type="ROADMAP" style="width:100%;height: 400px;" >
+                            <p:ajax event="markerDrag" listener="#{comunaBacking.obtenerPunto}" update="gridPol" oncomplete="handleCompletePoly(xhr, status, args)" />
+                        </p:gmap>
+                    </p:tab>
+
+                </p:accordionPanel>  
+                <br></br>
+                <p:commandButton value="Ingresar" action="#{comunaBacking.modificarComuna()}" update="table :form1:popup" oncomplete="PF('table').filter()" />                   
+
+            </p:dialog> 
+            <h:panelGrid id="grid" columns="1">
+                <p:commandButton id="btnNew" value="Nuevo" icon="fa fa-plus" action="#{comunaBacking.ingresarComuna()}" update="popup" style="float: right;" /> 
+                <p:dataTable value="#{comunaBacking.listaComunas}" var="table"  
+                             paginator="true" rows="15"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                             paginatorPosition="bottom"
+                             reflow="true"
+                             id="table"
+                             widgetVar="table">
+                    <p:column  headerText="Identificador" sortBy="#{table.id_comuna}" filterBy="#{table.id_comuna}" filterMatchMode="contains">
+                        <h:outputText value="#{table.id_comuna}"/>
+                    </p:column>
+                    <p:column  headerText="Comuna" sortBy="#{table.nombre_comuna}" filterBy="#{table.nombre_comuna}" filterMatchMode="contains">
+                        <h:outputText value="#{table.nombre_comuna}"/>
+                    </p:column>
+                    <p:column  headerText="Región" sortBy="#{table.nombre_region}" filterBy="#{table.nombre_region}" filterMatchMode="contains">
+                        <h:outputText value="#{table.nombre_region}"/>
+                    </p:column>
+                    <p:column  headerText="Latitud"  sortBy="#{table.latitud}" filterBy="#{table.latitud}" filterMatchMode="contains">
+                        <h:outputText value="#{table.latitud}"/>
+                    </p:column>
+                    <p:column  headerText="Longitud"  sortBy="#{table.longitud}" filterBy="#{table.longitud}" filterMatchMode="contains">
+                        <h:outputText value="#{table.longitud}"/>
+                    </p:column>
+                    <p:column  headerText="Monitoreo"  sortBy="#{table.ind_mon}" filterBy="#{table.ind_mon}" filterMatchMode="contains">
+                        <h:outputText value="#{table.ind_mon}"/>
+                    </p:column>
+                    <p:column >
+                        <f:facet  name="header">Acción</f:facet>
+                        <p:commandButton id="editlink"  title="Editar" icon="fas fa-edit" update=":form1:popup" immediate="true" process="@this" action="#{comunaBacking.editarComuna()}" >
+                            <f:setPropertyActionListener target="#{comunaBacking.comunaTO}" value="#{table}"/>
+                        </p:commandButton>
+                        <p:commandButton  id="deletelink" icon="fas fa-trash-alt" immediate="true" process="@this" update=":form1:grid" style="margin-left: 5px;" action="#{comunaBacking.eliminarComuna()}" title="Eliminar">
+                            <f:setPropertyActionListener target="#{comunaBacking.comunaTO}" value="#{table}"/>
+                            <p:confirm header="Confirmación" message="¿Estas seguro que deseas eliminar la comuna seleccionada? Esto borrara los poligonos asociados y quitara la referencia a los usuarios asociados." icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>   
+        </h:form>
+    </ui:define>
+</ui:composition>
+

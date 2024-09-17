@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:define name="viewname">
+        <li>Mantenimiento</li>
+        <li>/</li>
+        <li><p:link outcome="recorrido">Recorrido</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBchYS1XkDRE3tgSDTMDaR4NUWM3Hd3JlA"  type="text/javascript"></script>
+        <script src="../../resources/calendar_es.js" type="text/javascript"></script>
+        <h:outputStylesheet>
+        </h:outputStylesheet>
+        <h:form id="form1">    
+            <p:growl id="messages"  showDetail="true" severity="info"/>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="card card-w-title">   
+                        <p:panel id="pnlExp" rendered="#{recorridoBacking.verExportar}">
+                            <p:commandButton icon="fa fa-file-excel-o" ajax="false"  immediate="true" title="Excel">
+                                <p:dataExporter type="xls" target="tableMovil" pageOnly="false" fileName="Recorrido" />
+                            </p:commandButton>
+                            <p:commandButton icon="fa fa-file-pdf-o" ajax="false" title="PDF" immediate="true" style=" margin-left: 5px;">
+                                <p:dataExporter type="pdf" target="tableMovil" pageOnly="false" fileName="Recorrido" preProcessor="#{recorridoBacking.preProcessPDF}"/>
+                            </p:commandButton>
+                            <p:commandButton type="button" icon="fa fa-print" title="Imprimir"
+                                style="margin-left: 5px;">
+                                <p:printer target="form1:tableMovil" />
+                            </p:commandButton>
+                        </p:panel>
+                        <p:gmap id="gmap" center="#{recorridoBacking.centro}" 
+                                zoom="13" type="ROADMAP" 
+                                fitBounds="true"
+                                style="width:100%;height:600px" 
+                                model="#{recorridoBacking.polylineModel}"
+                                rendered="#{recorridoBacking.pintarMapa}">
+                        </p:gmap>                 
+                        <p:dataTable value="#{recorridoBacking.listaMovilHistorico}" var="monitor"  
+                                     paginator="true" rows="30"
+                                     reflow="true"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                     id="tableMovil"
+                                     paginatorPosition="bottom"
+                                     rendered="#{recorridoBacking.pintarTabla}" >                     
+                            <p:column  headerText="Código" filterMatchMode="contains"  filterBy="#{monitor.codigoMovil}" sortBy="#{monitor.codigoMovil}">
+                                <h:outputText value="#{monitor.codigoMovil}"/>
+                            </p:column>
+                            <p:column  headerText="Latitud" filterMatchMode="contains"  filterBy="#{monitor.latitud}" sortBy="#{monitor.latitud}" >
+                                <h:outputText value="#{monitor.latitud}"/>
+                            </p:column>
+                            <p:column  headerText="Longitud" filterMatchMode="contains"  filterBy="#{monitor.longitud}" sortBy="#{monitor.longitud}">
+                                <h:outputText value="#{monitor.longitud}"/>
+                            </p:column>
+                            <p:column  headerText="Fecha lectura" filterMatchMode="contains"  filterBy="#{monitor.fecultlec}" sortBy="#{monitor.fecultlec}" >
+                                <h:outputText value="#{monitor.fecultlec}"/>
+                            </p:column>
+                            <p:column  headerText="Último Cruce" filterMatchMode="contains"  filterBy="#{monitor.ultCruce}" sortBy="#{monitor.ultCruce}" >
+                                <h:outputText value="#{monitor.ultCruce}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>
+                <p:tabView id="config-form-tabs" >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Busqueda"/>                             
+                        </f:facet>
+                        <p:remoteCommand id="remote" name="remote" actionListener="#{recorridoBacking.buscarRutaMovil}" update="form1"/>
+                        <h:form id="config-form">
+                            <div class="ui-g-12">
+                                <div id="test" class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel for="idMovil" value="Móvil:" style="font-weight:bold"/> 
+                                        <p:selectOneMenu id="idMovil" value="#{recorridoBacking.movil}" converter="movilConvertir"
+                                                         effect="fade" var="t" filter="true" filterMatchMode="startsWith" appendTo="@this">
+                                            <p:ajax event="change" listener="#{recorridoBacking.cambioMovil}" immediate="true"/> 
+                                            <f:selectItem itemLabel="Seleccionar móvil" itemValue="-1"/>
+                                            <f:selectItems value="#{recorridoBacking.listaMoviles}" var="movil" itemLabel="#{movil.codigoMovil}" itemValue="#{movil}"/>
+                                            <p:column>
+                                                <h:outputText value="#{t.codigoMovil}"/>
+                                            </p:column>
+                                        </p:selectOneMenu>
+                                        <p:outputLabel value="" rendered="#{recorridoBacking.verMensaje1}" />
+                                        <p:message for="idMovil" rendered="#{recorridoBacking.verMensaje1}"/>     
+                                        <h:outputLabel for="idDesde" value="Fecha: " style="font-weight:bold"/>    
+                                        <p:calendar  id="idDesde" widgetVar="idDesde" value="#{recorridoBacking.fechaDesde}" pattern="dd-MM-yyyy" mask="true" locale="es">
+                                            <p:ajax event="change" listener="#{recorridoBacking.startDateFilter}"/>
+                                            <p:ajax event="dateSelect" listener="#{recorridoBacking.startDateFilter}"/>
+                                        </p:calendar>
+                                        <p:outputLabel value="" rendered="#{recorridoBacking.verMensaje2}" />
+                                        <p:message for="idDesde" rendered="#{recorridoBacking.verMensaje2}"/>    
+                                        
+                                        <p:outputLabel for="idHoraDesde" value="Hora Desde: " style="font-weight:bold"/>
+                                        <p:calendar id="idHoraDesde"  value="#{recorridoBacking.horaDesde}" pattern="HH:mm" timeOnly="true" title="Hora Desde" label="Hora Desde"  locale="es">
+                                            <p:ajax event="dateSelect" listener="#{recorridoBacking.cambiarHoraDesde}"/>
+                                        </p:calendar>
+                                        <p:outputLabel value="" rendered="#{recorridoBacking.verMensaje3}"/>
+                                        <p:message for="idHoraDesde" style="font-size: 13px; color: red;" rendered="#{recorridoBacking.verMensaje3}"/>
+
+                                        <p:outputLabel for="idHoraHasta" value="Hora Hasta: " style="font-weight:bold"/>
+                                        <p:calendar id="idHoraHasta" value="#{recorridoBacking.horaHasta}" pattern="HH:mm" timeOnly="true" title="Hora Hasta" locale="es" >
+                                            <p:ajax event="dateSelect" listener="#{recorridoBacking.cambiarHoraHasta}"/>                    
+                                        </p:calendar>
+                                        <p:outputLabel value="" rendered="#{recorridoBacking.verMensaje4}"/>
+                                        <p:message for="idHoraHasta" rendered="#{recorridoBacking.verMensaje4}"/>
+
+                                        <p:outputLabel for="idSeleccion" value="Tipo Informe: " style="font-weight:bold"/>
+                                        <p:selectOneRadio id="idSeleccion" value="#{recorridoBacking.seleccion}">
+                                            <f:selectItem itemLabel="Tabla" itemValue="Tabla" />
+                                            <f:selectItem itemLabel="Mapa" itemValue="Mapa" />
+                                            <p:ajax listener="#{recorridoBacking.cambioSeleccion}" immediate="true" event="valueChange" />
+                                        </p:selectOneRadio>
+                                        <p:commandButton value="Buscar" actionListener="#{recorridoBacking.validacionFormulario}" oncomplete="remote()" update="form1:messages config-form-tabs"/>
+                                    </p:panelGrid>    
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>
+                </p:tabView>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                    $('#ui-datepicker-div').appendTo('#layout-config');
+            });
+        </script>
+    </ui:define>
+</ui:composition>

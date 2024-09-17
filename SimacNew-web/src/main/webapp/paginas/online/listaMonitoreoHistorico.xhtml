@@ -1,0 +1,272 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="viewname">
+        <li>Online</li>
+        <li>/</li>
+        <li><p:link outcome="historico">Lista Monitoreo Historico</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <script src="../../resources/calendar_es.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            function fun(){
+                var htmlTag = document.getElementById('config-form');
+                console.log();
+            }
+        </script>
+        <h:outputStylesheet>
+            .ui-panelgrid-header{
+                background: #001970 !important;
+                font-weight: bold !important;
+                color: white !important;
+            }
+            .ui-tabs-panels{
+
+            }
+
+            .tableBorder{
+            border-collapse: collapse !important;
+            border: 1px solid #91908B !important;
+            }
+            .tableBorder th{
+            border-collapse: collapse !important;
+            border: 1px solid #91908B !important;
+            }
+            .tableBorder td{
+            border-collapse: collapse !important;
+            border: 1px solid #91908B !important;
+            }
+            .colUno {
+            font-weight: bold;
+            }
+            .colDos {
+            }
+
+            .rowUno td{
+            background-color: #F8F5F3;
+            width:114px;
+            text-align: center;
+            font-weight: bold;
+            }
+            .rowDos {
+            background-color: #FFFFFF;
+            text-align: center;
+            font-weight: bold;
+            }
+            @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important; height: 80% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { width: 50% !important; }
+            }
+        </h:outputStylesheet>
+        <h:form id="form1">
+            <p:growl id="messages"  showDetail="true" severity="info"/>
+            <p:dialog id="popupTab"  widgetVar="popupTab"
+                      draggable="true"
+                      closable="true"
+                      height="80%"
+                      header="Detalle Instalación"
+                      styleClass="modalResponsivo"  modal="true"
+                      hideEffect="drop">
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                             columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                    <f:facet name="header">
+                        <h:outputText value="Información de la Instalación"/>
+                    </f:facet>
+                    <h:outputText value="Id Instalación:"/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.idInstalacion}"/>
+                    <h:outputText value="Tipo:"/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.descripcionTipo}" />
+                    <h:outputText value="Ubicación: "/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.ubicacion}" />
+                    <h:outputText value="Código Sistema:"/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.codigoSistema}" />
+                    <h:outputText value="Nombre de Red:" rendered="true"/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.red}" rendered="true"/>
+                    <h:outputText value="Controlador:" rendered="true"/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.controlador}" rendered="true"/>
+                </p:panelGrid>
+                <br></br>
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                             columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                    <f:facet name="header">
+                        <h:outputText value="Información Detallada"/>
+                    </f:facet>
+                    <h:outputText value="Enlace:  "/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.enlace}"/>
+                    <h:outputText value="UPS:  "/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.ups}" />
+                </p:panelGrid>
+                <br></br>
+                <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                            columnClasses="ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3,ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3">
+                    
+                    <h:outputText value="N° Cabezales"/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.numCabezales}"/>
+                    <h:outputText value="N° Esp. Scoot"/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.numEspScoot}"/>
+                    <h:outputText value="N° Esp. Locales" />
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.numEspLocal}" />
+                    <h:outputText value="N° Botoneras"/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.numBotoneras}" />
+
+                </p:panelGrid>
+                <br></br>
+                <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                            columnClasses="ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3,ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3">
+                    <h:outputText value="N° Hitos Elect."/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.numHitElec}"/>
+                    <h:outputText value="N° Hitos Solares"/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.numHitSolar}"/>
+                    <h:outputText value="N° Cta Regresiva" />
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.numCtaRegres}"/>
+                    <h:outputText value="N° Señal Tto."/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.numSenSenTto}"/>
+                </p:panelGrid>
+                <br></br>
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                             columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                    <h:outputText value="Empalme:"/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.empalme}"/>
+                    <h:outputText value="Modelo OTU:" rendered="true"/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.modeloOtu}" rendered="true"/>
+                    <h:outputText value="Observación: "/>
+                    <h:outputText value="#{historicoBacking.vistaInstalacionTO.observacion}" />
+                </p:panelGrid>
+                <br></br>
+            </p:dialog>
+            <p:panel id="pnlExp" rendered="#{historicoBacking.verExportar}">
+                <p:commandButton icon="fa fa-file-excel-o" ajax="false"  immediate="true" title="Excel">
+                    <p:dataExporter type="xls" target="table2" pageOnly="false" fileName="listaMonitoreoHistorico" />
+                </p:commandButton>
+                <p:commandButton icon="fa fa-file-pdf-o" ajax="false" title="PDF" immediate="true" style=" margin-left: 5px;">
+                    <p:dataExporter type="pdf" target="table2" pageOnly="false" fileName="listaMonitoreoHistorico" preProcessor="#{historicoBacking.preProcessPDF}"/>
+                </p:commandButton>
+                <p:commandButton type="button" icon="fa fa-print" title="Imprimir"
+                    style="margin-left: 5px;">
+                    <p:printer target="table2" />
+                </p:commandButton>
+            </p:panel>
+            <p:dataTable value="#{historicoBacking.listaCruceHistorico}" var="monitor"  
+                         paginator="true" rows="100"
+                         reflow="true"
+                         emptyMessage="No existen registros"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                         id="table2"
+                         paginatorPosition="bottom">    
+                <p:column  headerText="ID Cruce" filterMatchMode="contains" filterBy="#{monitor.idCruce}" sortBy="#{monitor.idCruce}">
+                    <p:commandLink  value="#{monitor.idCruce}" action="#{historicoBacking.popupIdCruce}"  oncomplete="PF('popupTab').show();" process="@form" immediate="true" update=":form1:popupTab">
+                        <f:setPropertyActionListener target="#{historicoBacking.idCruceSeleccionado}" value="#{monitor.idCruce}"/>
+                    </p:commandLink>   
+                </p:column>
+                <p:column  headerText="Nombre Cruce" filterMatchMode="contains" filterBy="#{monitor.ubicacion}" sortBy="#{monitor.ubicacion}" >
+                    <h:outputText value="#{monitor.ubicacion}"/>
+                </p:column>
+                <p:column  headerText="Comuna" filterMatchMode="contains" filterBy="#{monitor.nombre_comuna}" sortBy="#{monitor.nombre_comuna}">
+                    <h:outputText value="#{monitor.nombre_comuna}"/>
+                </p:column>
+                <p:column  headerText="Fecha" filterMatchMode="contains"  filterBy="#{monitor.descripcionFecha}" sortBy="#{monitor.descripcionFecha}">
+                    <h:outputText value="#{monitor.descripcionFecha}"/>
+                </p:column>
+
+                <p:column  headerText="Estado General" filterMatchMode="contains" filterBy="#{monitor.descripcionEstadoOperativo}" sortBy="#{monitor.descripcionEstadoOperativo}">
+                    <h:outputText value="#{monitor.descripcionEstadoOperativo}"/>
+                </p:column>
+                <p:column  headerText="Sensor 220" filterMatchMode="contains"  filterBy="#{monitor.descripcionValModo220}" sortBy="#{monitor.descripcionValModo220}" >
+                    <h:outputText value="#{monitor.descripcionValModo220}"/>
+                </p:column>
+                <p:column  headerText="Sensor UPS" filterMatchMode="contains"  filterBy="#{monitor.descripcionValModoUps}" sortBy="#{monitor.descripcionValModoUps}" >
+                    <h:outputText value="#{monitor.descripcionValModoUps}"/>
+                </p:column>
+                <p:column  headerText="Sensor Luces" filterMatchMode="contains"  filterBy="#{monitor.descripcionValModoLam}" sortBy="#{monitor.descripcionValModoLam}" >
+                    <h:outputText value="#{monitor.descripcionValModoLam}"/>
+                </p:column>
+                <p:column  headerText="Sensor UTC" filterMatchMode="contains"  filterBy="#{monitor.descripcionValModoUtc}" sortBy="#{monitor.descripcionValModoUtc}" >
+                    <h:outputText value="#{monitor.descripcionValModoUtc}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>
+                <p:tabView id="config-form-tabs" >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Busqueda"/>                             
+                        </f:facet>
+                        <p:remoteCommand id="remote" name="remote" actionListener="#{historicoBacking.buscar}" update="form1"/>
+                        <h:form id="config-form">
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel for="idDesde" value="Fecha Desde:" style="font-weight:bold" />    
+                                        <p:calendar  id="idDesde" widgetVar="idDesde" value="#{historicoBacking.fechaDesde}"  pattern="dd-MM-yyyy" mask="true" locale="es">
+                                            <p:ajax event="dateSelect" listener="#{historicoBacking.endDateFilter}"/>
+                                        </p:calendar>
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idDesde" /> 
+                                        <h:outputLabel for="idHasta" value="Fecha Hasta:" style="font-weight:bold"/>    
+                                        <p:calendar id="idHasta" value="#{historicoBacking.fechaHasta}" pattern="dd-MM-yyyy" mask="true" locale="es" >
+                                            <p:ajax event="dateSelect" listener="#{historicoBacking.startDateFilter}"/>
+                                        </p:calendar>
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idHasta"/>  
+                                        <h:outputLabel for="idComuna" value="Comuna:"  style="font-weight:bold"/> 
+                                        <p:selectOneMenu  id="idComuna" editable="false" appendTo="config-form" value="#{historicoBacking.idComuna}" valueChangeListener="#{historicoBacking.cambioComuna}" 
+                                                          disabled="#{historicoBacking.comboHabilitada}" >
+                                            <f:selectItems value="#{historicoBacking.listaComunasMonitoreo}"  var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"   />
+                                            <p:ajax event="change" update="idCompletoHis" />
+                                        </p:selectOneMenu> 
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idComuna"  />        
+
+                                        <h:outputLabel for ="idCompletoHis"  value="Cruce:" style="font-weight:bold" /> 
+                                        <p:autoComplete  id="idCompletoHis" 
+                                                         value="#{historicoBacking.idCruce}" 
+                                                         converter="puntoConvertir"
+                                                         completeMethod="#{historicoBacking.filtroCruce}"
+                                                         var="cruce" 
+                                                         effect="fade"
+                                                         appendTo="@this"
+                                                         queryDelay="700"                                                         
+                                                         scrollHeight="300"
+                                                         itemValue="#{cruce}"
+                                                         itemLabel="#{cruce.ubicacion}">
+                                            <p:column>
+                                                <h:outputText value="#{cruce.ubicacion}" />
+                                            </p:column>
+                                            <p:ajax event="itemSelect" listener="#{historicoBacking.cambioValorAutoComplete}"   />
+                                        </p:autoComplete>
+                                        <p:commandButton value="Buscar"  actionListener="#{historicoBacking.validacionFormulario}" oncomplete="remote()"   update="form1:messages config-form-tabs"  />
+                                        <p:commandButton value="Limpiar" ajax="true"  action="historico" />
+                                        <p:message for="idCompletoHis" /> 
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>
+                </p:tabView>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                    $('#ui-datepicker-div').appendTo('#layout-config');
+            });
+        </script>
+    </ui:define>
+
+</ui:composition>

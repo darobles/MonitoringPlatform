@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions" 
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">   
+    <f:event type="preRenderComponent" listener="#{controladorRemotoBacking.carga()}" />
+    <script>
+        function iniciarFase(arg, iddimac) {
+            PF('timer-' + arg).stop(true);
+            PF('timer-' + arg).start();
+            PF('poll-' + arg).stop(true);
+            PF('poll-' + arg).start();
+            iniciarTimerPPR(iddimac);
+        }
+        function iniciarTimerPPR(arg) {
+            PF('timeout-' + arg).stop(true);
+            PF('timeout-' + arg).start();
+        }
+        function revertir(arg) {
+            PF(arg).stop(true);
+        }
+        function setProgressBar(barra, valor)
+        {
+            $(barra)
+                    .val(valor)
+                    .trigger('change');
+        }
+    </script>
+    <link rel="stylesheet" type="text/css" href="../../resources/ui-panel.css"></link>
+    <script src="../../resources/js/jquery.knob.js"></script>
+
+
+    <h:outputStylesheet>
+        body .ui-dialog .ui-resizable-handle {
+        display: block !important;
+        }
+
+        .ui-panelgrid-header{
+        background: #001970 !important;
+        font-weight: bold !important;
+        color: white !important;
+        }
+
+        .dialogtimeout{
+        float:center !important;
+        text-align: center !important;
+        }
+
+        .ui-panelgrid td, .ui-panelgrid tr{
+        border-style: none !important;
+        }
+        .without-selectall .ui-selectcheckboxmenu-header .ui-chkbox {
+        display: none; 
+        }
+        .textCheck {
+        vertical-align: bottom;
+        padding-left: 5px;
+        }
+        a:hover{}
+
+        .ui-selectcheckboxmenu-label-container .ui-state-hover{
+        background:#ffffff !important;
+        }
+
+
+        button[role=button] .ui-state-active{
+        font-family:'Open Sans',sans-serif !important;
+        background: #1b1b1b !important;
+        border: 1px solid #1b1b1b !important;
+        border-radius: 50px !important;
+        height: 25px;
+        display: block;
+        padding: 10px 15px 4px 15px;
+        text-decoration: none;
+        color: #ffffff !important;
+        cursor: pointer;
+        margin-right: 0;
+        transition-duration: 0.3s;
+        width: auto;
+        font-weight: bold !important;
+        font-size: 14px !important;
+        }
+        .ui-accordion .ui-accordion-header .ui-icon {
+        position: initial !important;
+        display: block !important;
+        float: right !important;
+        }
+        .btn-fase-activo{
+        color: white !important;
+        background: #204d74 !important;
+        }
+        .btn-fase-base{
+        color: white !important;
+        background: #267a8d !important; 
+        }
+        .ui-state-disabled{
+        opacity: 0.5 !important;  
+        }
+        <ui:repeat var="o" value="#{mapaPrimeBacking.colores}" >
+            .#{o.codigo1} .ui-chkbox-box {
+            background-image : none;
+            background-color: #{o.codigo2};
+            color: white;
+            }      
+        </ui:repeat>
+
+    </h:outputStylesheet>
+    <p:panelGrid id="panel-grid" columns="1" style="width: 100% !important;"  >
+        <f:facet name="header" >
+            <h:outputText value="Panel Policial Remoto Dimac A-5 (#{controladorRemotoBacking.idDispositivo})" style="color: white !important;"></h:outputText> 
+            <p:commandButton action="#{controladorRemotoBacking.revertirTodo()}"  immediate="true" process="@this" ajax="true" title="Revertir Todo" 
+                             icon="fas fa-redo-alt"
+                             styleClass="danger-btn" rendered="true" update="panel-grid" style="float: right;margin-left: 10px;">
+                <p:confirm header="Confirmación" message="¿Esta seguro que desea salir del Modo Manual?" icon="ui-icon-alert" />
+            </p:commandButton>
+        </f:facet>
+        <p:poll id="timeout-#{controladorRemotoBacking.dimac.idDispositivo}" 
+                widgetVar="timeout-#{controladorRemotoBacking.dimac.idDispositivo}" interval="5" autoStart="false"  
+                listener="#{controladorRemotoBacking.consultaRespuestaManRem}" update="#{controladorRemotoBacking.updateTO}"/>
+        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-#{controladorRemotoBacking.cols},ui-g-12 ui-md-#{controladorRemotoBacking.cols}"  >
+
+                <c:forEach var="cruce"  items="#{controladorRemotoBacking.listaCruces}" >
+                    <f:facet name="header" >
+                        <h:outputText value="#{cruce.ubicacion}"></h:outputText> 
+                    </f:facet>     
+                    <pe:timer id="poll-#{cruce.idcruce}" widgetVar="poll-#{cruce.idcruce}" autoStart="false" visible="false" timeout="15" listener="#{controladorRemotoBacking.setDisable(cruce)}" update="panel-fases-#{cruce.idcruce}" />
+                    <p:poll id="timer-#{cruce.idcruce}" widgetVar="timer-#{cruce.idcruce}" interval="1" global="true" listener="#{controladorRemotoBacking.setTimerCruce(cruce)}" autoStart="false" update="panel-fases-#{cruce.idcruce}" />
+                    <h:panelGrid id="pg-#{cruce.idcruce}" columns="2" cellpadding="2" >
+                        <h:panelGrid columns="1" id="pg2-#{cruce.idcruce}" >
+                            <h:panelGrid columns="1">
+                                <p:commandButton action="#{controladorRemotoBacking.revertir(cruce)}" onclick="revertir('timer-#{cruce.idcruce}')" immediate="true" process="@this" ajax="true" value="RV"  update="panel-fases-#{cruce.idcruce} timer-#{cruce.idcruce}" style="color: white; background: orange;" />
+                            </h:panelGrid>
+                            <p:panelGrid columns="2" id="panel-fases-#{cruce.idcruce}" >  
+                                <c:forEach var="fase" items="#{controladorRemotoBacking.getFases(cruce)}" >
+                                    <h:panelGrid columns="1">
+                                        <p:commandButton action="#{controladorRemotoBacking.seleccionarFase(cruce,fase.fase)}" 
+                                                         onclick="iniciarFase('#{cruce.idcruce}',#{controladorRemotoBacking.dimac.idDispositivo})" 
+                                                         value="F#{fase.fase.toString()}" styleClass="#{controladorRemotoBacking.obtenerEstiloBoton(cruce,fase.fase.toString())}" 
+                                                         disabled="#{controladorRemotoBacking.getDisable(cruce,fase.fase.toString())}" 
+                                                         update="panel-fases-#{cruce.idcruce} timer-#{cruce.idcruce}">
+                                        </p:commandButton>
+                                    </h:panelGrid>
+                                </c:forEach>
+                            </p:panelGrid>
+                            <input id="bar-#{cruce.idcruce}" type="text" data-width="75"
+                                   data-fgColor="#3498db"
+                                   data-height="75" value="150" class="dial"></input>
+                            <script>
+                                $(function () {
+                                    $("#bar-#{cruce.idcruce}").knob({
+                                        'min': 0,
+                                        'readOnly': true,
+                                        'rotation': 'clockwise',
+                                        'max': 150
+                                    });
+                                });
+                            </script>
+                        </h:panelGrid>
+                        <p:commandLink action="#{controladorRemotoBacking.showImg(cruce.idcruce)}" onclick="PF('imgDlg-#{cruce.idcruce}').show()" >
+                            <p:graphicImage value="#{cruceBacking.getImage(cruce)}" width="150" cache="false" />
+                        </p:commandLink>
+
+
+                    </h:panelGrid>
+                    <br></br>                    
+                    <p:dialog id="imgDlg-#{cruce.idcruce}" widgetVar="imgDlg-#{cruce.idcruce}"
+                              visible="#{controladorRemotoBacking.verDlgImg}" appendTo="@(body)"
+                              height="300" width="300"
+                              resizable="true" 
+                              class="imgDlg-#{cruce.idcruce}"
+                              responsive="true"
+                              fitViewport="true"
+                              draggable="true">
+                        <p:graphicImage  value="#{cruceBacking.getImage(cruce)}" style="width: 100% !important; height:100% !important; max-height:100%; max-width:100%;" />
+                    </p:dialog>
+
+                </c:forEach>
+        </p:panelGrid>
+        <p:dialog id="dlg-timeout-#{controladorRemotoBacking.dimac.idDispositivo}" widgetVar="dlg-timeout-#{controladorRemotoBacking.dimac.idDispositivo}" 
+                  appendTo="@(body)"  
+                  modal="true"
+                  draggable="true">
+            <h:panelGrid columns="1" >
+                <h:outputText value="El dispositivo asociado no ha respondido en 30 segundos!"  />
+                <p:commandButton value="aceptar" onclick="PF('dlg-timeout-#{controladorRemotoBacking.dimac.idDispositivo}').hide();" ajax="true" style="text-align: center !important;" />
+            </h:panelGrid>
+        </p:dialog>
+    </p:panelGrid>
+</ui:composition>

@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="viewname">
+        <li>Administración</li>
+        <li>/</li>
+        <li><p:link outcome="dispositivo">Dispositivo</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <h:outputStylesheet>
+            @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important; height: 80% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { width: 70% !important; }
+            }
+        </h:outputStylesheet>
+        <script src="../../resources/validaciones.js" type="text/javascript"></script>
+        <h:form id="form1">
+            <p:growl id="messages" life="2000" />
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="drop">
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Si" type="button"  />
+                    <p:commandButton value="No" type="button"  />
+                </h:panelGrid>
+            </p:confirmDialog>
+            <p:dialog id="popup" widgetVar="popup"
+                      header="Detalle Dispositivo"
+                      visible="#{dispositivoBacking.verPopup}"
+                      height="80%"
+                      styleClass="modalResponsivo"
+                      closeOnEscape="true"
+                      appendTo="@this"
+                      modal="true"
+                      hideEffect="drop">
+                <p:tabView id="tabview">
+                    <ui:insert name="tabDispositivo" >
+                        <ui:include src="../../include/template/tabEditDispositivo.xhtml" />
+                    </ui:insert> 
+                    <ui:insert name="tabPPR" >
+                        <ui:include src="../../include/template/tabPPR.xhtml" />
+                    </ui:insert>    
+                </p:tabView>  
+            </p:dialog>    
+                    <p:dataTable value="#{dispositivoBacking.listaDispositivoTO}" var="table"  
+                                 paginator="true" rows="15"
+                                 reflow="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                 paginatorPosition="bottom"
+                                 id="table">
+                        <p:column  headerText="N° Dispositivo" sortBy="#{table.idDispositivo}" filterBy="#{table.idDispositivo}" filterMatchMode="contains">
+                            <h:outputText value="#{table.idDispositivo}"/>
+                        </p:column>
+                        <p:column  headerText="Imei" sortBy="#{table.imei}" filterBy="#{table.imei}" filterMatchMode="contains">
+                            <h:outputText value="#{table.imei}"/>
+                        </p:column>
+                        <p:column  headerText="Dirección IP" sortBy="#{table.dirip}" filterBy="#{table.dirip}" filterMatchMode="contains">
+                            <h:outputText value="#{table.dirip}"/>
+                        </p:column>
+                        <p:column  headerText="NºSIM NºTeléfono" sortBy="#{table.numTel}" filterBy="#{table.numTel}" filterMatchMode="contains">
+                            <h:outputText value="#{table.numTel}"/>
+                        </p:column>
+                        <p:column  headerText="Ubicación"  sortBy="#{table.ubicacion}" filterBy="#{table.ubicacion}" filterMatchMode="contains">
+                            <h:outputText value="#{table.ubicacion}"/>
+                        </p:column>                    
+                        <p:column>
+                            <f:facet  name="header">Acción</f:facet>
+                             <p:commandButton id="editlink"  title="Editar" icon="fas fa-edit" update=":form1:popup"  action="#{dispositivoBacking.editarDispositivo}" >
+                                <f:setPropertyActionListener target="#{dispositivoBacking.idSeleccionado}" value="#{table.idDispositivo}"/>
+                            </p:commandButton>
+                            <p:commandButton  id="deletelink" update=":form1:table" icon="fas fa-trash-alt" style="margin-left: 5px;" action="#{dispositivoBacking.eliminarDispositivo}" title="Eliminar">
+                                <f:setPropertyActionListener target="#{dispositivoBacking.idSeleccionado}" value="#{table.idDispositivo}"/>
+                                <p:confirm header="Confirmación" message="¿Estas seguro que deseas eliminar el dispositivo seleccionado?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>                
+        </h:form>
+                <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-cog"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>
+                <p:tabView id="config-form-tabs" >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-cogs"></i>
+                            <h:outputText value="Crear"/>
+                        </f:facet>
+                        <h:form>
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel value="Crear Dispositivo :"/> 
+                                        <p:commandButton value="Nuevo" immediate="true" process="@this" ajax="true" action="#{dispositivoBacking.ingresarDispositivo()}" update="form1:popup" />
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>   
+                </p:tabView>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

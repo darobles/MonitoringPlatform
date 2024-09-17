@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <p:tab id="tabPPR" title="PPR Config." rendered="#{dispositivoBacking.mostrarPPR}">
+        <ui:repeat var="crucePPR" value="#{dispositivoBacking.crucesAsociadosDimac}">
+            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-6 ui-md-3,ui-g-6 ui-md-3"  >
+                <f:facet name="header">
+                    <h:outputText value="#{crucePPR.ubicacion}"/>
+                </f:facet>
+                <h:outputLabel value="Activación :"/>   
+                <p:selectOneMenu value="#{crucePPR.dirActManual}" >
+                    <f:selectItem itemLabel="-- Seleccionar Fase --" itemValue="0" />
+                    <f:selectItems value="#{dispositivoBacking.listDirActPPR}"  />
+                </p:selectOneMenu> 
+            </p:panelGrid>
+            <p:dataTable value="#{crucePPR.fasesPPR}" var="fasePPR"  
+                     paginator="true"
+                     reflow="true"
+                     emptyMessage="No existen registros"
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                     paginatorPosition="bottom"
+                     id="table">
+                <p:column  headerText="Fase" width="45%"  >
+                    <p:selectOneMenu value="#{fasePPR.fase}" style="width: 90% !important;">
+                        <f:selectItems value="#{dispositivoBacking.listFasePPR}" />
+                    </p:selectOneMenu> 
+                </p:column>
+                <p:column  headerText="Dir. de Memoria" width="45%"  >
+                    <p:selectOneMenu value="#{fasePPR.dirfase}" style="width: 90% !important;">
+                        <f:selectItems value="#{dispositivoBacking.listDirFasePPR}" />
+                    </p:selectOneMenu> 
+                </p:column>
+                <p:column   width="10%">
+                    <f:facet name="header">
+                        <p:commandButton icon="fa fa-plus" update="@form:popup" action="#{dispositivoBacking.add(crucePPR)}" />
+                    </f:facet>
+                    <p:commandButton icon="fa fa-trash-o" update="@form:popup" action="#{dispositivoBacking.remove(crucePPR,fasePPR)}" >
+                    </p:commandButton> 
+                </p:column>   
+            </p:dataTable>  
+            <br></br>
+        </ui:repeat>
+        <p:message  for="ingresar" />
+        <h:panelGrid columns="1">
+            <p:commandButton  id="ingresar" value="Ingresar" action="#{dispositivoBacking.actualizarPPR()}"  update="@form:table @form:popup @form:messages"/>                   
+        </h:panelGrid>
+
+    </p:tab>
+</ui:composition>

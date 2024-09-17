@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="viewname">
+        <li>Administración</li>
+        <li>/</li>
+        <li><p:link outcome="instalacion">Instalación</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <h:outputStylesheet>
+            @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important; height: 80% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { width: 70% !important; }
+            }
+        </h:outputStylesheet>
+        <script src="../../resources/validaciones.js" type="text/javascript"></script>
+        <h:form id="form1" >
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="drop">
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Si"  type="button" styleClass="ui-confirmdialog-yes" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" />
+                </h:panelGrid>
+            </p:confirmDialog>
+            <p:dialog id="popup" widgetVar="popup"
+                      header="Actualizar Instalación"
+                      visible="#{instalacionBacking.verPopup}"
+                      closeOnEscape="true"
+                      height="80%"
+                      modal="true"
+                      styleClass="modalResponsivo"
+                      hideEffect="drop">
+                <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4">
+                    <h:outputLabel value="Id Instalación :"/>    
+                    <p:inputText id="id" value="#{instalacionBacking.instalacionTO.id}" readonly="true"/>
+                    <h:outputLabel value="Id Cruce :"/>    
+                    <p:inputText id="idCruce" value="#{instalacionBacking.instalacionTO.idCruce}" style="background: white;" onkeydown="eventoSalidaNumero(this, event, '', '', '');" onkeypress="return validarNumero(this, event, 10, 0);"/>
+
+                    <h:outputLabel value="Latitud :"/>    
+                    <p:inputText id="idLatitud" value="#{instalacionBacking.instalacionTO.latitud}" style="background: white;" />
+                    <h:outputLabel value="Longitud :"/>    
+                    <p:inputText id="idLongitud" value="#{instalacionBacking.instalacionTO.longitud}" style="background: white;"  />
+
+                    <h:outputLabel value="Tipo :"/>    
+                    <p:selectOneMenu  id="idTipoInstalacion" value="#{instalacionBacking.instalacionTO.tipo}" style="background: white;"  >
+                        <f:selectItems value="#{instalacionBacking.listaTipoInstalacion}"  var="valor" itemValue="#{valor.codigo1}" itemLabel="#{valor.descripcion}"   />
+                        <p:ajax event="change" process="@this"/>
+                    </p:selectOneMenu> 
+                    <h:outputLabel value="Enlace :"/>    
+                    <p:inputText id="idEnlace" value="#{instalacionBacking.instalacionTO.enlace}" style="background: white;" />
+
+                    <h:outputLabel value="N° Cabezales :"/>    
+                    <p:inputText id="idNumCabezales" value="#{instalacionBacking.instalacionTO.numCabezales}" style="background: white;" onkeydown="eventoSalidaNumero(this, event, '', '', '');" onkeypress="return validarNumero(this, event, 10, 0);"/>
+                    <h:outputLabel value="N° Esp. Scoot :"/>    
+                    <p:inputText id="idNumEspScoot" value="#{instalacionBacking.instalacionTO.numEspScoot}" style="background: white;" onkeydown="eventoSalidaNumero(this, event, '', '', '');" onkeypress="return validarNumero(this, event, 10, 0);"/>
+
+                    <h:outputLabel value="N° Esp. Locales :"/>    
+                    <p:inputText id="idNumEspLocal" value="#{instalacionBacking.instalacionTO.numEspLocal}" style="background: white;" onkeydown="eventoSalidaNumero(this, event, '', '', '');" onkeypress="return validarNumero(this, event, 10, 0);"/>
+                    <h:outputLabel value="N° Botoneras :"/>    
+                    <p:inputText id="idNumBotoneras" value="#{instalacionBacking.instalacionTO.numBotoneras}" style="background: white;"  onkeydown="eventoSalidaNumero(this, event, '', '', '');" onkeypress="return validarNumero(this, event, 10, 0);"/>
+
+                    <h:outputLabel value="N° Hitos Elect. :"/>    
+                    <p:inputText id="idNumHitElec" value="#{instalacionBacking.instalacionTO.numHitElec}" style="background: white;" onkeydown="eventoSalidaNumero(this, event, '', '', '');" onkeypress="return validarNumero(this, event, 10, 0);"/>
+                    <h:outputLabel value="N° Hitos Solares :"/>    
+                    <p:inputNumber id="idNumHitSolar" style="background: white;" value="#{instalacionBacking.instalacionTO.numHitSolar}" />
+
+                    <h:outputLabel value="UPS :"/>    
+                    <p:inputText id="idUps" style="background: white;" value="#{instalacionBacking.instalacionTO.ups}" />
+                    <h:outputLabel value="Num Cta Regres :"/>    
+                    <p:inputText id="idNumCtaRegres" value="#{instalacionBacking.instalacionTO.numCtaRegres}" style="background: white;" onkeydown="eventoSalidaNumero(this, event, '', '', '');" onkeypress="return validarNumero(this, event, 10, 0);"/>
+
+                    <h:outputLabel value="N° Señal Tto :"/>    
+                    <p:inputText id="idNumSenSenTto" value="#{instalacionBacking.instalacionTO.numSenSenTto}" style="background: white;" onkeydown="eventoSalidaNumero(this, event, '', '', '');" onkeypress="return validarNumero(this, event, 10, 0);"/>
+                    <h:outputLabel value="Balizas :"/>    
+                    <p:inputText id="idBalizas" value="#{instalacionBacking.instalacionTO.balizas}" style="background: white;" onkeydown="eventoSalidaNumero(this, event, '', '', '');" onkeypress="return validarNumero(this, event, 10, 0);"/>                                      
+
+                    <h:outputLabel value="Modelo Otu :"/>    
+                    <p:inputText id="idModeloOtu" value="#{instalacionBacking.instalacionTO.modeloOtu}" style="background: white;" />
+                    <h:outputLabel value="Observacion:"/>    
+                    <p:inputText id="idObservacion" value="#{instalacionBacking.instalacionTO.observacion}" style="background: white;" />                    
+
+                    <h:outputLabel value="Empalme"/>    
+                    <p:inputText id="idEmpalme" value="#{instalacionBacking.instalacionTO.empalme}" style="background: white;" />
+
+                </p:panelGrid>
+
+                <p:message for="id" /> 
+                <h:panelGrid columns="1">
+                    <p:commandButton value="Ingresar" action="#{instalacionBacking.actualizarInstalacion()}" update="table popup"/>                   
+                </h:panelGrid>
+            </p:dialog>
+
+            <p:growl id="messages" showDetail="true" />
+            <h:panelGrid id="grid" columns="1" >
+                <p:commandButton id="btnNew" value="Nuevo" icon="fa fa-plus" action="#{instalacionBacking.ingresarInstalacion}" update="form1:popup" style="float: right;" /> 
+                <p:dataTable value="#{instalacionBacking.listaInstalacion}" var="table"  
+                             paginator="true" rows="15"
+                             reflow="true"
+                             emptyMessage="No existen registros"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                             paginatorPosition="bottom"
+                             id="table">
+                    <p:column  headerText="id" sortBy="#{table.id}" filterBy="#{table.id}" filterMatchMode="contains">
+                        <h:outputText value="#{table.id}"/>
+                    </p:column>                    
+                    <p:column  headerText="Tipo"  sortBy="#{table.tipoDescripcion}" filterBy="#{table.tipoDescripcion}" filterMatchMode="contains">
+                        <h:outputText value="#{table.tipoDescripcion}"/>
+                    </p:column>
+                    <p:column  headerText="Empalme"  sortBy="#{table.empalme}" filterBy="#{table.empalme}" filterMatchMode="contains">
+                        <h:outputText value="#{table.empalme}"/>
+                    </p:column>
+                    <p:column  headerText="Enlace"  sortBy="#{table.enlace}" filterBy="#{table.enlace}" filterMatchMode="contains">
+                        <h:outputText value="#{table.enlace}"/>
+                    </p:column>
+                    <p:column  headerText="Observación" sortBy="#{table.observacion}" filterBy="#{table.observacion}" filterMatchMode="contains">
+                        <h:outputText value="#{table.observacion}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet  name="header">Acción</f:facet>
+                        <p:commandButton id="editlink"  title="Editar" icon="fas fa-edit" update=":form1:popup"  action="#{instalacionBacking.editarInstalacion}" >
+                            <f:setPropertyActionListener target="#{instalacionBacking.idSeleccionado}" value="#{table.id}"/>
+                        </p:commandButton>
+                        <p:commandButton  id="deletelink" update=":form1:table" icon="fas fa-trash-alt" style="margin-left: 5px;" action="#{instalacionBacking.eliminarInstalacion}" title="Eliminar">
+                            <f:setPropertyActionListener target="#{instalacionBacking.idSeleccionado}" value="#{table.id}"/>
+                            <p:confirm header="Confirmación" message="¿Estas seguro que deseas eliminar la imagen asociada al cruce?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>                    
+            </h:panelGrid>
+        </h:form>
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>
+                <p:tabView id="config-form-tabs" >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-search faa-pulse animated-hover"></i>
+                            <h:outputText value="Busqueda"/>                             
+                        </f:facet>
+                        <p:remoteCommand id="remote" name="remote" actionListener="#{instalacionBacking.buscar}" update="form1:table"/>
+                        <h:form id="config-form">
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel for="idComuna" value="Comuna:" style="font-weight:bold"/> 
+                                        <p:selectOneMenu  id="idComuna" appendTo="@this" value="#{instalacionBacking.idComuna}"  valueChangeListener="#{instalacionBacking.cambioComuna}" disabled="#{instalacionBacking.comboHabilitada}">
+                                            <f:selectItems value="#{parametrosBacking.listaComunas}"  var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"   />
+                                            <p:ajax event="change" process="@this"/>
+                                        </p:selectOneMenu>                            
+                                        <h:outputLabel for ="idCompleto"  value="Cruce:" /> 
+                                        <p:autoComplete id="idCompleto" 
+                                                        value="#{instalacionBacking.idCruce}" 
+                                                        converter="instalacionConvertir"
+                                                        completeMethod="#{instalacionBacking.filtroCruce}"
+                                                        var="cruce" 
+                                                        appendTo="@this"
+                                                        effect="fade"
+                                                        queryDelay="700"
+                                                        scrollHeight="300"
+                                                        itemValue="#{cruce}"
+                                                        itemLabel="#{cruce.ubicacion}">
+                                            <p:column>
+                                                <h:outputText value="#{cruce.ubicacion}" />
+                                            </p:column>
+                                            <p:ajax event="itemSelect" listener="#{instalacionBacking.cambioValorAutoComplete}"  />
+                                        </p:autoComplete>
+                                        <h:outputLabel />
+                                        <p:message for="idCompleto" /> 
+                                        <p:commandButton value="Buscar" actionListener="#{instalacionBacking.validarFormulario}" update="form1:table config-form-tabs" oncomplete="remote()"  />
+               
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab >
+                </p:tabView>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,578 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="viewname">
+        <li>Solicitudes</li>
+        <li>/</li>
+        <li><p:link outcome="atenciones">Solicitudes realizadas</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+            function reziseDlg() {
+                var htmlTag = document.getElementById('popupTabReclamo');
+                htmlTag.style.height = Math.floor(window.innerHeight * 0.7) + "px";
+                console.log(htmlTag.style.height);
+                updateDlg();
+            }
+        </script>
+        <h:outputStylesheet>
+
+            .ui-panelgrid-header{
+            background: #001970 !important;
+            font-weight: bold !important;
+            color: white !important;
+            }
+            .ui-tabs-panels{
+
+            }
+
+            .tableBorder{
+            border-collapse: collapse !important;
+            border: 1px solid #91908B !important;
+            }
+            .tableBorder th{
+            border-collapse: collapse !important;
+            border: 1px solid #91908B !important;
+            }
+            .tableBorder td{
+            border-collapse: collapse !important;
+            border: 1px solid #91908B !important;
+            }
+            .colUno {
+            font-weight: bold;
+            }
+            .colDos {
+            }
+
+            .rowUno td{
+            background-color: #F8F5F3;
+            width:114px;
+            text-align: center;
+            font-weight: bold;
+            }
+            .rowDos {
+            background-color: #FFFFFF;
+            text-align: center;
+            font-weight: bold;
+            }
+            @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important; height: 90% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { width: 85% !important; }
+            }
+        </h:outputStylesheet>
+        <p:dialog id="popupTabReclamo"  widgetVar="popupTabReclamo"
+                  draggable="true" 
+                  visible="#{atencionesBacking.verAtencionesTareaReclamo}"
+                  closable="true"
+                  modal="true"
+                  appendTo="@(body)"
+                  resizable="true"
+                  header="Detalle Solicitud"
+                  styleClass="modalResponsivo"                  
+                  height="500px"
+                  closeOnEscape="true"
+                  hideEffect="drop">  
+            <h:outputLabel value="Atenciones del Reclamo" />
+            <p:dataTable value="#{atencionesBacking.listaAtencionTareaTO}" 
+                         var="atencionTarea" 
+                         reflow="true"
+                         scrollable="true"
+                         id="atencionTareaEnlace">
+                <p:column  headerText="Id Atención" filterStyle="width:90%" filterBy="#{atencionTarea.idAtencion}" sortBy="#{atencionTarea.idAtencion}" filterMatchMode="contains" >                                
+                    <h:outputText value="#{atencionTarea.idAtencion}"/>
+                </p:column>
+                <p:column  headerText="Funcionamiento Inicial" filterStyle="width:90%" filterBy="#{atencionTarea.funcAlLlegar}" sortBy="#{atencionTarea.funcAlLlegar}" filterMatchMode="contains"  >                                
+                    <h:outputText value="#{atencionTarea.funcAlLlegar}"/>
+                </p:column>
+                <p:column  headerText="Funcionamiento Final" filterStyle="width:90%" filterBy="#{atencionTarea.funcAlSalir}" sortBy="#{atencionTarea.funcAlSalir}" filterMatchMode="contains" >                                
+                    <h:outputText value="#{atencionTarea.funcAlSalir}"/>
+                </p:column>
+                <p:column  headerText="Observación" filterStyle="width:90%" filterBy="#{atencionTarea.observacionCliente}" sortBy="#{atencionTarea.observacionCliente}" filterMatchMode="contains" >                                
+                    <h:outputText value="#{atencionTarea.observacionCliente}"/>
+                </p:column>
+                <p:column  headerText="Fecha Llegada" filterStyle="width:90%" filterBy="#{atencionTarea.fechaLlegada}" sortBy="#{atencionTarea.fechaLlegada}" filterMatchMode="contains" >                                
+                    <h:outputText value="#{atencionTarea.fechaLlegada}"/>
+                </p:column>
+                <p:column  headerText="Fecha Salida"  filterStyle="width:90%" filterBy="#{atencionTarea.fechaSalida}" sortBy="#{atencionTarea.fechaSalida}" filterMatchMode="contains" >                                
+                    <h:outputText value="#{atencionTarea.fechaSalida}"/>
+                </p:column>
+                <p:column  headerText="Estado Atención" filterStyle="width:90%" filterBy="#{atencionTarea.estadoAtencion}" sortBy="#{atencionTarea.estadoAtencion}" filterMatchMode="contains" >                                
+                    <h:outputText value="#{atencionTarea.estadoAtencion}"/>
+                </p:column>
+            </p:dataTable>
+        </p:dialog>  
+
+        <h:form id="form1" > 
+            <p:growl id="messages"  showDetail="true" severity="info"/>
+            <p:dialog id="popupTab"  widgetVar="popupTab"
+                      draggable="true" 
+                      visible="#{atencionesBacking.verPopupTab}"
+                      closable="true"
+                      closeOnEscape="true"
+                      modal="true"
+                      appendTo="@(body)"
+                      resizable="true"
+                      header="Detalle Solicitud"
+                      styleClass="modalResponsivo"
+                      height=""
+                      hideEffect="drop">
+                <p:tabView activeIndex="0">
+                    <p:tab title="Solicitud">
+                        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                     columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                            <h:outputLabel value="Fecha de Ingreso :"/>    
+                            <h:outputLabel value="#{atencionesBacking.solicitudTO.fechaIngresoFormat}" />
+
+                            <h:outputLabel value="Comuna :"/>    
+                            <h:outputLabel value="#{atencionesBacking.solicitudTO.descripcionComuna}" />
+
+                            <h:outputLabel value="Solicitante :"/>    
+                            <h:outputLabel value="#{atencionesBacking.solicitudTO.nombreSolicitante}" />
+
+                            <h:outputLabel value="Email :"/>    
+                            <h:outputLabel value="#{atencionesBacking.solicitudTO.emailSolicitante}" />
+
+                            <h:outputLabel value="Telefono :"/>    
+                            <h:outputLabel value="#{atencionesBacking.solicitudTO.fonoSolicitante}" />
+
+                            <h:outputLabel value="Asunto :"/>    
+                            <h:outputLabel value="#{atencionesBacking.solicitudTO.asunto}" /> 
+
+                            <h:outputLabel value="Observación :"/>    
+                            <h:outputLabel value="#{atencionesBacking.solicitudTO.descripcionObservacion}" /> 
+
+                            <h:outputLabel value="Adjunto :" rendered="#{atencionesBacking.solicitudTO.verDescargaAdjunto}"/>    
+                            <h:panelGrid rendered="#{atencionesBacking.solicitudTO.verDescargaAdjunto}">
+                                <p:commandLink id="descargarlink" title="Descargar" ajax="false" actionListener="#{atencionesBacking.prepDownload(atencionesBacking.solicitudTO.urlAdjunto)}">
+                                    <h:graphicImage value="/imagenes/descargar.png" />
+                                    <p:fileDownload value="#{atencionesBacking.download}" />
+                                </p:commandLink>                          
+                            </h:panelGrid>
+                        </p:panelGrid>
+                    </p:tab>
+                    <p:tab title="Tarea en SMA" rendered="#{atencionesBacking.solicitudTO.verLinkSolicitud}">
+                        <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                                     columnClasses="ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3,ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3">
+                            <h:outputLabel value="Id Tarea :"/> 
+                            <h:outputLabel value="#{atencionesBacking.detalleTareaTO.idTarea}"/>                             
+                            <h:outputLabel value="Tipo Equipo :"/> 
+                            <h:outputLabel value="#{atencionesBacking.detalleTareaTO.tipoEquipo}"/>
+
+                            <h:outputLabel value="Id Cruce :"/> 
+                            <h:outputLabel value="#{atencionesBacking.detalleTareaTO.idCruce}"/>                          
+                            <h:outputLabel value="Fecha Creación :"/> 
+                            <h:outputLabel value="#{atencionesBacking.detalleTareaTO.fechaCreacionStr}"/>
+
+                            <h:outputLabel value="Tarea Terminada :"/> 
+                            <h:outputLabel value="#{atencionesBacking.detalleTareaTO.tareaTerminada}"/>                             
+                            <h:outputLabel value="Informado Por :"/> 
+                            <h:outputLabel value="#{atencionesBacking.detalleTareaTO.informadoPor}"/>
+
+                            <h:outputLabel value="Nombre Fuente :"/> 
+                            <h:outputLabel value="#{atencionesBacking.detalleTareaTO.nombreFuente}"/>                             
+                            <h:outputLabel value="Fecha Cierre :"/> 
+                            <h:outputLabel value="#{atencionesBacking.detalleTareaTO.fechaCierreStr}"/>
+                        </p:panelGrid>    
+                        <h:panelGrid  columns="2">
+                            <h:outputLabel value="Observación Preliminar :"/> 
+                            <h:outputLabel value="#{atencionesBacking.detalleTareaTO.obsPreliminar}"/>     
+                        </h:panelGrid>              
+                    </p:tab>
+                    <p:tab title="Atenciones en SMA" rendered="#{atencionesBacking.solicitudTO.verLinkSolicitud}"> 
+                        <p:menuButton icon="fa fa-download" >
+                            <p:menuitem value="Excel" icon="fa fa-file-excel-o" ajax="false"  immediate="true">
+                                <p:dataExporter type="xls" target="atencionTarea" pageOnly="false" fileName="listaAtenciones" />
+                            </p:menuitem>
+                            <p:menuitem value="PDF" icon="fa fa-file-pdf-o" ajax="false" immediate="true">
+                                <p:dataExporter type="pdf" target="atencionTarea" pageOnly="false" fileName="listaAtenciones" preProcessor="#{atencionesBacking.preProcessPDF}"/>
+                            </p:menuitem>
+                        </p:menuButton>
+                        <p:dataTable value="#{atencionesBacking.listaAtencionTareaTO}" 
+                                     var="atencionTarea" 
+                                     reflow="true"
+                                     scrollable="true" scrollHeight="250"
+                                     id="atencionTarea" >
+                            <p:column  headerText="Id" filterStyle="width:90%" filterBy="#{atencionTarea.idAtencion}" sortBy="#{atencionTarea.idAtencion}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{atencionTarea.idAtencion}"/>
+                            </p:column>
+                            <p:column  headerText="Fun. Inicial" filterStyle="width:90%" filterBy="#{atencionTarea.funcAlLlegar}" sortBy="#{atencionTarea.funcAlLlegar}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{atencionTarea.funcAlLlegar}"/>
+                            </p:column>
+                            <p:column  headerText="Fun. Final" filterStyle="width:90%" filterBy="#{atencionTarea.funcAlSalir}" sortBy="#{atencionTarea.funcAlSalir}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{atencionTarea.funcAlSalir}"/>
+                            </p:column>
+                            <p:column  headerText="Observación" filterStyle="width:90%" filterBy="#{atencionTarea.observacionCliente}" sortBy="#{atencionTarea.observacionCliente}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{atencionTarea.observacionCliente}"/>
+                            </p:column>
+                            <p:column  headerText="Llegada" filterStyle="width:90%" filterBy="#{atencionTarea.fechaLlegada}" sortBy="#{atencionTarea.fechaLlegada}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{atencionTarea.fechaLlegada}"/>
+                            </p:column>
+                            <p:column  headerText="Salida" filterStyle="width:90%" filterBy="#{atencionTarea.fechaSalida}" sortBy="#{atencionTarea.fechaSalida}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{atencionTarea.fechaSalida}"/>
+                            </p:column>
+                            <p:column  headerText="Estado" filterStyle="width:90%" filterBy="#{atencionTarea.estadoAtencion}" sortBy="#{atencionTarea.estadoAtencion}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{atencionTarea.estadoAtencion}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+                    <p:tab title="Reclamo de Enlace" rendered="#{atencionesBacking.solicitudTO.verReclamo}" >
+                        <h:form id="form2">
+                            <p:panelGrid>
+                                <f:facet name="header" >
+                                    <h:outputText value="Estado actual del reclamo"/>
+                                </f:facet>
+                                <p:panelGrid columns="6" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                                             columnClasses="ui-g-6 ui-md-2 colUno,ui-g-6 ui-md-2,ui-g-6 ui-md-2 colUno,ui-g-6 ui-md-2,ui-g-6 ui-md-2 colUno,ui-g-6 ui-md-2">
+                                    <h:outputLabel value="Nº Servicio: "/>
+                                    <h:outputText value="#{atencionesBacking.solicitudTO.reclamo.enlace.nroServicio}" />
+                                    <h:outputLabel value="Id Ticket: "/>
+                                    <h:outputText value="#{atencionesBacking.solicitudTO.reclamo.idTicket}" />
+                                    <h:outputLabel value="ID Reclamo: "/>
+                                    <h:outputText value="#{atencionesBacking.solicitudTO.reclamo.idReclamo}" />
+                                </p:panelGrid>
+                                <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                                             columnClasses="ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3,ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3">
+                                    <h:outputLabel value="Cruce: "/>
+                                    <h:outputText value="#{atencionesBacking.solicitudTO.reclamo.enlace.cruce.ubicacion}" />
+                                    <h:outputLabel value="Comuna: "/>
+                                    <h:outputText value="#{atencionesBacking.solicitudTO.reclamo.comuna.nombre}" />
+                                </p:panelGrid>
+                                <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                                             columnClasses="ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3,ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3">
+                                    <h:outputLabel value="Detalle Actual: "/>
+                                    <h:outputText value="#{atencionesBacking.solicitudTO.reclamo.descEstado}" />
+                                    <h:outputLabel value="Proveedor: "/>
+                                    <h:outputText value="#{atencionesBacking.solicitudTO.reclamo.descProveedor}" />
+                                </p:panelGrid>
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                             columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                    <h:outputLabel value="Observacion: "/>
+                                    <h:outputText value="#{atencionesBacking.solicitudTO.reclamo.observacion}" />
+                                </p:panelGrid>
+                                <br></br>
+                            </p:panelGrid>
+                            <p:panelGrid>
+                                <f:facet name="header" >
+                                    <h:outputText value="Historial del Reclamo"/>
+                                </f:facet>                                
+                            </p:panelGrid>
+                            <p:dataTable value="#{atencionesBacking.listaReclamosHistoricos}" 
+                                         var="reclamo" scrollable="true"
+                                         reflow="true"
+                                         id="historialReclamo" >
+                                <p:column  headerText="Fecha" sortBy="#{reclamo.fecha_str}" >                                
+                                    <h:outputText value="#{reclamo.fecha_str}"/>
+                                </p:column>
+                                <p:column  headerText="Tipo" sortBy="#{reclamo.desc_tipo}" >                                
+                                    <h:outputText value="#{reclamo.desc_tipo}"/>
+                                </p:column>
+                                <p:column  headerText="Estado"  sortBy="#{reclamo.descEstado}" >                                
+                                    <h:outputText value="#{reclamo.descEstado}"/>
+                                </p:column>
+                                <p:column  headerText="Usuario"  sortBy="#{reclamo.idUsuario}" >                                
+                                    <h:outputText value="#{reclamo.nombre} #{reclamo.apellido1}"/>
+                                </p:column>
+                                <p:column  headerText="Observación" sortBy="#{reclamo.observacion}" >                                
+                                    <h:outputText value="#{reclamo.observacion}"/>
+                                </p:column>
+                                <p:column  headerText="Resultado" sortBy="#{reclamo.resultado}" >                                
+                                    <h:outputText value="#{reclamo.resultado}"/>
+                                </p:column>
+                                <p:column  headerText="id_tarea" sortBy="#{reclamo.idTarea}" >                                
+                                    <h:outputText value="#{reclamo.idTarea}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="Tareas Asociadas" rendered="#{atencionesBacking.solicitudTO.verTareaReclamo}">
+                        <h:outputLabel value="Tareas del Enlace" />
+                        <p:dataTable value="#{atencionesBacking.solicitudTO.listaTareaReclamo}" 
+                                     reflow="true" var="tarea" scrollable="true"
+                                     id="tareasReclamo">
+                            <p:column  headerText="Id Tarea"  filterStyle="width:90%" filterBy="#{tarea.idtarea}" sortBy="#{tarea.idtarea}" filterMatchMode="contains" >                                
+                                <p:commandLink  value="#{tarea.idtarea}" action="#{atencionesBacking.verAtencionesReclamo}" update=":popupTabReclamo" immediate="true" process="@this">
+                                    <f:setPropertyActionListener target="#{atencionesBacking.idTareaReclamoSeleccionado}" value="#{tarea.idtarea}"/>
+                                </p:commandLink>
+                            </p:column>
+                            <p:column  headerText="Tipo Equipo" filterStyle="width:90%" filterBy="#{tarea.tipoequipo}" sortBy="#{tarea.tipoequipo}" filterMatchMode="contains"  >                                
+                                <h:outputText value="#{tarea.tipoequipo}"/>
+                            </p:column>
+                            <p:column  headerText="Id Cruce" filterStyle="width:90%" filterBy="#{tarea.idcruce}" sortBy="#{tarea.idcruce}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{tarea.idcruce}"/>
+                            </p:column>
+                            <p:column  headerText="Fecha Creación" filterStyle="width:90%" filterBy="#{tarea.fechaCreacionStr}" sortBy="#{tarea.fechaCreacionStr}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{tarea.fechaCreacionStr}"/>
+                            </p:column>
+                            <p:column  headerText="Tarea Terminada" filterStyle="width:90%" filterBy="#{tarea.tareaterminada}" sortBy="#{tarea.tareaterminada}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{tarea.tareaterminada}"/>
+                            </p:column>
+                            <p:column  headerText="Nombre Fuente" filterStyle="width:90%" filterBy="#{tarea.nombrefuente}" sortBy="#{tarea.nombrefuente}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{tarea.nombrefuente}"/>
+                            </p:column>
+                            <p:column  headerText="Fecha Cierre" filterStyle="width:90%" filterBy="#{tarea.fechaCierreStr}" sortBy="#{tarea.fechaCierreStr}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{tarea.fechaCierreStr}"/>
+                            </p:column>
+                            <p:column  headerText="Observacion " filterStyle="width:90%" filterBy="#{tarea.obspreliminar}" sortBy="#{tarea.obspreliminar}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{tarea.obspreliminar}"/>
+                            </p:column>
+                        </p:dataTable>  
+                        <br></br>
+                    </p:tab>
+                </p:tabView>                     
+            </p:dialog>    
+            <p:dialog id="popupAceptar"  widgetVar="popupAceptar"
+                      draggable="true" 
+                      visible="#{atencionesBacking.verPopupAceptar}"
+                      closable="true"
+                      resizable="false"
+                      header="Reclamar"
+                      styleClass="modalResponsivo"  modal="true"
+                      height="350"
+                      closeOnEscape="true"
+                      hideEffect="drop">
+                <h:panelGrid  columns="2" styleClass="tabla-aceptar">
+                    <h:outputLabel value="Solicitante :"/>    
+                    <h:outputLabel value="#{atencionesBacking.solicitudTO.nombreSolicitante}" />
+
+                    <h:outputLabel value="Email :"/>    
+                    <h:outputLabel value="#{atencionesBacking.solicitudTO.emailSolicitante}" />
+
+                    <h:outputLabel value="Telefono :"/>    
+                    <h:outputLabel value="#{atencionesBacking.solicitudTO.fonoSolicitante}" />
+
+                    <h:outputLabel value="Asunto :"/>    
+                    <h:outputLabel value="#{atencionesBacking.convertClob}" />       
+
+
+                    <h:outputLabel value="Comuna :"/> 
+                    <p:selectOneMenu  id="idComuna" value="#{atencionesBacking.idComuna}"  valueChangeListener="#{atencionesBacking.cambioComuna}" disabled="#{atencionesBacking.comboHabilitada}">
+                        <f:selectItems value="#{parametrosBacking.listaComunas}"  var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"   />
+                        <p:ajax event="change" process="@this"/>
+                    </p:selectOneMenu> 
+                    <h:outputLabel/>
+                    <p:message for="idComuna" style="font-size: 13px; color: red;"  />
+
+                    <h:outputLabel value="Cruce :"/>
+                    <p:autoComplete id="idCompleto" 
+                                    value="#{atencionesBacking.idCruce}" 
+                                    converter="instalacionConvertir"
+                                    completeMethod="#{atencionesBacking.filtroCruce}"
+                                    var="cruce" 
+                                    size="70"
+                                    effect="fade"
+                                    queryDelay="700"
+                                    scrollHeight="300"
+                                    itemValue="#{cruce}"
+                                    itemLabel="#{cruce.ubicacion}">
+                        <p:column>
+                            <h:outputText value="#{cruce.ubicacion}" />
+                        </p:column>
+                        <p:ajax event="itemSelect" listener="#{atencionesBacking.cambioValorAutoComplete}"  immediate="true" process="@form" />
+                    </p:autoComplete>
+                    <h:outputLabel/>
+                    <p:message for="idCompleto" style="font-size: 13px; color: red;"  /> 
+                </h:panelGrid> 
+                <h:panelGrid columns="1">
+                    <p:commandButton value="Ingresar a SMA"    action="#{atencionesBacking.reclamarSolicitud()}" update="table popupAceptar"/>                
+                </h:panelGrid>
+            </p:dialog> 
+
+
+            <p:dialog id="popup"  widgetVar="popup"
+                      header="Reasignar"
+                      visible="#{atencionesBacking.verPopupReasignar}"
+                      draggable="true"                           
+                      closable="true"
+                      resizable="false"
+                      styleClass="modalResponsivo"
+                      height="350"
+                      closeOnEscape="true"
+                      hideEffect="drop">           
+                <h:panelGrid columns="2" styleClass="tabla-modificar"> 
+                    <h:outputLabel value="Atención :"/> 
+                    <p:selectOneMenu id="idAtencionReclamada" var="t" value="#{atencionesBacking.idAtencion}" converter="solicitudConvertir">
+                        <p:ajax event="change" listener="#{atencionesBacking.cambioSolicitud}" immediate="true" process="@this"/>
+                        <f:selectItems value="#{atencionesBacking.listaSolicitudesReclamada}" var="solicitud" itemLabel="#{solicitud.idSolicitud}" itemValue="#{solicitud}"/>
+                        <p:column>
+                            <h:outputText value="#{t.idSolicitud}" />
+                        </p:column> 
+                        <p:column>                      
+                            <h:outputText value="#{t.descripcionEstadoActual}" />
+                        </p:column>
+                        <p:column>                      
+                            <h:outputText value="#{t.asunto}" />
+                        </p:column>
+                        <p:column>                      
+                            <h:outputText value="#{t.fechaIngresoFormat}" />
+                        </p:column>
+                        <p:column>                      
+                            <h:outputText value="#{t.nombreSolicitante}" />
+                        </p:column>
+                    </p:selectOneMenu>                 
+
+                    <h:outputLabel value="Solicitante :"/>    
+                    <h:outputLabel value="#{atencionesBacking.solicitudTO.nombreSolicitante}" />
+                    <h:outputLabel value="Email :"/>    
+                    <h:outputLabel value="#{atencionesBacking.solicitudTO.emailSolicitante}" />
+                    <h:outputLabel value="Telefono :"/>   
+                    <h:outputLabel value="#{atencionesBacking.solicitudTO.fonoSolicitante}" />
+                    <h:outputLabel value="Observacion :"/>    
+                    <h:outputLabel value="#{atencionesBacking.convertClob}" style="width: 500px;" />
+                </h:panelGrid> 
+                <h:panelGrid columns="1">
+                    <p:commandButton value="Reasignar"   action="#{atencionesBacking.reasignarSolicitud()}" update="table popup" />
+                </h:panelGrid>
+                <f:facet name="controls">             
+                </f:facet>
+            </p:dialog>            
+
+            <p:dialog id="popupRechazar" widgetVar="popupRechazar"
+                      header="Anular"
+                      visible="#{atencionesBacking.verPopupRechazar}"
+                      closable="true"
+                      closeOnEscape="true"
+                      draggable="true"
+                      styleClass="modalResponsivo"  modal="true"
+                      height="350"
+                      hideEffect="drop">
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                             columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                    <h:outputLabel value="Solicitante : "/>    
+                    <h:outputLabel value="#{atencionesBacking.solicitudTO.nombreSolicitante}" />
+                    <h:outputLabel value="Email : "/>    
+                    <h:outputLabel value="#{atencionesBacking.solicitudTO.emailSolicitante}" />
+                    <h:outputLabel value="Telefono : "/>    
+                    <h:outputLabel value="#{atencionesBacking.solicitudTO.fonoSolicitante}" />
+                    <h:outputLabel value="Observacion : "/>    
+                    <h:outputLabel value="#{atencionesBacking.convertClob}" />
+                    <h:outputLabel/>  
+                    <br/>
+                    <h:outputLabel value="Motivo Rechazo"/>   
+                </p:panelGrid>  
+                <h:inputTextarea value="#{atencionesBacking.motivoRechazo}" cols="67" rows="7" />
+                <h:panelGrid  columns="1">
+                    <p:commandButton value="Anular" action="#{atencionesBacking.anularSolicitud()}" update="table popupRechazar"  />
+                </h:panelGrid>                
+            </p:dialog>
+
+            <p:dialog id="dlgEstado" header="Estado" widgetVar="dlgEstado" 
+                      styleClass="modalResponsivo"  modal="true"
+                      height="350"
+                      hideEffect="drop">
+                <h:outputLabel value="Motivo Anulación :"/>    
+                <h:outputLabel value="#{atencionesBacking.convertClob}" />
+            </p:dialog>
+            <p:panel id="pnlExp">
+                <p:commandButton icon="fa fa-file-excel-o" ajax="false"  immediate="true" title="Excel">
+                    <p:dataExporter type="xls" target="table" pageOnly="false" fileName="Solicitudes" />
+                </p:commandButton>
+                <p:commandButton icon="fa fa-file-pdf-o" ajax="false" title="PDF" immediate="true" style=" margin-left: 5px;">
+                    <p:dataExporter type="pdf" target="table" pageOnly="false" fileName="Solicitudes" preProcessor="#{atencionesBacking.preProcessPDF}"/>
+                </p:commandButton>
+                <p:commandButton type="button" icon="fa fa-print" title="Imprimir"
+                                 style="margin-left: 5px;">
+                    <p:printer target="table" />
+                </p:commandButton>
+            </p:panel>
+            <p:dataTable value="#{atencionesBacking.listaSolicitudesTabla}" var="var"  
+                         paginator="true" rows="10"
+                         reflow="true" 
+                         widgetVar="table"
+                         emptyMessage="No existen registros"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                         paginatorPosition="bottom"
+                         id="table">
+                <p:column id="num_sol"  headerText="N° Solicitud" sortBy="#{table.idSolicitud}" filterStyle="width:90%" filterBy="#{var.idSolicitud}"  filterMatchMode="contains" >
+                    <p:commandLink  value="#{var.idSolicitud}" action="#{atencionesBacking.popupIdSolicitud}"  oncomplete="PF('popupTab').show();" process="@form" immediate="true" update=":form1:popupTab">
+                        <f:setPropertyActionListener target="#{atencionesBacking.idSeleccionado}" value="#{var.idSolicitud}"/>
+                    </p:commandLink>                       
+                </p:column>
+                <p:column id="desc_est" sortBy="#{var.descripcionEstadoActual}" filterStyle="width:90%" filterBy="#{var.descripcionEstadoActual}" filterMatchMode="contains" headerText="Estado" >                       
+                    <p:commandLink id="c2" value="#{table.descripcionEstadoActual}" rendered="#{var.verEstado}" actionListener="#{atencionesBacking.cargarEstado(var.idSolicitud)}" oncomplete="PF('dlgEstado').show();"  process="@form" immediate="true" update=":form1:dlgEstado"/>
+                    <h:outputText value="#{var.descripcionEstadoActual}" rendered="#{!var.verEstado}"></h:outputText>
+
+                </p:column>                      
+                <p:column id="nom_sol" sortBy="#{var.nombreSolicitante}" filterStyle="width:90%" filterBy="#{var.nombreSolicitante}" filterMatchMode="contains" headerText="Solicitante" >
+                    <h:outputText value="#{var.nombreSolicitante}" />
+                </p:column>
+                <p:column  id="desc_com" sortBy="#{var.descripcionComuna}" filterStyle="width:90%" filterBy="#{var.descripcionComuna}" filterMatchMode="contains"  headerText="Comuna" >
+                    <h:outputText value="#{var.descripcionComuna}"/>
+                </p:column>        
+                <p:column id="mail_sol" sortBy="#{var.emailSolicitante}" filterStyle="width:90%" filterBy="#{var.emailSolicitante}" filterMatchMode="contains" headerText="Correo">
+                    <h:outputText value="#{var.emailSolicitante}"/>
+                </p:column>
+                <p:column id="asunto" sortBy="#{var.asunto}" filterStyle="width:90%" filterBy="#{var.asunto}" filterMatchMode="contains" headerText="Asunto" >
+                    <h:outputText value="#{var.asunto}" />
+                </p:column>  
+                <p:column id="fec_int" sortBy="#{var.fechaIngresoFormat}" filterStyle="width:90%" filterBy="#{var.fechaIngresoFormat}" filterMatchMode="contains" headerText="Fecha" >
+                    <h:outputText value="#{var.fechaIngresoFormat}"/>
+                </p:column>
+                <p:column id="num_tar" sortBy="#{var.numTareaAsma}" filterStyle="width:90%" filterBy="#{var.numTareaAsma}" filterMatchMode="contains" headerText="Id Tarea" >
+                    <h:outputText value="#{var.numTareaAsma}"/>
+                </p:column>
+                <p:column id="num_rec" sortBy="#{var.numReclamo}" filterStyle="width:90%" filterBy="#{var.numReclamo}" filterMatchMode="contains" headerText="Nº Reclamo" >
+                    <h:outputText value="#{var.numReclamo}"/>
+                </p:column>        
+            </p:dataTable>
+        </h:form>   
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>
+                <p:tabView id="config-form-tabs"   >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Busqueda"/>                             
+                        </f:facet>
+                        <p:remoteCommand id="remote" name="remote" actionListener="#{atencionesBacking.buscar}" update="form1"/>
+                        <h:form id="config-form" >
+
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid id="pnlSearch" columns="2" layout="grid"  styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel for="idDesde" value="Fecha Desde:" style="font-weight:bold"/>    
+                                        <p:calendar id="idDesde" value="#{atencionesBacking.fechaDesde}"    
+                                                    pattern="dd-MM-yyyy" mask="true" locale="es" >
+                                            <p:ajax event="change" listener="#{atencionesBacking.startDateFilter}"/>
+                                            <p:ajax event="dateSelect" listener="#{atencionesBacking.startDateFilter}"/>
+                                        </p:calendar>
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idDesde" style="font-size: 13px; color: red;"  />                                   
+                                        <h:outputLabel for="idHasta" value="Fecha Hasta:" style="font-weight:bold"/>    
+                                        <p:calendar id="idHasta" value="#{atencionesBacking.fechaHasta}" pattern="dd-MM-yyyy" mask="true" locale="es" >
+                                            <p:ajax event="change" listener="#{atencionesBacking.startDateFilter}"/>
+                                            <p:ajax event="dateSelect" listener="#{atencionesBacking.startDateFilter}"/>
+                                        </p:calendar>
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idHasta" style="font-size: 13px; color: red;"  />  
+                                        <p:commandButton value="Buscar"  oncomplete="remote();PF('table').filter();" action="#{atencionesBacking.cargaBusqueda}"  update="form1:messages config-form-tabs" />
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>
+                </p:tabView>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $('#ui-datepicker-div').appendTo('#layout-config');
+            });
+        </script>
+    </ui:define>
+</ui:composition>
+

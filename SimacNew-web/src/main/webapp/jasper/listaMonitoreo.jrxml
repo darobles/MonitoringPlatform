@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="listaMonitoreo" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="db16148c-a759-4e6f-9e51-5be9ae50c45b">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="291"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="Emisor" class="java.lang.String"/>
+	<field name="idCruce" class="java.lang.String"/>
+	<field name="ubicacion" class="java.lang.String"/>
+	<field name="descripcionComuna" class="java.lang.String"/>
+	<field name="descripcionFecha" class="java.lang.String"/>
+	<field name="descripcionEstadoOperativo" class="java.lang.String"/>
+	<field name="descripcionValModo220" class="java.lang.String"/>
+	<field name="descripcionValModoUps" class="java.lang.String"/>
+	<field name="descripcionValModoLam" class="java.lang.String"/>
+	<field name="descripcionValModoUtc" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="85" splitType="Stretch">
+			<staticText>
+				<reportElement x="588" y="39" width="86" height="20" uuid="592f7ac9-774c-4a35-bc7b-d424ee561834"/>
+				<box topPadding="2" leftPadding="2"/>
+				<text><![CDATA[Emisor:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="229" y="9" width="340" height="30" uuid="f9a55e35-9047-407a-9d90-c10c997a868f"/>
+				<box topPadding="2" leftPadding="2" rightPadding="0"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lista Monitoreo]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="674" y="39" width="126" height="20" uuid="76de0c27-f694-4dc0-9e92-903ca007fcfe"/>
+				<box topPadding="2" leftPadding="2"/>
+				<textFieldExpression><![CDATA[$P{Emisor}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="588" y="59" width="86" height="20" uuid="53c903d8-49f6-49a8-acbc-202fa7086a28"/>
+				<box topPadding="2" leftPadding="2"/>
+				<text><![CDATA[Fecha Emisión:]]></text>
+			</staticText>
+			<textField pattern="dd-MM-yyyy hh:mm:ss">
+				<reportElement x="674" y="59" width="126" height="20" uuid="864de9bf-6922-4cde-a233-b65dba233c63"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="41" height="20" backcolor="#F8F5F3" uuid="c7de76fe-3063-4999-b911-3def46e9b7ad"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Cruce]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="406" y="0" width="100" height="20" backcolor="#F8F5F3" uuid="a15fad0e-e91c-4ff0-a32b-7d1e52281147"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="306" y="0" width="100" height="20" backcolor="#F8F5F3" uuid="ee902b0a-823c-487b-8622-bd97087e9e68"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Informado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="206" y="0" width="100" height="20" backcolor="#F8F5F3" uuid="a733ef0a-0eb6-4ccd-9be8-240c4580cedd"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Comuna]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="580" y="0" width="74" height="20" backcolor="#F8F5F3" uuid="b0932614-5765-43c9-baac-50ee6191ce57"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Sensor UPS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="654" y="0" width="74" height="20" backcolor="#F8F5F3" uuid="30a8db49-0981-4572-bacd-73f79db3470e"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Sensor Luces]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="728" y="0" width="74" height="20" backcolor="#F8F5F3" uuid="7f3038cc-0b69-4184-b43c-ce892f1b664e"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Sensor UTC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="506" y="0" width="74" height="20" backcolor="#F8F5F3" uuid="df469c68-864b-40aa-b820-02c48eca65b1"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Sensor 220]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="41" y="0" width="165" height="20" backcolor="#F8F5F3" uuid="be334a3c-83f2-447f-bb57-d6df3db3616c"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Ubicación]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="41" y="0" width="165" height="20" uuid="f0e7c008-2da8-48d3-8016-a3bbb37b8a0f"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ubicacion}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="41" height="20" uuid="ddf20cf4-0386-48f0-a6c1-8961f71df9e0"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{idCruce}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="206" y="0" width="100" height="20" uuid="1f234db2-179c-458d-9089-72369a52cce0"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcionComuna}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="306" y="0" width="100" height="20" uuid="f9ac1680-8828-4661-a14e-feb197e23028"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcionFecha}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="406" y="0" width="100" height="20" uuid="098336b6-f0a3-4215-9ad3-bb94913de101"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcionEstadoOperativo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="506" y="0" width="74" height="20" uuid="9dd1e4a5-9f88-4603-8558-7f5b7029f65f"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcionValModo220}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="580" y="0" width="74" height="20" uuid="a6de049b-fc48-430e-9de7-a6d3f358614c"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcionValModoUps}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="654" y="0" width="74" height="20" uuid="180233db-7b6f-4ecf-b6c4-c02e665e564e"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcionValModoLam}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="728" y="0" width="74" height="20" uuid="238ba0db-4290-41a8-8362-78d2a86f1347"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<leftPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<bottomPen lineWidth="0.25" lineColor="#BBB1AA"/>
+					<rightPen lineWidth="0.25" lineColor="#BBB1AA"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcionValModoUtc}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="680" y="34" width="80" height="20" uuid="a7bd5a81-82eb-450a-8920-1d3dfbe9ebdc"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página  "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="760" y="34" width="40" height="20" uuid="5377f467-04be-457b-96a5-de05c44d91b2"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="34" width="270" height="20" uuid="30ec07c7-3704-4c40-8426-1640e2f8dc1b"/>
+				<text><![CDATA[Sistema de Información de Mantenimiento Municipal]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

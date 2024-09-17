@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans"></link>
+        <link rel="stylesheet" href="/AuterOnLine/resources/css/fontello.css"></link>
+        <link rel="stylesheet" href="/AuterOnLine/resources/css/animation.css"></link> 
+        <h:outputStylesheet>
+            .ui-datatable tbody td {            
+            border: 1px solid #F1F1F1 !important;
+            }
+
+            .ui-panelgrid td, .ui-panelgrid tr{
+            border-style: none !important;
+            }
+            .ui-widget{
+                font-size:90% !important;
+            }
+            .ui-layout-bd { 
+            border: 0;margin:0; 
+            }
+            .westUnit {
+            border: 0;margin:0; 
+            width:14% !important;
+            }
+            .centerUnit {
+            border: 0;
+            margin:0; 
+            }
+            .headerUnit {
+            border: 0;
+            margin:0; 
+            }
+            .ui-menu {
+            width: 14em !important;
+            }
+
+            .contentUnit div{
+            background:url(../imagenes/bg-auter.png);
+            }
+
+            .ui-layout-unit{
+            padding:0;
+            }
+            .headerUnit{
+            position:fixed !important;
+            top: -7px !important;
+            right: -3px !important;
+            }
+            .contentUnit{
+            top:80px !important;
+            margin-left:-1% !important;
+            width: 100% !important;
+            }
+            #j_idt12-resizer{
+            z-index: -99 !important;
+            }
+
+        </h:outputStylesheet>
+        <h:outputStylesheet library="awesome" name="css/font-awesome.css" />
+    </h:head>
+    <h:body>
+        <p:layout fullPage="true">            
+            <p:layoutUnit position="center" size="500" styleClass="centerUnit">
+                <p:layout>
+                    <p:layoutUnit position="north" size="110" styleClass="centerUnit headerUnit">
+                        <ui:insert name="header" >
+                            <ui:include src="header.xhtml" />
+                        </ui:insert>
+                    </p:layoutUnit>
+                    <p:layoutUnit position="center" styleClass="centerUnit contentUnit">
+                        <ui:insert name="content" >
+                            <h:graphicImage value="/imagenes/bg-auter.png"></h:graphicImage>
+                            <ui:include src="content.xhtml" />
+                        </ui:insert>          
+                    </p:layoutUnit>
+                </p:layout>
+            </p:layoutUnit>
+            <p:layoutUnit position="west" size="200" styleClass="westUnit">
+                <ui:insert name="menu" >
+                    <ui:include src="navigation.xhtml" />
+                </ui:insert>
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+</html>

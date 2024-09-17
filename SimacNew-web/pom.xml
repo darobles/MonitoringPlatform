@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>SimacNew</artifactId>
+        <groupId>cl.auter</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>cl.auter</groupId>
+    <artifactId>SimacNew-web</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <name>SimacNew-web</name>
+
+    <properties>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.primefaces/primefaces -->
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>7.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.primefaces.extensions/primefaces-extensions -->
+        <dependency>
+            <groupId>org.primefaces.extensions</groupId>
+            <artifactId>primefaces-extensions</artifactId>
+            <version>7.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+       <dependency>
+            <groupId>org.primefaces.babylon</groupId>
+            <artifactId>babylon</artifactId>
+            <version>3.3.1</version>
+        </dependency> 
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-email -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+            <version>1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>4.1.2</version>
+        </dependency>
+        <dependency> 
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId> 
+            <version>1.3.2</version> 
+        </dependency> 
+       <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.12.2</version>
+        </dependency> 
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>3.0.0</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>5.13.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>SimacNew-ejb</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+   <repositories>
+        <repository>
+            <url>http://repository.primefaces.org/</url>
+            <id>PrimeFaces-maven-lib</id>
+            <layout>default</layout>
+            <name>Repository for library PrimeFaces-maven-lib</name>
+        </repository>
+        <repository>
+                <id> jaspersoft-repo</id>
+                <url>https://jaspersoft.jfrog.io/jaspersoft/jaspersoft-repo</url>
+        </repository>
+        <repository>
+            <id>jaspersoft-third-party</id>
+            <url>http://jaspersoft.artifactoryonline.com/jaspersoft/t‌​hird-party-ce-artifa‌​cts/</url>
+        </repository>
+    </repositories> 
+    <build>
+        <finalName>semaforos</finalName>      
+    </build>
+</project>

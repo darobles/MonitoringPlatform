@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions" 
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <f:event type="preRenderComponent" listener="#{terminalRemotoBacking.init()}" />
+    <script>
+        function startPB() {
+            PF('pbAjax').setValue(0);
+            PF('pbAjax').start();
+        }
+        function iniciarTimers() {
+            PF('timer-checker').stop(true);
+            PF('timer-checker').start();
+            PF('poll-respuestas').stop(true);
+            PF('poll-respuestas').start();
+        }
+        function reiniciarTimer() {
+            PF('timer-checker').stop(true);
+            PF('timer-checker').start();
+        }
+        function loadFileAsText() {
+            var elem = document.getElementById('file-input');
+
+            var evt = document.createEvent("MouseEvents");
+            evt.initEvent("click", true, false);
+            elem.dispatchEvent(evt);
+
+        }
+        function readSingleFile(event) {
+            var file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var contents = event.target.result;
+                document.getElementById('form:inputComandos').value = contents;
+            };
+            reader.readAsText(file);
+            document.getElementById('file-input').value = "";
+        }
+
+        function saveTextAsFile(nombre, id)
+        {
+            var dispositivo = #{terminalRemotoBacking.dimac.idDispositivo.toString()};
+            var textToWrite = document.getElementById(id).value;
+            if (textToWrite !== '') {
+                var textFileAsBlob = new Blob([textToWrite], {type: 'text/plain'});
+                var fileNameToSaveAs = nombre + dispositivo + ".txt";
+
+                var downloadLink = document.createElement("a");
+                downloadLink.download = fileNameToSaveAs;
+                downloadLink.innerHTML = "Download File";
+                if (window.webkitURL !== null)
+                {
+                    downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+                } else
+                {
+                    // Firefox requires the link to be added to the DOM
+                    // before it can be clicked.
+                    downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+                    downloadLink.onclick = destroyClickedElement;
+                    downloadLink.style.display = "none";
+                    document.body.appendChild(downloadLink);
+                }
+                downloadLink.click();
+            }
+        }
+    </script>
+    <h:outputStylesheet>
+        .textarea { 
+            resize: none;
+            height: 100%;
+        }
+        .colUnoTerminal {
+        width: 70% !important;
+        border: 0px !important;
+        }
+        .colDosTerminal {
+        float:right !important;
+        text-align: right !important;
+        border: 0px !important;
+        }
+        .animated{
+        border: 1px solid #91908B !important;
+        -webkit-transition: all 0.1s ease;
+        -moz-transition: all 0.1s ease; 
+        -ms-transition: all 0.1s ease;
+        -o-transition: all 0.1s ease; 
+        transition: all 0.1s ease;
+        background
+        }
+        .animated .ui-progressbar-value { 
+        background-image: url("#{facesContext.externalContext.request.contextPath}/imagenes/pbar-ani.gif");
+        }
+        .ui-panelgrid-header{
+        background: #001970 !important;
+        font-weight: bold !important;
+        color: white !important;
+        }
+    </h:outputStylesheet>
+        <p:growl id="messagesTerminal"  />
+        <pe:timer id="timer-checker" widgetVar="timer-checker" autoStart="false" timeout="30" listener="#{terminalRemotoBacking.timeoutChecker()}" visible="false" update="textAreaRespuestas inputComandos btnEnviar messagesTerminal"/>
+        <p:poll id="poll-respuestas" immediate="true" autoStart="false" interval="1" widgetVar="poll-respuestas" listener="#{terminalRemotoBacking.consultaRespuesta()}" update="textAreaRespuestas inputComandos btnEnviar" />
+    <p:panelGrid columns="1">
+        <f:facet name="header" >
+            <h:outputText value="Terminal Remoto Dimac #{terminalRemotoBacking.idDispositivo}" style="color: white !important;"></h:outputText> 
+            <p:commandButton action="#{terminalRemotoBacking.reiniciarControlador()}" immediate="true" style="float: right;" process="@this" ajax="true" 
+                             icon="fas fa-redo-alt" title="Reinicio del Controlador"
+                             styleClass="danger-btn" rendered="#{terminalRemotoBacking.mostrarReiniciar}" >
+                <p:confirm header="Confirmación" message="¿Esta seguro que desea reiniciar el controlador?" icon="ui-icon-alert" />
+            </p:commandButton>
+        </f:facet>        
+        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-10" >
+            <p:outputLabel for="modo" value="Modo" style="font-weight: bold;" />
+            <p:selectOneRadio id="modo" value="#{terminalRemotoBacking.modo}">
+                <f:selectItem itemLabel="Dimac" itemValue="Dimac" />
+                <f:selectItem itemLabel="Terminal" itemValue="Terminal" />
+                <p:ajax listener="#{terminalRemotoBacking.cambioModoTerminal}" immediate="true" event="valueChange"  />
+            </p:selectOneRadio>
+        </p:panelGrid>
+
+        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" style="height: 100% !important" columnClasses="ui-g-10 ui-md-10,ui-g-2 ui-md-2" >
+            <p:inputTextarea id="inputComandos" styleClass="textarea" widgetVar="inputComandos"  autoResize="false" style="height: 100% !important;"
+                             value="#{terminalRemotoBacking.inputComandos}" disabled="#{terminalRemotoBacking.disableInputComandos}" placeholder="Escriba Instrucciones" />
+            <h:panelGrid columns="1"> 
+                <p:commandButton id="btnEnviar" icon="fas fa-play" ajax="true" styleClass="success-btn" onclick="startPB();" actionListener="#{terminalRemotoBacking.enviaComandoTerminal()}" oncomplete="iniciarTimers();"
+                                 disabled="#{terminalRemotoBacking.disableInputComandos}" update="inputComandos btnEnviar" />
+                <p:commandButton icon="fas fa-times" actionListener="#{terminalRemotoBacking.cancelar()}" styleClass="danger-btn" update="inputComandos btnEnviar textAreaRespuestas" /> 
+                <p:commandButton icon="fas fa-folder-open" onclick="$('input[type=file]').click();" update="inputComandos" />
+                <p:commandButton icon="fas fa-save" onclick="saveTextAsFile('Comandos-', 'form:inputComandos');" />
+                <p:commandButton icon="fas fa-broom" actionListener="#{terminalRemotoBacking.limpiarComandos()}" ajax="true" update="inputComandos"  />
+                             
+            </h:panelGrid>
+        </p:panelGrid>
+        <p:panelGrid columns="1"  layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-10" >
+            <p:progressBar id="pbAjax" widgetVar="pbAjax" ajax="true" value="#{terminalRemotoBacking.progreso}" labelTemplate="{value}%" styleClass="animated" global="false" />
+        </p:panelGrid>
+        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-10 ui-md-10,ui-g-2 ui-md-2" >
+            <p:inputTextarea id="textAreaRespuestas" placeholder="Respuesta" autoResize="false" rows="8" scrollHeight="300" widgetVar="textAreaRespuestas" readonly="true" value="#{terminalRemotoBacking.respuestaComandos}" /> 
+            <h:panelGrid columns="1" >
+                <p:commandButton icon="fas fa-save" onclick="saveTextAsFile('Respuestas-', 'form:textAreaRespuestas');"  />
+                <p:commandButton icon="fas fa-broom" actionListener="#{terminalRemotoBacking.limpiarRespuestas()}" ajax="true" update="textAreaRespuestas"/>
+            </h:panelGrid>
+            <input type="file" accept='text/*' id="file-input" onchange="readSingleFile(event)" style="visibility:hidden;position:absolute;top:0;left:0"/>
+        </p:panelGrid>        
+    </p:panelGrid>
+</ui:composition>

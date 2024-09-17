@@ -1,0 +1,52 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <div class="layout-menu-container">
+        <div class="layout-menu-logo">
+            <h:link id="logolink" outcome="dashboard">
+                <p:graphicImage name="images/#{guestPreferences.darkLogo ? 'logo-black.png' : 'logo-white.png'}" library="babylon-layout" rendered="#{loginBacking.usuario.tipoInt ne 241}" />
+                <p:graphicImage value="#{loginBacking.usuario.urlImagenComuna}" library="babylon-layout" rendered="#{loginBacking.usuario.tipoInt eq 241}"/>
+            </h:link>
+        </div>
+
+        <div class="nano layout-menu-wrapper">
+            <div class="nano-content menu-scroll-content">
+                <h:form id="menuform">
+                    <ui:fragment rendered="#{guestPreferences.profileMode == 'inline' ? true : false}">
+                        <div class="layout-profile">
+                            <a class="layout-profile-button" href="#">
+                                <p:graphicImage name="images/auter-circle.png" library="babylon-layout" rendered="#{loginBacking.usuario.tipoInt ne 241}" />
+                                <p:graphicImage value="#{loginBacking.usuario.urlImagenComuna}" library="babylon-layout" rendered="#{loginBacking.usuario.tipoInt eq 241}"/>
+
+
+                                <div class="layout-profile-userinfo">
+                                    <span class="layout-profile-name">#{loginBacking.usuarioAutenticado.nombre} #{loginBacking.usuarioAutenticado.apellidoPaterno}</span>
+                                    <span class="layout-profile-role">#{loginBacking.usuarioAutenticado.nombre_tipo}</span>
+                                </div>
+                                <i class="layout-profile-icon fa fa-angle-down"></i>
+                            </a>
+                            <ul class="layout-profile-menu">
+                                <li>
+                                    <a href="${request.contextPath}/paginas/administracion/perfil.xhtml">
+                                        <i class="fa fa-fw fa-user"></i>
+                                        <span>Perfil</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="${request.contextPath}/paginas/Logout" >
+                                        <i class="fa fa-fw fa-sign-out"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </ui:fragment>
+
+                    <ui:include src="#{guestPreferences.groupedMenu ? 'groupedMenu.xhtml' : 'ungroupedMenu.xhtml'}" />
+
+                </h:form>
+            </div>
+        </div>
+    </div>
+</ui:composition>

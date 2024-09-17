@@ -1,0 +1,348 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:define name="viewname">
+        <li>Mantenimiento</li>
+        <li>/</li>
+        <li><p:link outcome="instalaciones">Mapa Instalaciones</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBchYS1XkDRE3tgSDTMDaR4NUWM3Hd3JlA"></script>
+        <script>
+            window.onresize = function (event) {
+
+                var map = PF('gMapWV').getMap();
+                var MyDiv = map.getDiv();
+                var height = $(window).height() - 200;
+                MyDiv.style.height = height.toString().concat("px");
+                google.maps.event.trigger(map, 'resize');
+
+            }
+            window.onload = function () {
+                window.dispatchEvent(new Event('resize'));
+            };
+        </script>
+        <h:outputStylesheet>
+            @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { width: 60% !important; }
+            }
+            .ui-panelgrid-header{
+            background: #001970 !important;
+            font-weight: bold !important;
+            color: white !important;
+            }
+
+            .tableBorder{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+            .tableBorder th{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+            .tableBorder td{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+
+            .colUno {
+            font-weight: bold;
+            }
+        </h:outputStylesheet>
+        <h:form id="form" enctype="multipart/form-data">
+            <p:growl id="messages" showDetail="true" />
+            <p:dialog id="diaDoc" header="Documentos Asociados" widgetVar="dlg1"
+                      styleClass="modalResponsivo"  modal="true"
+                      responsive="true"  hideEffect="drop" >
+                <h:panelGrid  columns="2" cellpadding="0" cellspacing="0" width="774"
+                              headerClass="header" captionClass="caption">
+                    <f:facet name="header">
+                        <h:outputText value="Documentos de Instalación"/>
+                    </f:facet>
+                    <h:outputText value="Id Instalacion:"/>
+                    <h:outputText value="#{mapaInstalacionesBean.marker.data.idInstalacion}"/>
+                    <h:outputText value="Tipo:"/>
+                    <h:outputText value="#{mapaInstalacionesBean.marker.data.descripcionTipo}" />
+                    <h:outputText value="Ubicacion: "/>
+                    <h:outputText value="#{mapaInstalacionesBean.marker.data.ubicacion}" />
+                </h:panelGrid>
+                <br></br>
+                <p:dataTable id="tabla" var="doc" value="#{mapaInstalacionesBean.listaDocumentos}"
+                             emptyMessage="No existen registros" reflow="true">
+                    <p:column headerText="Fecha" filterMatchMode="contains"  filterBy="#{doc.descripcionFecha}"> 
+                                             <h:outputText value="#{doc.descripcionFecha}" />
+                    </p:column>
+                    <p:column headerText="Tipo" filterMatchMode="contains"  filterBy="#{doc.descripcionTipo}">
+                        <h:outputText value="#{doc.descripcionTipo}" />
+                    </p:column>
+                    <p:column headerText="Asunto" filterMatchMode="contains"  filterBy="#{doc.observacion}">
+                        <h:outputText value="#{doc.observacion}" />
+                    </p:column>
+                    <p:column headerText="Acción">
+                        <p:commandButton  id="detalle" update=":form:popDetalleDoc" icon="fas fa-eye"  actionListener="#{mapaInstalacionesBean.verDetalleDoc(doc)}" title="Detalle" />
+                        <p:menuButton icon="fas fa-file-download" title="Descargar" style="margin-left: 5px;" >
+                            <p:menuitem id="descargarlink1" value="#{doc.nombreArchivo}" rendered="${not empty doc.archivo and not empty doc.nombreArchivo}" title="Descargar" ajax="false" icon="fas fa-file-download" update="messages" actionListener="#{mapaInstalacionesBean.prepDownload(doc.archivo)}" >
+                                <p:fileDownload value="#{mapaInstalacionesBean.download}" />
+                            </p:menuitem>
+                            <p:menuitem id="descargarlink2" value="#{doc.nombreArchivo2}" rendered="${not empty doc.archivo2 and not empty doc.nombreArchivo2}" title="Descargar" ajax="false" icon="fas fa-file-download" update="messages" actionListener="#{mapaInstalacionesBean.prepDownload(doc.archivo2)}" >
+                                <p:fileDownload value="#{mapaInstalacionesBean.download}" />
+                            </p:menuitem>
+                            <p:menuitem id="descargarlink3" value="#{doc.nombreArchivo3}" rendered="${not empty doc.archivo3 and not empty doc.nombreArchivo3}" title="Descargar" ajax="false" icon="fas fa-file-download" update="messages" actionListener="#{mapaInstalacionesBean.prepDownload(doc.archivo3)}" >
+                                <p:fileDownload value="#{mapaInstalacionesBean.download}" />
+                            </p:menuitem>
+                            <p:menuitem id="descargarlink4" value="#{doc.nombreArchivo4}" rendered="${not empty doc.archivo4 and not empty doc.nombreArchivo4}" title="Descargar" ajax="false" icon="fas fa-file-download" update="messages" actionListener="#{mapaInstalacionesBean.prepDownload(doc.archivo4)}" >
+                                <p:fileDownload value="#{mapaInstalacionesBean.download}" />
+                            </p:menuitem>
+                            <p:menuitem id="descargarlink5" value="#{doc.nombreArchivo5}" rendered="${not empty doc.archivo5 and not empty doc.nombreArchivo5}" title="Descargar" ajax="false" icon="fas fa-file-download" update="messages" actionListener="#{mapaInstalacionesBean.prepDownload(doc.archivo5)}" >
+                                <p:fileDownload value="#{mapaInstalacionesBean.download}" />
+                            </p:menuitem>
+                        </p:menuButton>
+                    </p:column>
+                </p:dataTable> 
+            </p:dialog> 
+            <p:dialog id="popDetalleDoc" widgetVar="popDetalleDoc" responsive="true"    
+                      styleClass="modalResponsivo"  modal="true"
+                      height="80%"
+                      header="Detalle Documento: #{mapaInstalacionesBean.detCruceDocumentoTO.idCruce}"
+                      visible="#{mapaInstalacionesBean.verPopupDetalle}"
+                      hideEffect="drop">
+                <p:ajax event="close" listener="#{mapaInstalacionesBean.cerrarDetalle()}"/>
+                <div class="ui-g-12">
+                    <div class="card card-w-title">
+                        <p:panelGrid columns="4" id="grDetalle" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" >                       
+                            <h:outputLabel value="ID :" style="font-weight: bold;"/>
+                            <h:outputText id="det1" value="#{mapaInstalacionesBean.detCruceDocumentoTO.idDoc}"  />
+                            <h:outputLabel value="ID Cruce :" style="font-weight: bold;"/>
+                            <h:outputText id="det2" value="#{mapaInstalacionesBean.detCruceDocumentoTO.idCruce}"  />
+                            <h:outputLabel value="Fecha Doc :" style="font-weight: bold;"/>
+                            <h:outputText id="det3" value="#{mapaInstalacionesBean.detCruceDocumentoTO.descripcionFecha}"  />
+                            <h:outputLabel value="Tipo :" style="font-weight: bold;"/>
+                            <h:outputText id="det4" value="#{mapaInstalacionesBean.detCruceDocumentoTO.descripcionTipo}"  />
+                            <h:outputLabel value="Archivo :" style="font-weight: bold;"/>
+                            <h:outputText id="det5" value="#{mapaInstalacionesBean.detCruceDocumentoTO.nombreArchivo}"  />
+                            <h:outputLabel value="Observación :" style="font-weight: bold;"/>
+                            <h:outputText id="det6" value="#{mapaInstalacionesBean.detCruceDocumentoTO.observacion}"  />
+                            <h:outputLabel value="Subido por :" style="font-weight: bold;"/>
+                            <h:outputText id="det7" value="#{mapaInstalacionesBean.detCruceDocumentoTO.usrSub}"  />
+                            <h:outputLabel value="OT Auter :" style="font-weight: bold;"/>
+                            <h:outputText id="det8" value="#{mapaInstalacionesBean.detCruceDocumentoTO.OT_AUTER}"  />
+                            <h:outputLabel value="OTM :" style="font-weight: bold;"/>
+                            <h:outputText id="det9" value="#{mapaInstalacionesBean.detCruceDocumentoTO.OTM}"  />
+                            <h:outputLabel value="Fecha OTM :" style="font-weight: bold;"/>
+                            <h:outputText id="det10" value="#{mapaInstalacionesBean.detCruceDocumentoTO.fecha_otm}"  />
+                            <h:outputLabel value="Recepción OTM :" style="font-weight: bold;"/>
+                            <h:outputText id="det11" value="#{mapaInstalacionesBean.detCruceDocumentoTO.fec_rec_otm}"  />
+                            <h:outputLabel value="Fecha mediciones :" style="font-weight: bold;"/>
+                            <h:outputText id="det12" value="#{mapaInstalacionesBean.detCruceDocumentoTO.fec_medicion}"  />
+                            <h:outputLabel value="Descripción Medición :" style="font-weight: bold;"/>
+                            <h:outputText id="det13" value="#{mapaInstalacionesBean.detCruceDocumentoTO.texto_simac}"  />
+                            <h:outputLabel value="Descripción :" style="font-weight: bold;"/>
+                            <h:outputText id="det14" value="#{mapaInstalacionesBean.detCruceDocumentoTO.desc_medicion}"  />
+                            <h:outputLabel value="Resultado :" style="font-weight: bold;"/>
+                            <h:outputText id="det15" value="#{mapaInstalacionesBean.detCruceDocumentoTO.resultado}"  />
+                            <h:outputLabel value="Ingreso UOCT :" style="font-weight: bold;"/>
+                            <h:outputText id="det16" value="#{mapaInstalacionesBean.detCruceDocumentoTO.fec_ing_uoct}"  />
+                            <h:outputLabel value="Aprobación UOCT :" style="font-weight: bold;"/>
+                            <h:outputText id="det17" value="#{mapaInstalacionesBean.detCruceDocumentoTO.fec_apr_uoct}"  />                                
+                            <h:outputLabel value="Texto para SIMAC :" style="font-weight: bold;"/>
+                            <h:outputText id="det18" value="#{mapaInstalacionesBean.detCruceDocumentoTO.texto_simac}"  />
+                        </p:panelGrid>                          
+                    </div>
+                </div>
+            </p:dialog>
+            <h:panelGroup id="idMapa">
+                <h:panelGroup>
+                    <p:gmap widgetVar="gMapWV" id="gMapWV"
+                            center="#{mapaInstalacionesBean.centro}" 
+                            zoom="#{mapaInstalacionesBean.tamanoMapa}" type="ROADMAP" 
+                            model="#{mapaInstalacionesBean.marcadores}"
+                            style="width:100%;height: 600px;"
+                            fitBounds="false" >
+                        <p:ajax event="overlaySelect" listener="#{mapaInstalacionesBean.onMarkerSelect}" />
+                        <p:gmapInfoWindow rendered="#{mapaInstalacionesBean.pintarMapa}">
+                            <h:panelGrid columns="1" >
+                                <c:if test="#{mapaInstalacionesBean.marker.data.idCruce != -1}">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                 columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                        <f:facet name="header">
+                                            <h:outputText value="Información del Instalación"/>
+                                        </f:facet>
+                                        <h:outputText value="Id Instalación:"/>
+                                        <h:outputText value="#{mapaInstalacionesBean.marker.data.idInstalacion}"/>
+                                        <h:outputText value="Tipo:"/>
+                                        <h:outputText value="#{mapaInstalacionesBean.marker.data.descripcionTipo}" />
+                                        <h:outputText value="Ubicación: "/>
+                                        <h:outputText value="#{mapaInstalacionesBean.marker.data.ubicacion}" />
+                                        <h:outputText value="Código Sistema:"/>
+                                        <h:outputText value="#{mapaInstalacionesBean.marker.data.codigoSistema}" />
+                                        <h:outputText value="Nombre de Red:" rendered="#{mapaInstalacionesBean.rendTipo}"/>
+                                        <h:outputText value="#{mapaInstalacionesBean.marker.data.red}" rendered="#{mapaInstalacionesBean.rendTipo}"/>
+                                        <h:outputText value="Controlador:" rendered="#{mapaInstalacionesBean.rendTipo}"/>
+                                        <h:outputText value="#{mapaInstalacionesBean.marker.data.controlador}" rendered="#{mapaInstalacionesBean.rendTipo}"/>
+                                    </p:panelGrid>
+                                    <c:if test="#{mapaInstalacionesBean.marker.data.tipo lt 7}">
+                                        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                     columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                            <f:facet name="header">
+                                                <h:outputText value="Información Detallada"/>
+                                            </f:facet>
+                                            <h:outputText value="Enlace:  "/>
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.enlace}"/>
+                                            <h:outputText value="UPS:  "/>
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.ups}" />
+
+                                        </p:panelGrid>                                    
+                                        <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                                                     columnClasses="ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3,ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3"
+                                                     rendered="#{mapaInstalacionesBean.rendTipo}">
+
+                                            <h:outputText value="N° Cabezales"/>
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.numCabezales}"/>
+                                            <h:outputText value="N° Esp. Scoot"/>
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.numEspScoot}"/>
+                                            <h:outputText value="N° Esp. Locales" />
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.numEspLocal}" />
+                                            <h:outputText value="N° Botoneras"/>                                        
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.numBotoneras}" />
+
+                                        </p:panelGrid>
+                                        <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                                                     columnClasses="ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3,ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3"
+                                                     rendered="#{mapaInstalacionesBean.rendTipo}">
+                                            <h:outputText value="N° Hitos Elect."/>
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.numHitElec}"/>
+                                            <h:outputText value="N° Hitos Solares"/>
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.numHitSolar}"/>
+                                            <h:outputText value="N° Cta Regresiva" />
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.numCtaRegres}"/>
+                                            <h:outputText value="N° Señal Tto."/>
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.numSenSenTto}"/>
+                                        </p:panelGrid>
+                                        <br></br>
+                                        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                     columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                            <h:outputText value="Empalme:"/>
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.empalme}"/>
+                                            <h:outputText value="Modelo OTU:" rendered="#{mapaInstalacionesBean.rendTipo}"/>
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.modeloOtu}" rendered="#{mapaInstalacionesBean.rendTipo}"/>
+                                            <h:outputText value="Observación: "/>
+                                            <h:outputText value="#{mapaInstalacionesBean.marker.data.observacion}" />
+                                        </p:panelGrid>
+                                    </c:if> 
+                                    <p:commandButton  icon="fas fa-folder-open"  title="Ver Documentos Asociados" oncomplete="PF('dlg1').show();" update="form:diaDoc">
+                                    </p:commandButton>
+                                </c:if>
+                                <c:if test="#{mapaInstalacionesBean.marker.data.idCruce == -1}">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                 columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                        <f:facet name="header">
+                                            <h:outputText value="INFORMACÓN GENERAL"/>
+                                        </f:facet>
+                                        <h:outputText value="Código de Movil"/>
+                                        <h:outputText value="#{mapaInstalacionesBean.marker.data.activo}" />
+                                        <h:outputText value="Fecha actualización"/>
+                                        <h:outputText value="#{mapaInstalacionesBean.marker.data.descripcionFecha}" />
+                                    </p:panelGrid>
+                                </c:if>
+                            </h:panelGrid>
+                        </p:gmapInfoWindow>
+                    </p:gmap>
+                </h:panelGroup>      
+            </h:panelGroup>
+        </h:form>    
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>           
+                <p:tabView id="config-form-tabs" >
+                    <p:tab rendered="#{!mapaInstalacionesBean.usurioAutenticado().tipo.toString() != '241'}">             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Filtro Comuna"/>                             
+                        </f:facet>
+                        <h:form id="config-form">
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel value="Comuna" ></h:outputLabel>
+                                        <p:selectCheckboxMenu appendTo="@this" id="menu" value="#{mapaInstalacionesBean.comunaSeleccionadas}" label="Seleccionar Comunas"
+                                                              filter="true" filterMatchMode="startsWith"  panelStyleClass="without-selectall" >
+                                            <f:selectItems value="#{mapaInstalacionesBean.listaComunas}" var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"/>
+                                            <p:ajax event="change" immediate="true" process="@form"/>
+                                            <p:ajax event="toggleSelect" listener="#{mapaInstalacionesBean.onToggleSelect}"  />
+                                        </p:selectCheckboxMenu>
+                                        <p:commandButton value="Cargar" actionListener="#{mapaInstalacionesBean.cargarMapa}" update="display form:idMapa config-form-tabs" immediate="true" onclick="$('.layout-config-button').click()" />
+                                        <p:outputPanel id="display" >
+                                            <h:outputLabel value="#{mapaInstalacionesBean.lstComunaSeleccionada}"></h:outputLabel>
+                                        </p:outputPanel>  
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>   
+                    </p:tab>
+                    <p:tab id="tabCruce" rendered="#{mapaInstalacionesBean.verBuscarCruce}">             
+                        <f:facet name="title">
+                            <i class="fas fa-compress"></i>
+                            <h:outputText value="Buscar Cruce" style="margin-left: 10px;"/>                             
+                        </f:facet>
+                        <h:form id="config-form2">
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" columnClasses="ui-g-12 ui-md-4,ui-g-12 ui-md-8">
+                                        <h:outputLabel for ="idCompleto"  value="Cruce:" /> 
+                                        <p:autoComplete id="idCompleto" 
+                                                        value="#{mapaInstalacionesBean.idCruce}" 
+                                                        converter="instalacionConvertir"
+                                                        completeMethod="#{mapaInstalacionesBean.filtroCruce}"
+                                                        var="cruce"                                                        
+                                                        appendTo="@this"
+                                                        effect="fade"
+                                                        queryDelay="500"
+                                                        scrollHeight="300"
+                                                        itemValue="#{cruce}"
+                                                        itemLabel="#{cruce.ubicacion}"
+                                                        placeholder="Buscar Cruce...">
+                                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                                <h:outputText value="Id Cruce"/>
+                                                <h:outputText value="#{cruce.idCruce}"/>
+                                                <h:outputText value="Id Instalacion"/>
+                                                <h:outputText value="#{cruce.idInstalacion}" />
+                                                <h:outputText value="Tipo"/>
+                                                <h:outputText value="#{cruce.descripcionTipo}" />
+                                                <h:outputText value="Ubicacion"/>
+                                                <h:outputText value="#{cruce.ubicacion}" />
+                                                <h:outputText value="Codigo Sistema"/>
+                                                <h:outputText value="#{cruce.codigoSistema}" />
+                                                <h:outputText value="Empalme"/>
+                                                <h:outputText value="#{cruce.empalme}" />
+                                                <h:outputText value="Enlace"/>
+                                                <h:outputText value="#{cruce.enlace}" />
+                                                <h:outputText value="OTU"/>
+                                                <h:outputText value="#{cruce.modeloOtu}"/>
+                                            </p:panelGrid>   
+                                            <p:ajax  global="false" event="itemSelect" listener="#{mapaInstalacionesBean.cambioValorAutoComplete}" update="form:gMapWV" oncomplete="$('.layout-config-button').click()"   process="@form"/>
+                                        </p:autoComplete>
+                                        <p:commandButton value="Buscar Cruce" action="#{mapaInstalacionesBean.buscar}"  process="@form" update="form:gMapWV" onclick="$('.layout-config-button').click()"  />
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>
+                </p:tabView>  
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

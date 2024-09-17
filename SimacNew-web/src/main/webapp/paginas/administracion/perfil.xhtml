@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="viewname">
+        <li>Mantención</li>
+        <li>/</li>
+        <li><p:link outcome="perfil">Perfil</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <h:outputStylesheet>
+            .ui-panelgrid-header{
+            background: #001970 !important;
+            font-weight: bold !important;
+            color: white !important;
+            }
+        </h:outputStylesheet>
+        <h:form id="form1">      
+            <p:growl id="messages" showDetail="true" severity="info" />
+            <p:panelGrid  id="grid" columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" 
+                          columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4">
+                <f:facet name="header" >
+                    <h:outputText value="Perfil de Usuario"/>
+                </f:facet>
+                <h:outputLabel value="Usuario :"/>    
+                <p:inputText id="idUsuario" value="#{cambioClaveBacking.usuarioTO.identificador}" readonly="true" />                           
+                <h:outputLabel value="Nombre :"/>    
+                <p:inputText id="idNombre" value="#{cambioClaveBacking.usuarioTO.nombre}" readonly="true" />  
+
+                <h:outputLabel value="Apellido Paterno :"/>    
+                <p:inputText id="idApaterno" value="#{cambioClaveBacking.usuarioTO.apellidoPaterno}" readonly="true" />  
+                <h:outputLabel value="Apellido Materno :"/>    
+                <p:inputText id="idAmaterno" value="#{cambioClaveBacking.usuarioTO.apellidoMaterno}" readonly="true" />  
+
+                <h:outputLabel value="Ind Activo :"/>    
+                <p:inputText value="#{cambioClaveBacking.usuarioTO.intAct}" readonly="true"/>
+                <h:outputLabel value="Mail :"/>    
+                <p:inputText id="idEmail" value="#{cambioClaveBacking.usuarioTO.email}" style="text-transform:uppercase;" readonly="true"/> 
+
+                <h:outputLabel value="Comuna :"/>
+                <p:inputText value="#{cambioClaveBacking.obtenerComuna()}" readonly="true"/>
+                <h:outputLabel/>    
+                <h:outputLabel/> 
+
+                <h:outputLabel value="Latitud :"/>    
+                <p:inputText id="idLatitud" value="#{cambioClaveBacking.usuarioTO.latitud}"  readonly="true"/>
+                <h:outputLabel value="Longitud :"/>    
+                <p:inputText id="idLongitud" value="#{cambioClaveBacking.usuarioTO.longitud}"  readonly="true" />
+
+                <h:outputLabel value="Tipo Empresa :"/>    
+                <p:inputText value="#{cambioClaveBacking.obtenerTipoEmpresa()}" readonly="true"/>
+                <h:outputLabel value="Nombre Empresa:"/>    
+                <p:inputText id="idEmpresa" value="#{cambioClaveBacking.usuarioTO.nombreEmpresa}" readonly="true"/>
+            </p:panelGrid>
+            <br></br>
+            <p:panelGrid id="pnlPass" columns="3" layout="grid" style="width: 100% !important; background:white;" styleClass="ui-panelgrid-blank ui-fluid" 
+                         columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2">
+                <f:facet name="header" >
+                    <h:outputText value="Cambio de clave"/>
+                </f:facet>
+                <h:outputLabel value="Ingrese su Clave de Ingreso actual :"></h:outputLabel>
+                <p:password id="idClaveActual" value="#{cambioClaveBacking.claveActual}" redisplay="true" style="background: white;"/>  
+                <p:message for="idClaveActual" severity="error" />
+                <h:outputLabel value="Ingrese su nueva Clave de Ingreso :"></h:outputLabel>                    
+                <p:password id="idClaveNueva" value="#{cambioClaveBacking.nuevaClave}" redisplay="true" style="background: white;"/>   
+                <p:message for="idClaveNueva" severity="error" />
+                <h:outputLabel value="Confirme su nueva Clave de Ingreso :"></h:outputLabel>
+                <p:password id="idClaveNueva2" value="#{cambioClaveBacking.nuevaClave2}" redisplay="true" style="background: white;"/>  
+                <p:message for="idClaveNueva2" severity="error" />       
+                <h:outputLabel value="" />
+                <p:commandButton value="Aceptar" action="#{cambioClaveBacking.aceptar}" update="@form"/>
+            </p:panelGrid>   
+        </h:form>
+    </ui:define>
+</ui:composition>
+

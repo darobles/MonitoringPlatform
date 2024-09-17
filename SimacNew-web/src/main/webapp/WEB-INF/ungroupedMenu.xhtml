@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:pb="http://primefaces.org/babylon">
+    <h:outputStylesheet library="webjars" name="font-awesome/5.13.0/css/all.min-jsf.css" />
+    <h:outputStylesheet library="webjars" name="font-awesome/5.13.0/css/v4-shims.min-jsf.css" />
+    <pb:menu widgetVar="babylonMenuWidget">
+        <p:submenu id="omx_homepage" label="Menu Principal" icon="fa fa-fw fa-home" >
+            <p:menuitem id="omx_index" value="Index" icon="fa fa-home" outcome="index" rendered="#{!parametrosBacking.verMenu('01','01')}" />
+            <p:menuitem id="omx_dashboard" value="Dashboard" icon="fa fa-fw fa-dashboard" outcome="dashboard" rendered="#{parametrosBacking.verMenu('01','01')}" />
+            <p:submenu id="omx_components" label="Semáforos" icon="fas fa-fw fa-traffic-light" rendered="#{parametrosBacking.verMenu('01','00')}">
+                <p:menuitem id="omx_sample" value="Mapa Online" icon="fa fa-fw fa-columns" outcome="mapaPrime" rendered="#{parametrosBacking.verMenu('01','01')}"/>
+                <p:menuitem id="omx_forms" value="Listado Online" icon="fas fa-tv" outcome="lista" rendered="#{parametrosBacking.verMenu('01','02')}"/>
+                <p:menuitem id="omx_data" value="Comportamiento" icon="fa fa-fw fa-table" outcome="historico" rendered="#{parametrosBacking.verMenu('01','03')}"/>
+            </p:submenu>
+            <p:submenu id="omx_default" label="Mantención" icon="fa fa-fw fa-cube" rendered="#{parametrosBacking.verMenu('02','00')}">
+                <p:menuitem id="omx_login" value="Mapa de Instalaciones" icon="fas fa-microchip" outcome="instalaciones" rendered="#{parametrosBacking.verMenu('02','01')}"/>
+            </p:submenu>           
+            <p:submenu id="admin_menu" label="Administración" icon="fas fa-tools" rendered="#{parametrosBacking.verMenu('05','00')}">
+                <p:menuitem id="tag_cruce" value="Cruces" icon="fas fa-map-signs" outcome="cruce" rendered="#{parametrosBacking.verMenu('05','01')}"/>
+                <p:menuitem id="tag_doc" value="Documento" icon="fas fa-file-signature" outcome="documento" rendered="#{parametrosBacking.verMenu('05','02')}"/>
+                <p:menuitem id="tag_instalation" value="Instalación" icon="fas fa-traffic-light" outcome="instalacion" rendered="#{parametrosBacking.verMenu('05','03')}"/>
+                <p:menuitem id="tag_users" value="Usuarios" icon="fas fa-users-cog" outcome="usuario" rendered="#{parametrosBacking.verMenu('05','04')}"/>
+                <p:menuitem id="tag_devices" value="Dispositivos" icon="fas fa-sim-card" outcome="dispositivo" rendered="#{parametrosBacking.verMenu('05','05')}"/>
+                <p:menuitem id="tag_comunas" value="Comunas" icon="fas fa-sim-card" outcome="comuna" rendered="#{parametrosBacking.verMenu('05','06')}"/>
+            </p:submenu>
+        </p:submenu>
+    </pb:menu>
+
+</ui:composition>

@@ -1,0 +1,583 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="viewname">
+        <li>Online</li>
+        <li>/</li>
+        <li><p:link outcome="mapaPrime">Mapa</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <f:event type="preRenderComponent" listener="#{mapaPrimeBacking.init()}" />
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBchYS1XkDRE3tgSDTMDaR4NUWM3Hd3JlA"></script>
+        <script type="text/javascript">
+            var infowindow = null;
+            var infowindow2 = null;
+            function agrandar()
+            {
+                infowindow2 = null;
+                var htmlTag = document.getElementById('dlg');
+                htmlTag.style.height = Math.floor(window.innerHeight) + "px";
+                htmlTag.style.width = Math.floor(window.innerWidth) + "px";
+                updateGrowl();
+
+            }
+      
+            
+            function resizeElement(elementId,height){
+                var element = document.getElementById(elementId);
+                element.style.height=height+"px";
+            }
+
+            function resizePfGmapFullScreen() {
+                var height = window.innerHeight - 250;
+
+                resizeElement("form:gMapWV", height);
+            }
+            
+            window.onresize = function(event) {
+                resizePfGmapFullScreen();
+            };
+
+            
+            function rutaMap(msg, id)
+            {
+                //Mapa 1
+                if (typeof PF('gMapWV') !== "undefined")
+                {
+                    var map = PF('gMapWV').getMap();
+                    if (infowindow === null)
+                    {
+                        for (var i in map.polylines) {
+                            google.maps.event.addListener(map.polylines[i], 'click', function (event) {
+                                if (infowindow === null)
+                                {
+                                    infowindow = new google.maps.InfoWindow({
+                                        map: map
+                                    });
+                                }
+                                infowindow.setPosition(event.latLng);
+                                infowindow.close();
+                            });
+                        }
+                    } else {
+                        for (var i in map.polylines) {
+                            if (map.polylines[i].id === id)
+                            {
+                                infowindow.setContent(msg);
+                                infowindow.open(map);
+                                break;
+                            }
+                        }
+                    }
+                }
+                //Mapa 2
+                if (typeof PF('gMapWV2') !== "undefined")
+                {
+                    var map = PF('gMapWV2').getMap();
+                    if (infowindow2 === null)
+                    {
+                        for (var i in map.polylines) {
+                            google.maps.event.addListener(map.polylines[i], 'click', function (event) {
+                                if (infowindow2 === null)
+                                {
+                                    infowindow2 = new google.maps.InfoWindow({
+                                        map: map
+                                    });
+                                }
+                                infowindow2.setPosition(event.latLng);
+                                infowindow2.close();
+                            });
+                        }
+                    } else {
+                        for (var i in map.polylines) {
+                            if (map.polylines[i].id === id)
+                            {
+                                infowindow2.setContent(msg);
+                                infowindow2.open(map);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
+        </script>
+        <h:outputStylesheet>
+            .C-1 .ui-chkbox-box {
+            background: #008000 !important;
+            }
+
+            .C-2 .ui-chkbox-box {
+            background: #017BCB !important;
+            }
+
+            .C-3 .ui-chkbox-box {
+            background: #C62829 !important;
+            }
+            .C-4 .ui-chkbox-box {
+            background: #7F7F7F !important;
+            }
+            .C-5 .ui-chkbox-box {
+            background: #212121 !important;
+            }
+
+            .ui-panelgrid-header{
+            background: #001970 !important;
+            font-weight: bold !important;
+            color: white !important;
+            }
+
+            .tableBorder{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+            .tableBorder th{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+            .tableBorder td{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+
+            .colUno {
+            background-color:  #{mapaPrimeBacking.bg_uoct} !important;
+            font-weight: bold;
+            }
+            .colDos {
+                background-color: transparent !important;
+            }
+
+            .rowUno td{
+            background-color: #{mapaPrimeBacking.bg_uoct} !important;
+            text-align: center;
+            font-weight: bold;
+            }
+            .rowDos {
+            background-color:  transparent !important;
+            text-align: center;
+            font-weight: bold;
+            }
+
+            .rowUnoSL td{
+            background-color:  #{mapaPrimeBacking.bg_uoct} !important;
+            text-align: center;
+            font-weight: bold;
+            }
+
+            .rowDosSL {
+            text-align: center;
+            font-weight: bold;
+            }  
+            .rowMatrizUno{
+            background: #{mapaPrimeBacking.bg_uoct} !important;
+            text-align: left;
+            border-collapse: collapse !important;
+            border: 1px solid #91908B !important;
+            text-align: left;
+            font-weight: bold;
+            }
+            .rowMatrizDos td{
+            background: #{mapaPrimeBacking.bg_uoct} !important;
+            text-align: left;
+            border-collapse: collapse !important;
+            border: 1px solid #91908B !important;
+            } 
+            .map {
+            width: 99% !important;
+            height: 99% !important;
+            }
+            html, body, .container,  #form:gMapWV {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            }
+            #form:gMapWV {
+            position: relative;
+            }
+            <ui:repeat var="o" value="#{mapaPrimeBacking.colores}" >
+                .#{o.codigo1} .ui-chkbox-box {
+                background-image : none;
+                background-color: #{o.codigo2};
+                color: white;
+                }      
+            </ui:repeat>
+            @media screen and (max-width: 768px ) {
+                .modalResponsivo { width: 90% !important; height: 85% !important;} 
+            }
+            
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo {
+                 max-height: 90% !important;
+            }
+            }
+        </h:outputStylesheet>
+        <h:outputScript>  
+            function handleComplete(xhr, status, args, k){
+            if(k == 1)
+            {
+            if(typeof PF('gMapWV') !== "undefined")
+            {
+            var gmap = PF('gMapWV').getMap();
+            //Markers
+            for(var i in gmap.markers)
+            {
+            var newMarker = eval("args.marker"+i);
+            var newPosition = eval("args.position"+i);
+            var oldMarker = gmap.markers[i];
+            if(typeof newMarker !== "undefined")
+            {
+            oldMarker.icon = newMarker.icon;
+            oldMarker.setPosition(newPosition);
+            oldMarker.setMap(gmap);   
+            }
+            }
+            }
+            }
+            else
+            {
+            //Mapa 1
+            var argsAux = args;
+            if(typeof PF('gMapWV') !== "undefined")
+            {
+            var gmap = PF('gMapWV').getMap();
+            for(var i in gmap.markers)
+            {
+            var newMarker = eval("args.marker"+i);
+            var newPosition = eval("args.position"+i);
+            var oldMarker = gmap.markers[i];
+            if(typeof newMarker !== "undefined")
+            {
+            oldMarker.icon = newMarker.icon;
+            oldMarker.setPosition(newPosition);
+            oldMarker.setMap(gmap);     
+            }          
+            }
+
+            }
+            //Mapa 2
+            if(typeof PF('gMapWV2') !== "undefined")
+            {
+            var gmap2 = PF('gMapWV2').getMap();
+            for(var i in gmap2.markers)
+            {
+            var newMarker = eval("argsAux.marker"+i);
+            var newPosition = eval("argsAux.position"+i);
+            var oldMarker = gmap2.markers[i];
+            if(typeof newMarker !== "undefined")
+            {
+            oldMarker.icon = newMarker.icon;
+            oldMarker.setPosition(newPosition);
+            oldMarker.setMap(gmap2);     
+            }
+            }           
+            }
+            }
+            }
+            function handleError(){
+                window.location.pathname = '/paginas/online/mapaPrime.xhtml';                
+            }
+        </h:outputScript>
+
+        <h:form id="form">
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="drop">
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" />
+                </h:panelGrid>
+            </p:confirmDialog>
+            <p:dialog id="popupPPR" widgetVar="popupPPR"
+                  style="background: white !important;"
+                  visible="#{controladorRemotoBacking.verControladorRemoto}"
+                  hideEffect="drop"
+                  resizable="false"
+                  height="80%"
+                  closable="false"
+                  closeOnEscape="false">
+            <p:ajax event="close" listener="#{controladorRemotoBacking.cerrarDialog()}"/>
+            <ui:insert name="tabPPR" id="tabPPR"  >
+                <ui:include src="../../include/template/PanelPolicial.xhtml" />
+            </ui:insert>
+            <p:commandButton onclick="PF('popupPPR').hide();" immediate="true" process="@this" ajax="true" value="Salir" 
+                             styleClass="danger-btn" rendered="true" >
+                <p:confirm header="Confirmación" message="¿Esta seguro que desea salir del Panel Policial Remoto?" icon="ui-icon-alert" />
+            </p:commandButton>
+        </p:dialog>
+            <p:poll interval="#{mapaPrimeBacking.intervalo}" listener="#{mapaPrimeBacking.refresco}"  oncomplete="handleComplete(xhr, status, args,2)" process="@this" onerror="handleError()"/>
+            <h:panelGroup id="idMapa" >
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <p:panelGrid id="panelestados" columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-12" >
+                                <p:dataGrid rendered="#{mapaPrimeBacking.pintarMapa}" columns="#{mapaPrimeBacking.numColsMenu}"  value="#{mapaPrimeBacking.listaEstadoOperativo}" var="item" rowIndexVar="index">
+                                    <p:column>
+                                        <p:selectBooleanCheckbox value="#{mapaPrimeBacking.check1[index]}" styleClass="#{mapaPrimeBacking.getColor(index)}">
+                                            <p:ajax event="change" listener="#{mapaPrimeBacking.processChecked(item)}" immediate="true" oncomplete="handleComplete(xhr, status, args,1)"  process="@this"/>
+                                        </p:selectBooleanCheckbox>
+                                        <h:outputText value="#{item.descripcion}"/>
+                                    </p:column>
+                                </p:dataGrid>
+                            </p:panelGrid>
+                            <h:panelGroup id="pnlMap">
+                                <p:gmap widgetVar="gMapWV" id="gMapWV"
+                                        streetView="false"
+                                        mapTypeControl="false"
+                                        navigationControl="false"                                        
+                                        center="#{mapaPrimeBacking.centro}" 
+                                        zoom="#{mapaPrimeBacking.tamanoMapa}" type="ROADMAP" 
+                                        style="width:100%;height: 600px;"
+                                        model="#{mapaPrimeBacking.marcadores}"
+                                        fitBounds="false" >
+                                    <p:ajax event="overlaySelect" listener="#{mapaPrimeBacking.onMarkerSelect}" />
+                                    <p:gmapInfoWindow rendered="#{mapaPrimeBacking.poliBool}" >
+                                        <h:panelGrid columns="1" style="background: #{mapaPrimeBacking.styleBackground} !important">
+                                            <c:if test="#{mapaPrimeBacking.marker.data.idCruce > 0 and mapaPrimeBacking.marker.data.tipoMonitoreo == 1}">
+                                                <div class="ui-g-12">
+                                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                                 columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                                        <f:facet name="header" >
+                                                            <h:outputText value="Información del Dispositivo"/>
+                                                        </f:facet>
+                                                        <h:outputText id="idCruce" value="Id Cruce:"/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.idCruce}"/>
+                                                        <h:outputText value="Ubicación:"/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.ubicacion}" />
+                                                        <h:outputText value="Tipo: " rendered="#{mapaPrimeBacking.mostrarInfoConf}"/> 
+                                                        <h:outputText value="Semáforo" rendered="#{mapaPrimeBacking.mostrarInfoConf}"/>
+                                                        <h:outputText value="Código Sistema: " rendered="#{mapaPrimeBacking.mostrarInfoConf}"/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.codigoSistema}" rendered="#{mapaPrimeBacking.mostrarInfoConf}"/>
+                                                        <h:outputText value="Nombre de Red:" rendered="#{mapaPrimeBacking.mostrarInfoConf}"/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.red}" rendered="#{mapaPrimeBacking.mostrarInfoConf}"/>
+                                                        <h:outputText value="Controlador:" rendered="#{mapaPrimeBacking.mostrarInfoConf}"/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.controlador}" rendered="#{mapaPrimeBacking.mostrarInfoConf}"/>
+                                                    </p:panelGrid>
+
+                                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                                 columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Información del Sistema"/>
+                                                        </f:facet>
+                                                        <h:outputText value="Estado Cruce:  "/>
+                                                        <c:choose>
+                                                            <c:when  test='#{mapaPrimeBacking.marker.data.indLamFault and mapaPrimeBacking.marker.data.estadoOperativoInt lt 3 and mapaPrimeBacking.marker.data.valModoUtc4Int eq 1}'>
+                                                                <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionEstadoOperativo} (Lámpara Fundida)"/>
+                                                            </c:when>  
+                                                            <c:otherwise>
+                                                                <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionEstadoOperativo}"/>
+                                                            </c:otherwise>
+                                                        </c:choose>   
+                                                        <h:outputText value="Informado a :  "/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionFecha}" />
+                                                        <h:outputText value="Diagnóstico:   "/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.observacion}" />
+                                                    </p:panelGrid>
+
+                                                    <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                                                                 columnClasses="ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3 colDos,ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3 colDos">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Detalle Sensores"/>
+                                                        </f:facet>                                                         
+                                                        <h:outputText value="Sensor 220" />
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionValModo220}" />
+                                                        <h:outputText value="Sensor UPS" />
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionValModoUps}" />
+                                                        <h:outputText value="Sensor Luces"/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionValModoLam}" />
+                                                        <h:outputText value="Sensor UTC"/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionValModoUtc}" />
+
+                                                    </p:panelGrid>
+                                                    Nota: Sensor UTC podría tener hasta 5min de retraso.
+
+                                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                                 columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                                        <h:outputText id="nombreUsuario" value="Usuario: "/>
+                                                        <h:outputText value="#{loginBacking.usuario.nombre} #{loginBacking.usuario.apellidoPaterno}"/>
+                                                    </p:panelGrid>
+                                                    <br></br>
+                                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                                 columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                                        <c:if test="#{mapaPrimeBacking.verInfMonitoreo eq true}">
+                                                            <f:facet name="header">
+                                                                <h:outputText value="Información de Equipo Monitor"/>
+                                                            </f:facet>
+                                                        </c:if>
+
+                                                        <h:outputText value="Nº de Equipo Monitor:" rendered="#{mapaPrimeBacking.verInfMonitoreo}"/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.numeroEquipo}" rendered="#{mapaPrimeBacking.verInfMonitoreo}"/>
+                                                        <h:outputText value="IP Asignado:" rendered="#{mapaPrimeBacking.verInfMonitoreo}"/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.direccionIP}" rendered="#{mapaPrimeBacking.verInfMonitoreo}"/>
+                                                        <h:outputText value="Nº de Télefono" rendered="#{mapaPrimeBacking.verInfMonitoreo}"/>
+                                                        <h:outputText value="#{mapaPrimeBacking.marker.data.telefono}" rendered="#{mapaPrimeBacking.verInfMonitoreo}"/>
+                                                    </p:panelGrid>
+                                                </div>
+                                            </c:if>
+                                            <c:if test="#{mapaPrimeBacking.marker.data.idCruce > 0 and mapaPrimeBacking.marker.data.tipoMonitoreo == 2}">
+                                                <div class="ui-g-12">
+                                                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                                 columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Información del Dispositivo"/>
+                                                    </f:facet>
+                                                    <h:outputText id="idCruce" value="Id Cruce:"/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.idCruce}"/>
+                                                    <h:outputText value="Ubicación:"/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.ubicacion}" />
+                                                    <h:outputText value="Tipo: "/>
+                                                    <h:outputText value="Señal Luminosa" />
+                                                </p:panelGrid>
+                                                <br></br>
+                                                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                                 columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Información del Sistema"/>
+                                                    </f:facet>
+                                                    <h:outputText value="Estado:  "/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionEstadoOperativo}"/>
+                                                    <h:outputText value="Informado a :  "/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionFecha}" />
+                                                    <h:outputText value="Diagnóstico:   "/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.observacion}" />
+                                                </p:panelGrid>
+                                                <br></br>
+                                                <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                                                                 columnClasses="ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3 colDos,ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3 colDos">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Detalle Sensores"/>
+                                                    </f:facet>                                                         
+                                                    <h:outputText value="Sensor 220" />
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionValModo220}" />
+                                                    <h:outputText value="Sensor UPS" />
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionValModoUps}" />
+                                                    <h:outputText value="Sensor Luces"/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionValModoLam}" />
+                                                    <h:outputText value="Sensor UTC"/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionValModoUtc}" />
+                                                </p:panelGrid>
+                                                <br></br>
+                                                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                                                                 columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Información de Equipo Monitor"/>
+                                                    </f:facet>
+                                                    <h:outputText value="Nº de Equipo Monitor:"/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.numeroEquipo}"/>
+                                                    <h:outputText value="IP Asignado:"/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.direccionIP}" />
+                                                    <h:outputText value="Nº de Télefono"/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.telefono}" />
+                                                </p:panelGrid>
+                                                </div>
+                                            </c:if>
+                                            <c:if test="#{mapaPrimeBacking.marker.data.idCruce == -1}">
+                                                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                                                                 columnClasses="ui-g-6 ui-md-6 colUno,ui-g-6 ui-md-6">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="INFORMACIÓN GENERAL"/>
+                                                    </f:facet>
+                                                    <h:outputText value="Código de Movil"/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.activo}" />
+                                                    <h:outputText value="Fecha actualización"/>
+                                                    <h:outputText value="#{mapaPrimeBacking.marker.data.descripcionFecha}" />
+                                                </p:panelGrid>
+                                            </c:if> 
+                                        </h:panelGrid>
+                                    </p:gmapInfoWindow>
+                                </p:gmap>
+                            </h:panelGroup>   
+                        </div>
+                    </div>
+                </div>
+            </h:panelGroup>
+
+        </h:form>
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>           
+                <p:tabView id="config-form-tabs" >
+                    <p:tab rendered="#{mapaPrimeBacking.verFiltroRegion}">             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Filtro Comuna"/>                             
+                        </f:facet>
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <h:form id="config-form">
+                                        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                            <h:outputLabel rendered="#{mapaPrimeBacking.verFiltroRegion}" value="Región" ></h:outputLabel>
+                                            <p:selectOneMenu id="regiones" rendered="#{mapaPrimeBacking.verFiltroRegion}" appendTo="@this" label="Seleccionar Región" value="#{mapaPrimeBacking.id_region}"
+                                                             valueChangeListener="#{mapaPrimeBacking.onRegionChange}">
+                                                <f:selectItem itemLabel="Seleccionar Región" itemValue="0" />
+                                                <f:selectItems value="#{mapaPrimeBacking.regiones}" var="region" itemValue="#{region.id_region}" itemLabel="#{region.nombre}"   />
+                                                <p:ajax event="change" immediate="true" process="@form" update="menu"/>
+                                            </p:selectOneMenu>
+                                            <h:outputLabel value="Comuna" ></h:outputLabel>
+                                            <p:selectCheckboxMenu id="menu" appendTo="@this" value="#{mapaPrimeBacking.comunaSeleccionadas}" panelStyleClass="#{mapaPrimeBacking.panelStyle}" label="Seleccionar Comunas"
+                                                                  filter="true" filterMatchMode="startsWith" > <!-- panelStyleClass="without-selectall" -->
+                                                <f:selectItems value="#{mapaPrimeBacking.listaComunasMonitoreo}" var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"/>
+                                                <p:ajax event="change" immediate="true" process="@form" />
+                                                <p:ajax event="toggleSelect" listener="#{mapaPrimeBacking.onToggleSelect}" />
+                                            </p:selectCheckboxMenu>
+                                            <p:commandButton value="Cargar" actionListener="#{mapaPrimeBacking.cargarMapa}" process="@this" update="display form:idMapa config-form-tabs" immediate="true" onclick="$('.layout-config-button').click()" oncomplete="window.dispatchEvent(new Event('resize'));" />
+                                            <p:outputPanel id="display" >
+                                                <h:outputLabel value="#{mapaPrimeBacking.lstComunaSeleccionada}" ></h:outputLabel>
+                                            </p:outputPanel>  
+                                        </p:panelGrid>
+                                     </h:form>
+                                </div>
+                            </div>
+                    </p:tab>
+                    <p:tab id="tabCruce" rendered="#{mapaPrimeBacking.verBuscarCruce}" >             
+                        <f:facet name="title">
+                            <i class="fas fa-compress"></i>
+                            <h:outputText value="Buscar Cruce" style="margin-left: 10px;"/>                             
+                        </f:facet>
+                        <h:form id="config-form2">
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4,ui-g-12 ui-md-8">
+                                        <h:outputLabel for ="idCompleto"  value="Cruce:" /> 
+                                        <p:autoComplete id="idCompleto"  
+                                                        value="#{mapaPrimeBacking.idCruce}" 
+                                                        converter="puntoConvertir"
+                                                        completeMethod="#{mapaPrimeBacking.filtroCruce}"
+                                                        var="cruce" 
+                                                        appendTo="@this"
+                                                        effect="fade"
+                                                        queryDelay="700"
+                                                        scrollHeight="300"
+                                                        itemValue="#{cruce}"
+                                                        itemLabel="#{cruce.ubicacion}"
+                                                        placeholder="Buscar un Cruce...">
+                                            <p:column>
+                                                <h:outputText value="#{cruce.ubicacion}" />
+                                            </p:column>
+                                            <p:ajax  global="false" event="itemSelect" listener="#{mapaPrimeBacking.cambioValorAutoComplete}" update="form:idMapa" process="@this" oncomplete="$('.layout-config-button').click()"/>
+                                        </p:autoComplete>
+                                        <p:commandButton value="Buscar Cruce" action="#{mapaPrimeBacking.buscar}" process="@form" update="form:idMapa config-form-tabs" immediate="true" onclick="$('.layout-config-button').click()" />
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>
+                </p:tabView>  
+            </div>
+        </div>        
+            <script>
+                jQuery(document).ready(function() {
+                    window.dispatchEvent(new Event('resize'));
+                });
+            </script>
+    </ui:define>
+
+</ui:composition>

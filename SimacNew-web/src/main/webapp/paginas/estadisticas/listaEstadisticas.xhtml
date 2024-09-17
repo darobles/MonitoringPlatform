@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="viewname">
+        <li>Estadísticas</li>
+        <li>/</li>
+        <li><p:link outcome="ingreso">Atenciones</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <script src="../../resources/calendar_es.js" type="text/javascript"></script>
+        <h:outputStylesheet>       
+            @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { width: 60% !important; }
+            }
+        </h:outputStylesheet>
+        <h:form id="form1">
+            <p:dialog id="dlgDetalle" header="Lista de Tareas" widgetVar="dlgDetalle" 
+                      styleClass="modalResponsivo"  modal="true"
+                      responsive="true"  hideEffect="drop">
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2"> 
+                    <h:outputText value="Descarga" style="font-weight:bold"/>    
+                    <p:menuButton icon="fa fa-download" >
+                        <p:menuitem value="Excel" icon="fa fa-file-excel-o" ajax="false"  immediate="true">
+                            <p:dataExporter type="xls" target="atencionTarea" pageOnly="false" fileName="listaAtenciones" />
+                        </p:menuitem>
+                        <p:menuitem value="PDF" icon="fa fa-file-pdf-o" ajax="false" immediate="true">
+                            <p:dataExporter type="pdf" target="atencionTarea" pageOnly="false" fileName="listaAtenciones" preProcessor="#{estadisticaBacking.preProcessPDF}"/>
+                        </p:menuitem>
+                    </p:menuButton>
+                </p:panelGrid>
+                
+                <p:dataTable value="#{estadisticaBacking.listaAtencionesTO}" var="atencionTarea" 
+                             reflow="true"
+                             emptyMessage="No existen registros"
+                             scrollable="true" scrollHeight="250"
+                             id="atencionTarea">
+                    <p:column  headerText="Id Tarea" filterBy="#{atencionTarea.idAtencion}" sortBy="#{atencionTarea.idAtencion}" filterMatchMode="contains" >                                
+                        <h:outputText value="#{atencionTarea.idAtencion}"/>
+                    </p:column> 
+                    <p:column  headerText="Ubicación"  filterBy="#{atencionTarea.ubicacion}" sortBy="#{atencionTarea.ubicacion}" filterMatchMode="contains" >                                
+                        <h:outputText value="#{atencionTarea.ubicacion}"/>
+                    </p:column> 
+                    <p:column  headerText="Tipo Equipo"  filterBy="#{atencionTarea.tipoEquipo}" sortBy="#{atencionTarea.tipoEquipo}" filterMatchMode="contains" >                                
+                        <h:outputText value="#{atencionTarea.tipoEquipo}"/>
+                    </p:column>
+                    <p:column  headerText="Funcionamiento Inicial"  filterBy="#{atencionTarea.funcAlLlegar}" sortBy="#{atencionTarea.funcAlLlegar}" filterMatchMode="contains" >                                
+                        <h:outputText value="#{atencionTarea.funcAlLlegar}"/>
+                    </p:column>                  
+                    <p:column  headerText="Fecha Creación"  filterBy="#{atencionTarea.fechaLlegada}" sortBy="#{atencionTarea.fechaLlegada}" filterMatchMode="contains" >                                
+                        <h:outputText value="#{atencionTarea.fechaLlegada}"/>
+                    </p:column>                    
+                    <p:column  headerText="Fecha Cierre"  filterBy="#{atencionTarea.fechaCierre}" sortBy="#{atencionTarea.fechaCierre}" filterMatchMode="contains" >                                
+                        <h:outputText value="#{atencionTarea.fechaCierre}"/>
+                    </p:column>
+                    <p:column  headerText="Observación"  filterBy="#{atencionTarea.observacionCliente}" sortBy="#{atencionTarea.observacionCliente}" filterMatchMode="contains" >                                
+                        <h:outputText value="#{atencionTarea.observacionCliente}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            
+            <p:panel id="pnlExp" rendered="#{estadisticaBacking.verExportar}">
+                <p:commandButton icon="fa fa-file-excel-o" ajax="false"  immediate="true" title="Excel">
+                    <p:dataExporter type="xls" target="dtFalla" pageOnly="false" fileName="Estadisticas" />
+                </p:commandButton>
+                <p:commandButton icon="fa fa-file-pdf-o" ajax="false" title="PDF" immediate="true" style=" margin-left: 5px;">
+                    <p:dataExporter type="pdf" target="dtFalla" pageOnly="false" fileName="Estadisticas" preProcessor="#{estadisticaBacking.preProcessPDF}"/>
+                </p:commandButton>
+                <p:commandButton type="button" icon="fa fa-print" title="Imprimir"
+                    style="margin-left: 5px;">
+                    <p:printer target="dtFalla" />
+                </p:commandButton>
+            </p:panel>
+            <p:dataTable value="#{estadisticaBacking.listaEstadisticaTO}" var="var"  
+                         paginator="true" rows="25"
+                         reflow="true"
+                         emptyMessage="No existen registros."
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                         id="dtFalla"
+                         paginatorPosition="bottom">
+                <f:facet name="header">
+                    Lista estadísticas de atenciones
+                </f:facet>
+                <p:column  headerText="Tipo Equipo" filterMatchMode="contains"  filterBy="#{var.nombreEquipo}" sortBy="#{var.nombreEquipo}" >
+                    <h:outputText value="#{var.nombreEquipo}"/>
+                </p:column>
+                <p:column  headerText="Tipo Falla" filterMatchMode="contains"  filterBy="#{var.tipoFalla}" sortBy="#{var.tipoFalla}" >
+                    <h:outputText value="#{var.tipoFalla}"/>
+                </p:column>
+                <p:column  headerText="Cantidad" filterMatchMode="contains"  filterBy="#{var.cantidad}" sortBy="#{var.cantidad}" >
+                    <p:commandLink id="c2" value="#{var.cantidad}" actionListener="#{estadisticaBacking.cargarDetalle(var.nombreEquipo,var.tipoFalla)}" oncomplete="PF('dlgDetalle').show();"  process="@form" immediate="true" update=":form1:dlgDetalle"/>
+                </p:column>
+                <p:column  headerText="Tiempo Respuesta(min)" filterMatchMode="contains"  filterBy="#{var.tiempoRespuesta}" sortBy="#{var.tiempoRespuesta}"  rendered="#{estadisticaBacking.verColTiempoRespuesta}">                    
+                    <h:outputText value="#{var.tiempoRespuesta}"/>
+                </p:column>                    
+            </p:dataTable>
+        </h:form>
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>
+                <p:tabView id="config-form-tabs" >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Busqueda"/>                             
+                        </f:facet>
+                        <h:form id="config-form">
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2"  layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel for="idDesde" value="Fecha Desde:" style="font-weight:bold"/>    
+                                        <p:calendar  id="idDesde"  value="#{estadisticaBacking.fechaDesde}" pattern="dd-MM-yyyy" mask="true" locale="es" >
+                                            <p:ajax event="change" listener="#{estadisticaBacking.startDateFilter}"/>
+                                            <p:ajax event="dateSelect" listener="#{estadisticaBacking.startDateFilter}"/>
+                                        </p:calendar>          
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idDesde" style="font-size: 13px; color: red;"  />
+                                        <h:outputLabel for="idHasta" value="Fecha Hasta:" style="font-weight:bold"/>    
+                                        <p:calendar id="idHasta" value="#{estadisticaBacking.fechaHasta}" pattern="dd-MM-yyyy" mask="true" locale="es">
+                                            <p:ajax event="change" listener="#{estadisticaBacking.startDateFilter}"/>
+                                            <p:ajax event="dateSelect" listener="#{estadisticaBacking.startDateFilter}"/>
+                                        </p:calendar>
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idHasta" style="font-size: 13px; color: red;"  />           
+                                        <h:outputLabel for="idComuna" value="Comuna:" style="font-weight:bold"/> 
+                                        <p:selectOneMenu  id="idComuna" value="#{estadisticaBacking.idComuna}"  appendTo="@this" valueChangeListener="#{estadisticaBacking.cambioComuna}" disabled="#{estadisticaBacking.comboHabilitada}">
+                                            <f:selectItems value="#{parametrosBacking.listaComunas}"  var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"   />
+                                            <p:ajax event="change" process="@this"/>
+                                        </p:selectOneMenu> 
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idComuna" style="font-size: 13px; color: red;"  />    
+                                        <h:outputLabel for ="idCompleto"   value="Cruce:" style="font-weight:bold"/> 
+                                        <p:autoComplete id="idCompleto" 
+                                                        value="#{estadisticaBacking.idCruce}" 
+                                                        converter="instalacionConvertir"
+                                                        appendTo="@this"
+                                                        completeMethod="#{estadisticaBacking.filtroCruce}"
+                                                        var="cruce" 
+                                                        effect="fade"
+                                                        queryDelay="700"
+                                                        scrollHeight="300"
+                                                        itemValue="#{cruce}"
+                                                        itemLabel="#{cruce.ubicacion}">
+                                            <p:column>
+                                                <h:outputText value="#{cruce.ubicacion}" />
+                                            </p:column>
+                                            <p:ajax event="itemSelect" listener="#{estadisticaBacking.cambioValorAutoComplete}"  immediate="true" process="@form" />
+                                        </p:autoComplete>
+                                        <p:commandButton value="Buscar" immediate="true" process="@this" ajax="false" action="#{estadisticaBacking.buscar}" update="form1:table form1:pnlExp" />
+                                        <p:commandButton value="Limpiar" ajax="true"  action="estadistica" />    
+                                        <h:outputLabel value=""></h:outputLabel>
+                                        <p:message for="idCompleto" style="font-size: 13px; color: red;"  />           
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>
+                </p:tabView>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                    $('#ui-datepicker-div').appendTo('#layout-config');
+            });
+        </script>
+    </ui:define>
+</ui:composition>

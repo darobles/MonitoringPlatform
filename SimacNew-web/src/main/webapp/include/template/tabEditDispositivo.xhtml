@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+    <p:tab title="Actualizar Dispositivo">
+        <div class="ui-g-12">
+            <div class="card card-w-title">
+                <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-2 ,ui-g-12 ui-md-4,ui-g-12 ui-md-2 ,ui-g-12 ui-md-4 ">
+                    <h:outputLabel value="Id Dispositivo :"/>    
+                    <p:inputText id="id" value="#{dispositivoBacking.dispositivoTO.idDispositivo}" readonly="true"/>
+                    <h:outputLabel value="IMEI :"/>    
+                    <p:inputText id="imei" style="background: white;" value="#{dispositivoBacking.dispositivoTO.imei}"/>
+
+                    <h:outputLabel value="Dirección IP :"/>    
+                    <p:inputText id="dirip" style="background: white;" value="#{dispositivoBacking.dispositivoTO.dirip}" />
+                    <h:outputLabel value="DYNDNS :"/>    
+                    <p:inputText id="dyndns" style="background: white;" value="#{dispositivoBacking.dispositivoTO.dyndns}"/>
+
+                    <h:outputLabel value="Ubicación :"/>    
+                    <p:inputText id="ubicacion" style="background: white;" value="#{dispositivoBacking.dispositivoTO.ubicacion}" />
+                    <h:outputLabel value="N° Serie :"/>    
+                    <p:inputText id="nserie" style="background: white;" value="#{dispositivoBacking.dispositivoTO.numSerie}" />
+
+                    <h:outputLabel value="Comentario :"/>    
+                    <p:inputText id="comentario" style="background: white;" value="#{dispositivoBacking.dispositivoTO.comentario}" />
+                    <h:outputLabel value="Activo :"/>    
+                    <p:selectOneMenu  id="idActivo" style="background: white;" value="#{dispositivoBacking.dispositivoTO.activo}">
+                        <f:selectItems value="#{dispositivoBacking.listaActivo}"  var="valor" itemValue="#{valor.idCodigo}" itemLabel="#{valor.descripcion}"/>
+                        <p:ajax event="change" process="@this"/>
+                    </p:selectOneMenu> 
+
+                    <h:outputLabel value="Estado Operativo :"/>    
+                    <p:selectOneMenu  id="idEstadoOperativo" style="background: white;" value="#{dispositivoBacking.dispositivoTO.estadoOperativo}" >
+                        <f:selectItems value="#{dispositivoBacking.listaEstadoOperativo}"  var="valor" itemValue="#{valor.codigo1}" itemLabel="#{valor.descripcion}"/>
+                        <p:ajax event="change" process="@this"/>
+                    </p:selectOneMenu> 
+                    <h:outputLabel value="Valor Modo 220 :"/>    
+                    <p:inputText id="valMod220" style="background: white;" value="#{dispositivoBacking.dispositivoTO.valModo220}"/>
+
+                    <h:outputLabel value="Valor Modo UPS :"/>    
+                    <p:inputText id="valModUps" style="background: white;" value="#{dispositivoBacking.dispositivoTO.valModoUps}" />
+                    <h:outputLabel value="Valor Modo UTC1 :"/>    
+                    <p:inputText id="valModUtc1" style="background: white;" value="#{dispositivoBacking.dispositivoTO.valModoUtc1}"/>
+
+                    <h:outputLabel value="Valor Modo Lam :"/>    
+                    <p:inputText id="valModLam" style="background: white;" value="#{dispositivoBacking.dispositivoTO.valModoLam}"/>
+                    <h:outputLabel value="Indicador UPS :"/>                      
+                    <p:selectOneMenu  id="indUps" style="background: white;" value="#{dispositivoBacking.dispositivoTO.indUps}" >
+                        <f:selectItems value="#{dispositivoBacking.listaActivo}"  var="valor" itemValue="#{valor.idCodigo}" itemLabel="#{valor.descripcion}"/>
+                        <p:ajax event="change" process="@this"/>
+                    </p:selectOneMenu> 
+
+                    <h:outputLabel value="Valor Modo UTC2 :"/>    
+                    <p:inputText id="valModUtc2" style="background: white;" value="#{dispositivoBacking.dispositivoTO.valModoUtc2}"/>
+                    <h:outputLabel value="Valor Modo UTC3 :"/>    
+                    <p:inputText id="valModUtc3" style="background: white;" value="#{dispositivoBacking.dispositivoTO.valModoUtc3}" />
+
+                    <h:outputLabel value="Valor Modo UTC4 :"/>    
+                    <p:inputText id="valModUtc4" style="background: white;" value="#{dispositivoBacking.dispositivoTO.valModoUtc4}"/>
+                    <h:outputLabel value="NºSIM NºTeléfono :"/>    
+                    <p:inputText id="numTel" style="background: white;" value="#{dispositivoBacking.dispositivoTO.numTel}" />   
+
+                    <h:outputLabel value="Indicador OTU :"/>                      
+                    <p:selectOneMenu  id="indOtu" style="background: white;" value="#{dispositivoBacking.dispositivoTO.indOtu}">
+                        <f:selectItems value="#{dispositivoBacking.listaActivo}"  var="valor" itemValue="#{valor.idCodigo}" itemLabel="#{valor.descripcion}"/>
+                        <p:ajax event="change" process="@this"/>
+                    </p:selectOneMenu> 
+                    <h:outputLabel for="indReset" style="background: white;" value="Ind. Reset Ctr :" />    
+                    <p:selectBooleanCheckbox id="indReset" style="background: white;" value="#{dispositivoBacking.dispositivoTO.resetCtr}" /> 
+                    <h:outputLabel value="Tipo Monitoreo :"/>    
+                    <p:selectOneMenu  id="idTipoMonitoreo" style="background: white;" value="#{dispositivoBacking.dispositivoTO.tipoMonitoreo}" >
+                        <f:selectItems value="#{dispositivoBacking.listaTipoMonitoreo}" var="valor" itemValue="#{valor.codigo1}" itemLabel="#{valor.codigo2}"/>
+                        <p:ajax event="change" process="@this"/>
+                    </p:selectOneMenu> 
+                    <h:outputLabel for="indLam" style="background: white;" value="Ind. Lámpara fundida :" />    
+                    <p:selectBooleanCheckbox id="indLam" style="background: white;" value="#{dispositivoBacking.dispositivoTO.indLam}" />
+                </p:panelGrid>
+            </div>
+        </div>
+            <p:message for="id" />
+            <p:commandButton value="Ingresar" action="#{dispositivoBacking.actualizarDispositivo()}" update="@form:table @form:popup"/>                   
+    </p:tab>
+</ui:composition>

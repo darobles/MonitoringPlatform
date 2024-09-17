@@ -1,0 +1,218 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+
+
+    <div id="layout-config" class="layout-config">
+        <div class="layout-config-content">
+            <a href="#" id="layout-config-button" class="layout-config-button">
+                <i class="fa fa-cog"></i>
+            </a>
+            <a href="#" class="layout-config-close">
+                <i class="fa fa-times"></i>
+            </a>
+            <h:form id="config2-form">
+                <p:tabView id="config-form-tabs">
+                    <p:tab title="Menu">
+                        <p:outputPanel id="menumodes-panel">
+                            <h1>Menu Modes</h1>
+                            <div class="p-grid">
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setMenuMode('layout-static')}"
+                                        oncomplete="PrimeFaces.BabylonConfigurator.changeMenuToStatic()"
+                                        update=":config-form:config-form-tabs:menumodes-panel :config-form:config-form-tabs:menutypes-panel menuform">
+                                        <p:graphicImage name="images/configurator/menu/babylon-static.png"
+                                            library="babylon-layout" title="Static" />
+                                        <ui:fragment rendered="#{guestPreferences.menuMode == 'layout-static'}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>Static</span>
+                                </div>
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setMenuMode('layout-overlay')}"
+                                        oncomplete="PrimeFaces.BabylonConfigurator.changeMenuToOverlay()"
+                                        update=":config-form:config-form-tabs:menumodes-panel :config-form:config-form-tabs:menutypes-panel menuform">
+                                        <p:graphicImage name="images/configurator/menu/babylon-overlay.png"
+                                            library="babylon-layout" title="Overlay" />
+                                        <ui:fragment rendered="#{guestPreferences.menuMode == 'layout-overlay'}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>Overlay</span>
+                                </div>
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setMenuMode('layout-horizontal')}"
+                                        oncomplete="PrimeFaces.BabylonConfigurator.changeMenuToHorizontal()"
+                                        update=":config-form:config-form-tabs:menumodes-panel :config-form:config-form-tabs:menutypes-panel menuform">
+                                        <p:graphicImage name="images/configurator/menu/babylon-horizontal.png"
+                                            library="babylon-layout" title="Horizontal" />
+                                        <ui:fragment rendered="#{guestPreferences.menuMode == 'layout-horizontal'}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>Horizontal</span>
+                                </div>
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setMenuMode('layout-slim')}"
+                                        oncomplete="PrimeFaces.BabylonConfigurator.changeMenuToSlim()"
+                                        update=":config-form:config-form-tabs:menumodes-panel :config-form:config-form-tabs:menutypes-panel menuform">
+                                        <p:graphicImage name="images/configurator/menu/babylon-slim.png"
+                                            library="babylon-layout" title="Slim" />
+                                        <ui:fragment rendered="#{guestPreferences.menuMode == 'layout-slim'}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>Slim</span>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+
+                        <p:outputPanel id="menutypes-panel">
+                            <h1>Menu Type</h1>
+                            <div class="p-grid">
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setGroupedMenu(true)}"
+                                        update=":config-form:config-form-tabs:menutypes-panel menuform"
+                                        disabled="#{guestPreferences.menuMode == 'layout-horizontal'}">
+                                        <p:graphicImage name="images/configurator/menu/babylon-grouped.png"
+                                            library="babylon-layout" title="Grouped" />
+                                        <ui:fragment rendered="#{guestPreferences.groupedMenu}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>Grouped</span>
+                                </div>
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setGroupedMenu(false)}"
+                                        update=":config-form:config-form-tabs:menutypes-panel menuform"
+                                        disabled="#{guestPreferences.menuMode == 'layout-horizontal'}">
+                                        <p:graphicImage name="images/configurator/menu/babylon-ungrouped.png"
+                                            library="babylon-layout" title="Ungrouped" />
+                                        <ui:fragment rendered="#{!guestPreferences.groupedMenu}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>Ungrouped</span>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+
+                        <p:outputPanel id="menucolors-panel">
+                            <h1>Menu Colors</h1>
+                            <div class="p-grid">
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setDarkMenu(true)}"
+                                        oncomplete="PrimeFaces.BabylonConfigurator.changeMenuToDark()"
+                                        update=":config-form:config-form-tabs:menucolors-panel">
+                                        <p:graphicImage name="images/configurator/menu/babylon-static.png"
+                                            library="babylon-layout" title="Static" />
+                                        <ui:fragment rendered="#{guestPreferences.darkMenu}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>Dark</span>
+                                </div>
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setDarkMenu(false)}"
+                                        oncomplete="PrimeFaces.BabylonConfigurator.changeMenuToLight()"
+                                        update=":config-form:config-form-tabs:menucolors-panel">
+                                        <p:graphicImage name="images/configurator/menu/babylon-light.png"
+                                            library="babylon-layout" title="Static" />
+                                        <ui:fragment rendered="#{!guestPreferences.darkMenu}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>Light</span>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+
+                    </p:tab>
+
+                    <p:tab title="User Profile">
+                        <p:outputPanel id="userprofile-panel">
+                            <div class="p-grid">
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setProfileMode('inline')}"
+                                        update=":config-form:config-form-tabs:userprofile-panel" ajax="false">
+                                        <p:graphicImage name="images/configurator/menu/babylon-inline.png"
+                                            library="babylon-layout" title="Inline" />
+                                        <ui:fragment rendered="#{guestPreferences.profileMode == 'inline'}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>Inline</span>
+                                </div>
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setProfileMode('popup')}"
+                                         update=":config-form:config-form-tabs:userprofile-panel" ajax="false">
+                                        <p:graphicImage name="images/configurator/menu/babylon-popup.png"
+                                            library="babylon-layout" title="Popup" />
+                                        <ui:fragment rendered="#{guestPreferences.profileMode == 'popup'}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>Popup</span>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:tab>
+
+                    <p:tab title="Orientation">
+                        <p:outputPanel id="orientation-panel">
+                            <div class="p-grid">
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setOrientationRTL(false)}"
+                                        oncomplete="PrimeFaces.BabylonConfigurator.changeMenuToLTR()"
+                                        update=":config-form:config-form-tabs:orientation-panel">
+                                        <p:graphicImage name="images/configurator/menu/babylon-static.png"
+                                            library="babylon-layout" title="LTR" />
+                                        <ui:fragment rendered="#{!guestPreferences.orientationRTL}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>LTR</span>
+                                </div>
+                                <div class="p-col p-col-fixed">
+                                    <p:commandLink actionListener="#{guestPreferences.setOrientationRTL(true)}"
+                                        oncomplete="PrimeFaces.BabylonConfigurator.changeMenuToRTL()"
+                                        update=":config-form:config-form-tabs:orientation-panel">
+                                        <p:graphicImage name="images/configurator/menu/babylon-rtl.png"
+                                            library="babylon-layout" title="RTL" />
+                                        <ui:fragment rendered="#{guestPreferences.orientationRTL}">
+                                            <i class="fa fa-check"></i>
+                                        </ui:fragment>
+                                    </p:commandLink>
+                                    <span>RTL</span>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:tab>
+
+                    <p:tab title="Themes">
+                        <p:outputPanel id="componentthemes-panel">
+                            <div class="p-grid">
+                                <ui:repeat value="#{guestPreferences.componentThemes}" var="componentTheme">
+                                    <div class="p-col p-xl-2">
+                                        <p:commandLink styleClass="layout-config-option"
+                                            actionListener="#{guestPreferences.setTheme(componentTheme.file)}"
+                                            update=":config-form:config-form-tabs:componentthemes-panel logolink"
+                                            oncomplete="PrimeFaces.BabylonConfigurator.changeComponentsTheme('#{componentTheme.file}')">
+                                            <p:graphicImage name="images/configurator/themes/#{componentTheme.image}"
+                                                library="babylon-layout" title="#{componentTheme.name}" />
+                                            <ui:fragment rendered="#{componentTheme.file eq guestPreferences.theme}">
+                                                <i class="fa fa-check"></i>
+                                            </ui:fragment>
+                                        </p:commandLink>
+                                    </div>
+                                </ui:repeat>
+                            </div>
+                        </p:outputPanel>
+                    </p:tab>
+                </p:tabView>
+            </h:form>
+        </div>
+    </div>
+</ui:composition>

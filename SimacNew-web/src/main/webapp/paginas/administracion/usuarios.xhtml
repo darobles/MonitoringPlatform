@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="viewname">
+        <li>Administración</li>
+        <li>/</li>
+        <li><p:link outcome="usuario">Usuario</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <h:outputStylesheet> 
+            @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { width: 60% !important; }
+            }
+        </h:outputStylesheet>
+        <script src="../../resources/validaciones.js" type="text/javascript"></script>
+        <h:form id="form1">
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="drop">
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes"  />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no"  />
+                </h:panelGrid>
+            </p:confirmDialog>
+            <p:dialog id="popup" widgetVar="popup"
+                      header="Actualizar Usuario"
+                      closeOnEscape="true"
+                      modal="true"
+                      height="500"
+                      styleClass="modalResponsivo"
+                      visible="#{usuarioBacking.verPopup}"
+                      hideEffect="drop">
+                <p:accordionPanel id="aCord" activeIndex="#{usuarioBacking.activeIndex}">
+                    <p:tab title="Datos Usuario" >
+                        <div class="ui-g-12">
+                                <p:panelGrid  id="grid" columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4">
+                                    <h:outputLabel value="Usuario :"/>    
+                                    <p:inputText id="idUsuario" value="#{usuarioBacking.usuarioTO.identificador}" readonly="#{usuarioBacking.bloqIdUsuario}" onkeyup="javascript:this.value = this.value.toUpperCase();" />                           
+                                    <h:outputLabel value="Nombre :"/>    
+                                    <p:inputText id="idNombre" value="#{usuarioBacking.usuarioTO.nombre}" style="background: white;" onkeydown="eventoSalidaLetra(this, event, '', '');" onkeypress="return validarLetras(this, event);" onkeyup="javascript:this.value = this.value.toUpperCase();" />  
+
+                                    <h:outputLabel value="Apellido Paterno :"/>    
+                                    <p:inputText id="idApaterno" value="#{usuarioBacking.usuarioTO.apellidoPaterno}" style="background: white;" onkeydown="eventoSalidaLetra(this, event, '', '');" onkeypress="return validarLetras(this, event);"  onkeyup="javascript:this.value = this.value.toUpperCase();" />  
+                                    <h:outputLabel value="Apellido Materno :"/>    
+                                    <p:inputText id="idAmaterno" value="#{usuarioBacking.usuarioTO.apellidoMaterno}"  style="background: white;" onkeydown="eventoSalidaLetra(this, event, '', '');" onkeypress="return validarLetras(this, event);"  onkeyup="javascript:this.value = this.value.toUpperCase();" />  
+
+                                    <h:outputLabel value="Ind Activo :"/>    
+                                    <p:selectOneMenu  id="idActivo" value="#{usuarioBacking.usuarioTO.intAct}" style="background: white;" >
+                                        <f:selectItems value="#{usuarioBacking.listaActivo}"  var="valor" itemValue="#{valor.idCodigo}" itemLabel="#{valor.descripcion}"/>
+                                        <p:ajax event="change" process="@this"/>
+                                    </p:selectOneMenu> 
+                                    <h:outputLabel value="Mail :"/>    
+                                    <p:inputText id="idEmail" value="#{usuarioBacking.usuarioTO.email}" style="text-transform:uppercase; background: white;" onkeyup="javascript:this.value = this.value.toUpperCase();"/> 
+
+                                    <h:outputLabel value="Comuna :"/>
+                                    <p:selectOneMenu  id="idComunaPopUp" value="#{usuarioBacking.usuarioTO.idComuna}" style="background: white;" valueChangeListener="#{usuarioBacking.cambioComunaUsuario}">
+                                        <f:selectItems value="#{parametrosBacking.listaComunas}"  var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"/>
+                                        <p:ajax event="change" process="@this" update="idLatitud,idLongitud"/>
+                                    </p:selectOneMenu> 
+                                    <h:outputLabel/>    
+                                    <h:outputLabel/> 
+
+                                    <h:outputLabel value="Latitud :"/>    
+                                    <p:inputText id="idLatitud" value="#{usuarioBacking.usuarioTO.latitud}"  readonly="#{usuarioBacking.bloqCoordenadas}"/>
+                                    <h:outputLabel value="Longitud :"/>    
+                                    <p:inputText id="idLongitud" value="#{usuarioBacking.usuarioTO.longitud}"  readonly="#{usuarioBacking.bloqCoordenadas}" />
+
+                                    <h:outputLabel value="Tipo Empresa :"/>    
+                                    <p:selectOneMenu  id="idTipoEmpresa" value="#{usuarioBacking.usuarioTO.tipo}" style="background: white;"  valueChangeListener="#{usuarioBacking.cambioEmpresa}" >
+                                        <f:selectItems value="#{usuarioBacking.listaTipoEmpresa}"  var="valor" itemValue="#{valor.idCodigo}" itemLabel="#{valor.descripcion}"   />
+                                        <p:ajax event="change" process="@this" update="idEmpresa"/>
+                                    </p:selectOneMenu> 
+                                    <h:outputLabel value="Nombre Empresa:"/>    
+                                    <p:inputText id="idEmpresa" value="#{usuarioBacking.usuarioTO.nombreEmpresa}" style="text-transform:uppercase; background: white;" onkeyup="javascript:this.value = this.value.toUpperCase();" />
+
+                                    <h:outputLabel value="Clave :"/>    
+                                    <p:password id="idClave" value="#{usuarioBacking.usuarioTO.password}" style="background: white;" redisplay="true"/>                                             
+                                    <h:outputLabel value="Confirmar clave :"/>    
+                                    <p:password id="idClave2" value="#{usuarioBacking.usuarioTO.password2}" style="background: white;" redisplay="true"/> 
+                                </p:panelGrid>
+                                <h:panelGrid width="100%">
+                                    <p:message for="idUsuario"   />
+                                </h:panelGrid>
+                        </div>
+                    </p:tab>
+                    <p:tab title="Permisos">
+                        <p:dataTable value="#{usuarioBacking.listaMenu}" 
+                                     scrollRows="5" 
+                                     var="menu" id="tableMenu" scrollable="true" reflow="true" >
+                            <p:column>
+                                <p:selectBooleanCheckbox value="#{menu.selecionado}" >
+                                    <p:ajax update="tableMenu" listener="#{usuarioBacking.seleccion(menu.idCodigo)}" />
+                                </p:selectBooleanCheckbox>
+                            </p:column>
+                            <p:column  headerText="MENU">
+                                <h:outputText value="#{menu.descripcion}" style="#{menu.estilo}"/>
+                            </p:column>                                
+                        </p:dataTable>
+                    </p:tab>
+                </p:accordionPanel>                        
+                <h:panelGrid columns="1">
+                    <p:commandButton value="Ingresar" action="#{usuarioBacking.actualizarUsuario()}" update="table :form1:popup" oncomplete="PF('table').filter()" />                   
+                </h:panelGrid>
+            </p:dialog> 
+
+            <h:panelGroup id="panelDatos">
+                <p:growl id="messages" showDetail="true" />
+            </h:panelGroup>    
+            <p:panel id="grid">
+                <p:dataTable value="#{usuarioBacking.listaUsuarios}" var="table"  
+                             paginator="true" rows="15"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                             paginatorPosition="bottom"
+                             reflow="true"
+                             id="table"
+                             widgetVar="table">
+                    <p:column  headerText="Identificador" sortBy="#{table.identificador}" filterBy="#{table.identificador}" filterMatchMode="contains">
+                        <h:outputText value="#{table.identificador}"/>
+                    </p:column>
+                    <p:column  headerText="Nombre" sortBy="#{table.nombre}" filterBy="#{table.nombre}" filterMatchMode="contains">
+                        <h:outputText value="#{table.nombre}"/>
+                    </p:column>
+                    <p:column  headerText="Apellido Paterno"  sortBy="#{table.apellidoPaterno}" filterBy="#{table.apellidoPaterno}" filterMatchMode="contains">
+                        <h:outputText value="#{table.apellidoPaterno}"/>
+                    </p:column>
+                    <p:column  headerText="Apellido Materno"  sortBy="#{table.apellidoMaterno}" filterBy="#{table.apellidoMaterno}" filterMatchMode="contains">
+                        <h:outputText value="#{table.apellidoMaterno}"/>
+                    </p:column>
+                    <p:column  headerText="Email"  sortBy="#{table.email}" filterBy="#{table.email}" filterMatchMode="contains">
+                        <h:outputText value="#{table.email}"/>
+                    </p:column>
+                    <p:column >
+                        <f:facet  name="header">Acción</f:facet>
+                        <p:commandButton id="editlink"  title="Editar" icon="fas fa-edit" update=":form1:popup"  action="#{usuarioBacking.editarUsuario()}" >
+                            <f:setPropertyActionListener target="#{usuarioBacking.idSeleccionado}" value="#{table.identificador}"/>
+                        </p:commandButton>
+                        <p:commandButton  id="deletelink" update=":form1:table" icon="fas fa-trash-alt" style="margin-left: 5px;" action="#{usuarioBacking.eliminarUsuario}" title="Eliminar">
+                            <f:setPropertyActionListener target="#{usuarioBacking.idSeleccionado}" value="#{table.identificador}"/>
+                            <p:confirm header="Confirmación" message="¿Estas seguro que deseas eliminar el usuario seleccionado?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>   
+        </h:form>
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>
+                <p:tabView id="config-form-tabs" >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Busqueda"/>                             
+                        </f:facet>
+                        <h:form id="config-form">
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel value="Comuna :"/> 
+                                        <p:selectOneMenu appendTo="@this"  id="idComuna" value="#{usuarioBacking.idComuna}"  valueChangeListener="#{usuarioBacking.cambioComuna}" disabled="#{usuarioBacking.comboHabilitada}" >
+                                            <f:selectItems value="#{parametrosBacking.listaComunas}"  var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"/>
+                                            <p:ajax event="change" process="@this" update="form1:table"/>
+                                        </p:selectOneMenu>                                            
+                                        <h:outputLabel/>
+                                        <p:message for="idComuna"  />  
+                                    </p:panelGrid>
+
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-cogs"></i>
+                            <h:outputText value="Crear"/>  
+                        </f:facet>
+                        <h:form>
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel value="Crear usuario :"/> 
+                                        <p:commandButton value="Nuevo" action="#{usuarioBacking.ingresarUsuario()}" update="form1:popup"/>
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>   
+                </p:tabView>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+

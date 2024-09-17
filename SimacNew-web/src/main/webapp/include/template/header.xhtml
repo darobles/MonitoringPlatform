@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <body>
+        <ui:composition>           
+            <h:outputStylesheet>
+                .c3{
+                    border-right: 1px solid #f1f1f1;
+                    border-left: 1px solid #f1f1f1;
+                    padding: 10px;
+                    background:#ffffff;
+                }
+                .c1,.c2,.c4{
+                    background:#ffffff;
+                }
+                
+                .subrayado:hover{
+                    text-decoration:underline !important;
+                    color:#000000;
+                }
+                
+                .contenedor-tablas{
+                    width:100%;
+                    font-family:'Open Sans',sans-serif;
+                }
+                
+                .contenedor-tablas tbody tr:first-child{
+                    background:#f1f1f1;
+                }
+                
+            </h:outputStylesheet>
+                <h:form id="form01">        
+                    <h:panelGrid id="contenedor" styleClass="contenedor-tablas"  columns="1" cellpadding="0" cellspacing="0">
+                        <h:panelGroup layout="block" style="background:#f1f1f1;">
+                            <h:panelGrid style="float:right;" columns="6">
+                                <img src="/AuterOnLine/imagenes/whatsapp.png" alt="" width="14"/>
+                                <h:outputLabel value="Departamento de Mantención"></h:outputLabel>
+                                <h:outputLabel value="#{loginBacking.telefono}" style="font-weight: bold;"></h:outputLabel>
+                                <h:outputLabel value="-"></h:outputLabel>
+                                <h:outputLabel value="#{loginBacking.email}" style="font-weight: bold; text-decoration: underline"></h:outputLabel>
+                                <h:graphicImage value="#{loginBacking.logo_chico}" alt="Auter"></h:graphicImage>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        <h:panelGroup layout="block" style="background:#ffffff;">
+                            <h:panelGrid style="float:right;" columns="4" columnClasses="c1,c2,c3,c4" >
+                                <h:outputLabel value="Hola "></h:outputLabel>
+                                <h:outputLabel value="#{loginBacking.usuario.nombre} #{loginBacking.usuario.apellidoPaterno}" style="font-weight: bold;"></h:outputLabel>
+                                <p:commandLink value="Cambiar Contraseña" action="cambioClave" ajax="true" style="text-decoration: none;" styleClass="subrayado"></p:commandLink>                                                
+                                <p:commandLink value="Cerrar Sesión" action="#{loginBacking.logout}" ajax="false" immediate="true" style="text-decoration: none;" styleClass="subrayado" ></p:commandLink>                                                
+                            </h:panelGrid>
+                        </h:panelGroup> 
+                    </h:panelGrid>
+                </h:form>
+         </ui:composition>
+    </body>
+</html>

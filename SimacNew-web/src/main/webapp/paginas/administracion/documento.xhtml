@@ -1,0 +1,613 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="viewname">
+        <li>Administración</li>
+        <li>/</li>
+        <li><p:link outcome="documento">Documentos</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <h:outputStylesheet>            
+            .ui-fileupload .ui-fileupload-buttonbar {
+            border: 0px !important;
+            padding: 0 !important;
+            background-color: #FFFFFF !important;
+            }
+            .ui-fileupload-content{
+            border: 0px !important;
+            background-color: #FFFFFF !important;
+            }
+            .card-w-title{
+            border: 0px !important; 
+            }
+
+            .ui-panel .ui-panel-content
+            {
+            border-top: 1px !important;
+            }
+
+            @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important; height: 80% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { width: 80% !important; }
+            }
+        </h:outputStylesheet>
+        <script src="../../resources/validaciones.js" type="text/javascript"></script>
+        <script src="../../resources/calendar_es.js" type="text/javascript"></script>
+        <h:form id="form1" enctype="multipart/form-data">
+            <p:growl id="messages" showDetail="true" severity="info" />    
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="drop">
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes"  />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" />
+                </h:panelGrid>
+            </p:confirmDialog>
+            <p:dialog id="popDetalleDoc" widgetVar="popDetalleDoc" responsive="true"    
+                      styleClass="modalResponsivo"  modal="true"
+                      height="80%"
+                      header="Detalle Documento: #{documentoBacking.cruceTO.ubicacion}"
+                      visible="#{documentoBacking.verPopupDetalle}"
+                      hideEffect="drop">
+                <p:ajax event="close" listener="#{documentoBacking.cerrarDetalle()}"/>
+                <div class="ui-g-12">
+                    <div class="card card-w-title">
+                        <p:panelGrid columns="4" id="grDetalle" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" >                       
+                            <h:outputLabel value="ID :" style="font-weight: bold;"/>
+                            <h:outputText id="det1" value="#{documentoBacking.detCruceDocumentoTO.idDoc}"  />
+                            <h:outputLabel value="ID Cruce :" style="font-weight: bold;"/>
+                            <h:outputText id="det2" value="#{documentoBacking.detCruceDocumentoTO.idCruce}"  />
+                            <h:outputLabel value="Fecha Doc :" style="font-weight: bold;"/>
+                            <h:outputText id="det3" value="#{documentoBacking.detCruceDocumentoTO.fechaDesc}"  />
+                            <h:outputLabel value="Tipo :" style="font-weight: bold;"/>
+                            <h:outputText id="det4" value="#{documentoBacking.detCruceDocumentoTO.tipoDesc}"  />
+                            <h:outputLabel value="Archivo :" style="font-weight: bold;"/>
+                            <h:outputText id="det5" value="#{documentoBacking.detCruceDocumentoTO.nombreArchivo}"  />
+                            <h:outputLabel value="Observación :" style="font-weight: bold;"/>
+                            <h:outputText id="det6" value="#{documentoBacking.detCruceDocumentoTO.observacion}"  />
+                            <h:outputLabel value="Subido por :" style="font-weight: bold;"/>
+                            <h:outputText id="det7" value="#{documentoBacking.detCruceDocumentoTO.usrSub}"  />
+                            <h:outputLabel value="OT Auter :" style="font-weight: bold;"/>
+                            <h:outputText id="det8" value="#{documentoBacking.detCruceDocumentoTO.OT_AUTER}"  />
+                            <h:outputLabel value="OTM :" style="font-weight: bold;"/>
+                            <h:outputText id="det9" value="#{documentoBacking.detCruceDocumentoTO.OTM}"  />
+                            <h:outputLabel value="Fecha OTM :" style="font-weight: bold;"/>
+                            <h:outputText id="det10" value="#{documentoBacking.detCruceDocumentoTO.fecha_otm}"  />
+                            <h:outputLabel value="Recepción OTM :" style="font-weight: bold;"/>
+                            <h:outputText id="det11" value="#{documentoBacking.detCruceDocumentoTO.fec_rec_otm}"  />
+                            <h:outputLabel value="Fecha mediciones :" style="font-weight: bold;"/>
+                            <h:outputText id="det12" value="#{documentoBacking.detCruceDocumentoTO.fec_medicion}"  />
+                            <h:outputLabel value="Descripción Medición :" style="font-weight: bold;"/>
+                            <h:outputText id="det13" value="#{documentoBacking.detCruceDocumentoTO.desc_medicion}"  />
+                            <h:outputLabel value="Resultado :" style="font-weight: bold;"/>
+                            <h:outputText id="det15" value="#{documentoBacking.detCruceDocumentoTO.resultado}"  />
+                            <h:outputLabel value="Ingreso UOCT :" style="font-weight: bold;"/>
+                            <h:outputText id="det16" value="#{documentoBacking.detCruceDocumentoTO.fec_ing_uoct}"  />
+                            <h:outputLabel value="Aprobación UOCT :" style="font-weight: bold;"/>
+                            <h:outputText id="det17" value="#{documentoBacking.detCruceDocumentoTO.fec_apr_uoct}"  />          
+                        </p:panelGrid>    
+                        <p:panelGrid id="verArchivos" columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-4 ui-md-2, ui-g-2 ui-md-1" rendered="false">
+                            <h:outputText value="#{documentoBacking.detCruceDocumentoTO.nombreArchivo}" 
+                                          rendered="${not empty documentoBacking.detCruceDocumentoTO.archivo and not empty documentoBacking.detCruceDocumentoTO.nombreArchivo}" />
+                            <p:commandButton icon="fa fa-times" actionListener="#{documentoBacking.eliminarArchivo(documentoBacking.detCruceDocumentoTO.archivo)}"
+                                             rendered="${not empty documentoBacking.detCruceDocumentoTO.archivo and not empty documentoBacking.detCruceDocumentoTO.nombreArchivo}">
+                                <p:confirm header="Confirmación" message="¿Estas seguro que deseas eliminar el archivo #{documentoBacking.detCruceDocumentoTO.nombreArchivo} ?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <h:outputText value="#{documentoBacking.detCruceDocumentoTO.nombre_doc2}" 
+                                          rendered="${not empty documentoBacking.detCruceDocumentoTO.archivo2 and not empty documentoBacking.detCruceDocumentoTO.nombre_doc2}" />
+                            <p:commandButton icon="fa fa-times" actionListener="#{documentoBacking.eliminarArchivo(documentoBacking.detCruceDocumentoTO.archivo2)}"
+                                             rendered="${not empty documentoBacking.detCruceDocumentoTO.archivo2 and not empty documentoBacking.detCruceDocumentoTO.nombre_doc2}">
+                                <p:confirm header="Confirmación" message="¿Estas seguro que deseas eliminar el archivo #{documentoBacking.detCruceDocumentoTO.nombre_doc2} ?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <h:outputText value="#{documentoBacking.detCruceDocumentoTO.nombre_doc3}" 
+                                          rendered="${not empty documentoBacking.detCruceDocumentoTO.archivo3 and not empty documentoBacking.detCruceDocumentoTO.nombre_doc3}" />
+                            <p:commandButton icon="fa fa-times" actionListener="#{documentoBacking.eliminarArchivo(documentoBacking.detCruceDocumentoTO.archivo3)}" 
+                                             rendered="${not empty documentoBacking.detCruceDocumentoTO.archivo3 and not empty documentoBacking.detCruceDocumentoTO.nombre_doc3}">
+                                <p:confirm header="Confirmación" message="¿Estas seguro que deseas eliminar el archivo #{documentoBacking.detCruceDocumentoTO.nombre_doc3} ?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <h:outputText value="#{documentoBacking.detCruceDocumentoTO.nombre_doc4}" 
+                                          rendered="${not empty documentoBacking.detCruceDocumentoTO.archivo4 and not empty documentoBacking.detCruceDocumentoTO.nombre_doc4}"/>
+                            <p:commandButton icon="fa fa-times" actionListener="#{documentoBacking.eliminarArchivo(documentoBacking.detCruceDocumentoTO.archivo4)}" 
+                                             rendered="${not empty documentoBacking.detCruceDocumentoTO.archivo4 and not empty documentoBacking.detCruceDocumentoTO.nombre_doc4}">
+                                <p:confirm header="Confirmación" message="¿Estas seguro que deseas eliminar el archivo #{documentoBacking.detCruceDocumentoTO.nombre_doc4} ?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <h:outputText value="#{documentoBacking.detCruceDocumentoTO.nombre_doc5}" 
+                                          rendered="${not empty documentoBacking.detCruceDocumentoTO.archivo5 and not empty documentoBacking.detCruceDocumentoTO.nombre_doc5}"/>
+                            <p:commandButton icon="fa fa-times" actionListener="#{documentoBacking.eliminarArchivo(documentoBacking.detCruceDocumentoTO.archivo)}"
+                                             rendered="${not empty documentoBacking.detCruceDocumentoTO.archivo5 and not empty documentoBacking.detCruceDocumentoTO.nombre_doc5}">
+                                <p:confirm header="Confirmación" message="¿Estas seguro que deseas eliminar el archivo #{documentoBacking.detCruceDocumentoTO.nombre_doc5} ?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                        </p:panelGrid>
+                    </div>
+                </div>
+            </p:dialog>
+            <p:dialog id="popupEdit" widgetVar="popupEdit" responsive="true"    
+                      styleClass="modalResponsivo"  modal="true"
+                      height="80%"
+                      header="Administrar Documentos de Cruce: #{documentoBacking.cruceTO.idcruce} #{documentoBacking.cruceTO.ubicacion}"
+                      visible="#{documentoBacking.verPopupEditar}"
+                      hideEffect="drop"> 
+                <div class="ui-g-12">
+                    <div class="card card-w-title">
+                        <p:dataTable value="#{documentoBacking.listaDocumentos}" var="dcto"  
+                                     paginator="true" rows="5"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                     paginatorPosition="bottom"
+                                     emptyMessage="No existen registros."
+                                     reflow="true"
+                                     id="tableDocumento">
+                            <p:column  headerText="Id Dcto" sortBy="#{dcto.idDoc}" filterBy="#{dcto.idDoc}" filterMatchMode="contains">
+                                <h:outputText value="#{dcto.idDoc}"/>
+                            </p:column>
+                            <p:column  headerText="Fecha" sortBy="#{dcto.fechaDesc}" filterBy="#{dcto.fechaDesc}" filterMatchMode="contains">
+                                <h:outputText value="#{dcto.fechaDesc}"/>
+                            </p:column>
+                            <p:column  headerText="Tipo" sortBy="#{dcto.tipoDesc}" filterBy="#{dcto.tipoDesc}" filterMatchMode="contains">
+                                <h:outputText value="#{dcto.tipoDesc}"/>
+                            </p:column>
+                            <p:column  headerText="Archivo" sortBy="#{dcto.nombreArchivo}" filterBy="#{dcto.nombreArchivo}" filterMatchMode="contains">
+                                <h:outputText value="#{dcto.nombreArchivo}"/>
+                            </p:column>
+                            <p:column  headerText="Observación" sortBy="#{dcto.observacion}" filterBy="#{dcto.observacion}" filterMatchMode="contains">
+                                <h:outputText value="#{dcto.observacion}"/>
+                            </p:column>
+                            <p:column  headerText="Usuario" sortBy="#{dcto.usrSub}" filterBy="#{dcto.usrSub}" filterMatchMode="contains">
+                                <h:outputText value="#{dcto.usrSub}"/>
+                            </p:column>
+                            <p:column  headerText="OT AUTER"  filterBy="#{dcto.OT_AUTER}" sortBy="#{dcto.OT_AUTER}" filterMatchMode="contains" >                                
+                                <h:outputText value="#{dcto.OT_AUTER}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet  name="header">Documento</f:facet>
+                                <p:commandButton  id="detalle" update=":form1:popDetalleDoc" icon="fas fa-eye"  actionListener="#{documentoBacking.verDetalleDoc(dcto)}" title="Detalle" />
+                                <p:menuButton icon="fas fa-file-download" title="Descargar" style="margin-left: 5px;" >
+                                    <p:menuitem id="descargarlink1" value="#{dcto.nombreArchivo}" rendered="${not empty dcto.archivo and not empty dcto.nombreArchivo}" title="Descargar" ajax="false" icon="fas fa-file-download" update="messages" actionListener="#{documentoBacking.prepDownload(dcto.archivo)}" >
+                                        <p:fileDownload value="#{documentoBacking.download}" />
+                                    </p:menuitem>
+                                    <p:menuitem id="descargarlink2" value="#{dcto.nombreArchivo2}" rendered="${not empty dcto.archivo2 and not empty dcto.nombreArchivo2}" title="Descargar" ajax="false" icon="fas fa-file-download" update="messages" actionListener="#{documentoBacking.prepDownload(dcto.archivo2)}" >
+                                        <p:fileDownload value="#{documentoBacking.download}" />
+                                    </p:menuitem>
+                                    <p:menuitem id="descargarlink3" value="#{dcto.nombreArchivo3}" rendered="${not empty dcto.archivo3 and not empty dcto.nombreArchivo3}" title="Descargar" ajax="false" icon="fas fa-file-download" update="messages" actionListener="#{documentoBacking.prepDownload(dcto.archivo3)}" >
+                                        <p:fileDownload value="#{documentoBacking.download}" />
+                                    </p:menuitem>
+                                    <p:menuitem id="descargarlink4" value="#{dcto.nombreArchivo4}" rendered="${not empty dcto.archivo4 and not empty dcto.nombreArchivo4}" title="Descargar" ajax="false" icon="fas fa-file-download" update="messages" actionListener="#{documentoBacking.prepDownload(dcto.archivo4)}" >
+                                        <p:fileDownload value="#{documentoBacking.download}" />
+                                    </p:menuitem>
+                                    <p:menuitem id="descargarlink5" value="#{dcto.nombreArchivo5}" rendered="${not empty dcto.archivo5 and not empty dcto.nombreArchivo5}" title="Descargar" ajax="false" icon="fas fa-file-download" update="messages" actionListener="#{documentoBacking.prepDownload(dcto.archivo5)}" >
+                                        <p:fileDownload value="#{documentoBacking.download}" />
+                                    </p:menuitem>
+                                </p:menuButton>
+                                <p:commandButton  id="deletelink" update=":form1:tableDocumento" icon="fas fa-trash-alt" style="margin-left: 5px;" actionListener="#{documentoBacking.eliminarDocumento(dcto.idDoc)}" title="Eliminar">
+                                    <p:confirm header="Confirmación" message="¿Estas seguro que deseas eliminar el documento y todos sus archivos asociados?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:dialog>    
+            <p:dialog id="popupNew" widgetVar="popupNew" responsive="true"    
+                      styleClass="modalResponsivo"  modal="true"
+                      height="80%"
+                      width="90%"
+                      header="Administrar Documentos de Cruce: #{documentoBacking.cruceTO.idcruce} #{documentoBacking.cruceTO.ubicacion}"
+                      visible="#{documentoBacking.verPopup}"
+                      hideEffect="drop"> 
+                <p:ajax event="close" listener="#{documentoBacking.cerrarCrear()}"/>
+                <div class="ui-g-12">
+                    <div class="card card-w-title">
+                        <p:panelGrid columns="2" id="grid" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4" >
+                            <h:outputLabel value="Tipo Documento :" style="font-weight: bold;"/> 
+                            <p:selectOneMenu  id="idTipoPopUp" value="#{documentoBacking.cruceDocumentoTO.tipo}">
+                                <f:selectItems value="#{documentoBacking.listaTipoDcto}"  var="valor" itemValue="#{valor.codigo1}" itemLabel="#{valor.descripcion}"/>
+                                <p:ajax event="change" process="@this" update="pnlGrid" listener="#{documentoBacking.changeTipo}"/>
+                            </p:selectOneMenu>                                                    
+                        </p:panelGrid>
+                        <p:panel id="pnlGrid">
+                            <p:panelGrid columns="2" id="gridBase" rendered="#{documentoBacking.verGrid}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-6" >
+                                <h:outputLabel value="Observación :" style="font-weight: bold;"/>
+                                <p:inputTextarea id="obsDocumento" value="#{documentoBacking.cruceDocumentoTO.observacion}"  />                               
+                            </p:panelGrid>
+                            <p:panelGrid id="pnlFilesGen" columns="3" rendered="#{documentoBacking.verGrid}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-1,ui-g-12 ui-md-5" >
+                                <h:outputLabel value="Documento :" style="font-weight: bold;"/>
+                                <p:commandButton id="inpGen" icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:generic_input').click();" /> 
+                                <h:outputLabel value="#{documentoBacking.nombreArchivo1}" />                              
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" rendered="#{documentoBacking.verGrid}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-6" >
+                                <h:outputLabel value="" />
+                                <p:messages for="inpGen" />  
+                            </p:panelGrid>
+                            <p:panelGrid columns="4" id="grMediciones" rendered="#{documentoBacking.verGrMediciones}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-3,ui-g-12 ui-md-3,ui-g-12 ui-md-3" >                       
+                                <h:outputLabel value="OT Auter :" style="font-weight: bold;"/>
+                                <p:inputText id="ot1" value="#{documentoBacking.cruceDocumentoTO.OT_AUTER}"  />
+                                <h:outputLabel value="OTM :" style="font-weight: bold;"/>
+                                <p:inputText id="ot2" value="#{documentoBacking.cruceDocumentoTO.OTM}"  />
+                                <h:outputLabel value="Fecha OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="ot3" value="#{documentoBacking.cruceDocumentoTO.fecha_otm}" pattern="dd-MM-yyyy" mask="true" locale="es">
+
+                                </p:calendar>
+                                <h:outputLabel value="Recepción OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="ot4" value="#{documentoBacking.cruceDocumentoTO.fec_rec_otm}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es">                                   
+                                </p:calendar>
+                                <h:outputLabel value="Fecha mediciones :" style="font-weight: bold;"/>
+                                <p:calendar id="ot5" value="#{documentoBacking.cruceDocumentoTO.fec_medicion}" pattern="dd-MM-yyyy" mask="true" locale="es">                                   
+                                </p:calendar>
+                                <h:outputLabel value="Descripción Medición :" style="font-weight: bold;"/>
+                                <p:inputText id="ot7" value="#{documentoBacking.cruceDocumentoTO.desc_medicion}"  />
+                                <h:outputLabel value="Observaciones :" style="font-weight: bold;"/>
+                                <p:inputText id="ot8" value="#{documentoBacking.cruceDocumentoTO.observacion}"  />
+                            </p:panelGrid>      
+                            <p:panel id="pnlFiles" header="Documentos" style="border: 0; padding: 0;" rendered="#{documentoBacking.verGrMediciones}">
+                                <p:panelGrid columns="3" id="gridFilesMed" rendered="#{documentoBacking.verGrMediciones}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-1,ui-g-12 ui-md-5">
+                                    <h:outputText value="Mediciones : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuMediciones1_input').click();" />
+                                    <h:outputText value="#{documentoBacking.nombreArchivo1}"/>    
+                                    <h:outputText value="Informe mediciones : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuMediciones2_input').click();" />                                     
+                                    <h:outputText value="#{documentoBacking.nombreArchivo2}"/>
+                                </p:panelGrid>  
+                            </p:panel>
+                            <p:panelGrid columns="4" id="grJustificaciones" rendered="#{documentoBacking.verGrJustificacion}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-3,ui-g-12 ui-md-3,ui-g-12 ui-md-3" >                       
+                                <h:outputLabel value="OT Auter :" style="font-weight: bold;"/>
+                                <p:inputText id="jot1" value="#{documentoBacking.cruceDocumentoTO.OT_AUTER}" />
+                                <h:outputLabel value="OTM :" style="font-weight: bold;"/>
+                                <p:inputText id="jot2" value="#{documentoBacking.cruceDocumentoTO.OTM}"  />
+                                <h:outputLabel value="Fecha OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="jot3" value="#{documentoBacking.cruceDocumentoTO.fecha_otm}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es"></p:calendar>                                  
+                                <h:outputLabel value="Recepción OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="jot4" value="#{documentoBacking.cruceDocumentoTO.fec_rec_otm}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>    
+                                <h:outputLabel value="Fecha mediciones :" style="font-weight: bold;"/>
+                                <p:calendar id="jot5" value="#{documentoBacking.cruceDocumentoTO.fec_medicion}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>  
+                                <h:outputLabel value="Resultado :" style="font-weight: bold;"/>
+                                <p:inputText id="jot7" value="#{documentoBacking.cruceDocumentoTO.resultado}"  />
+                                <h:outputLabel value="Fecha ingreso UOCT :" style="font-weight: bold;"/>
+                                <p:calendar id="jot8" value="#{documentoBacking.cruceDocumentoTO.fec_ing_uoct}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>    
+                                <h:outputLabel value="Fecha aprobación UOCT :" style="font-weight: bold;"/>
+                                <p:calendar id="jot9" value="#{documentoBacking.cruceDocumentoTO.fec_apr_uoct}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>     
+                                <h:outputLabel value="Observaciones :" style="font-weight: bold;"/>
+                                <p:inputText id="fecTxtSimac8" value="#{documentoBacking.cruceDocumentoTO.observacion}"  />
+                            </p:panelGrid>
+                            <p:panel id="pnlFilesJus" header="Documentos" style="border: 0; padding: 0;" rendered="#{documentoBacking.verGrJustificacion}">
+                                <p:panelGrid columns="3" id="gridFilesJus" rendered="#{documentoBacking.verGrJustificacion}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-1,ui-g-12 ui-md-5">
+                                    <h:outputText value="Estudio de Justificación : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuJusti1_input').click();" />
+                                    <h:outputText value="#{documentoBacking.nombreArchivo1}"/>    
+                                    <h:outputText value="Informe de EJS : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuJusti2_input').click();" />
+                                    <h:outputText value="#{documentoBacking.nombreArchivo2}"/>
+                                    <h:outputText value="Carta de Aprobación UOCT : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuJusti3_input').click();" />
+                                    <h:outputText value="#{documentoBacking.nombreArchivo3}"/>
+                                </p:panelGrid>  
+                            </p:panel>
+                            <p:panelGrid columns="4" id="grProyecto" rendered="#{documentoBacking.verGrProyectos}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-3,ui-g-12 ui-md-3,ui-g-12 ui-md-3" >                       
+                                <h:outputLabel value="OT Auter :" style="font-weight: bold;"/>
+                                <p:inputText id="pot1" value="#{documentoBacking.cruceDocumentoTO.OT_AUTER}"  />
+                                <h:outputLabel value="OTM :" style="font-weight: bold;"/>
+                                <p:inputText id="potm2" value="#{documentoBacking.cruceDocumentoTO.OTM}"  />
+                                <h:outputLabel value="Fecha OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="potm3" value="#{documentoBacking.cruceDocumentoTO.fecha_otm}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>    
+                                <h:outputLabel value="Fecha recepción OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="potm4" value="#{documentoBacking.cruceDocumentoTO.fec_rec_otm}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>     
+                                <h:outputLabel value="Fecha ingreso UOCT :" style="font-weight: bold;"/>
+                                <p:calendar id="potm5" value="#{documentoBacking.cruceDocumentoTO.fec_ing_uoct}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>    
+                                <h:outputLabel value="Fecha aprobación UOCT :" style="font-weight: bold;"/>
+                                <p:calendar id="potm6" value="#{documentoBacking.cruceDocumentoTO.fec_apr_uoct}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>   
+                                <h:outputLabel value="Observaciones :" style="font-weight: bold;"/>
+                                <p:inputText id="pecTxtSimac8" value="#{documentoBacking.cruceDocumentoTO.observacion}"  />  
+                            </p:panelGrid>    
+                            <p:panel id="pnlFilesProy" header="Documentos" style="border: 0; padding: 0;" rendered="#{documentoBacking.verGrProyectos}">
+                                <p:panelGrid columns="3" id="gridFilesProy" rendered="#{documentoBacking.verGrProyectos}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-1,ui-g-12 ui-md-5">
+                                    <h:outputText value="Proyecto : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuProy1_input').click();" />
+                                    <h:outputText value="#{documentoBacking.nombreArchivo1}"/>    
+                                    <h:outputText value="Carta de Aprobación UOCT PROY : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuProy2_input').click();" />
+                                    <h:outputText value="#{documentoBacking.nombreArchivo2}"/>
+                                    <h:outputText value="Programación propuesta : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuProy3_input').click();" />
+                                    <h:outputText value="#{documentoBacking.nombreArchivo3}"/>
+                                    <h:outputText value="Carta de Aprobación UOCT TPOS : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuProy4_input').click();" />
+                                    <h:outputText value="#{documentoBacking.nombreArchivo4}"/>
+                                    <h:outputText value="Proyecto aprobado : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuProy5_input').click();" />
+                                    <h:outputText value="#{documentoBacking.nombreArchivo5}"/>
+                                </p:panelGrid>  
+                            </p:panel>
+                            <p:panelGrid columns="4" id="grEstPer" rendered="#{documentoBacking.verGrEstPer}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-3,ui-g-12 ui-md-3" >
+                                <h:outputLabel value="OT Auter :" style="font-weight: bold;"/>
+                                <p:inputText id="pEstPer1" value="#{documentoBacking.cruceDocumentoTO.OT_AUTER}"  />
+                                <h:outputLabel value="OTM :" style="font-weight: bold;"/>
+                                <p:inputText id="pEstPer2" value="#{documentoBacking.cruceDocumentoTO.OTM}"  />
+                                <h:outputLabel value="Fecha OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="pEstPer" value="#{documentoBacking.cruceDocumentoTO.fecha_otm}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>    
+                                <h:outputLabel value="Fecha Recepción OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="pEstPer4" value="#{documentoBacking.cruceDocumentoTO.fec_rec_otm}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>     
+                                <h:outputLabel value="Fecha Ingreso UOCT :" style="font-weight: bold;"/>
+                                <p:calendar id="pEstPer5" value="#{documentoBacking.cruceDocumentoTO.fec_ing_uoct}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>    
+                                <h:outputLabel value="Fecha Aprobación UOCT :" style="font-weight: bold;"/>
+                                <p:calendar id="pEstPer6" value="#{documentoBacking.cruceDocumentoTO.fec_apr_uoct}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>   
+                                <h:outputLabel value="Observación :" style="font-weight: bold;"/>
+                                <p:inputTextarea id="obsDocEstPer" value="#{documentoBacking.cruceDocumentoTO.observacion}"  />                               
+                            </p:panelGrid>
+                            <p:panel id="pnlFilesEstPer" header="Documentos" style="border: 0; padding: 0;" rendered="#{documentoBacking.verGrEstPer}">
+                                <p:panelGrid columns="3" id="grFilesEstPer" rendered="#{documentoBacking.verGrEstPer}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-1,ui-g-12 ui-md-5">
+                                    <h:outputText value="Periodización : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuEstPer1_input').click();" />
+                                    <h:outputText value="#{documentoBacking.nombreArchivo1}"/>    
+                                    <h:outputText value="Carta Aprobación UOCT : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuEstPer2_input').click();" />                                     
+                                    <h:outputText value="#{documentoBacking.nombreArchivo2}"/>
+                                </p:panelGrid>  
+                            </p:panel>                            
+                            <p:panelGrid columns="4" id="grEstPro" rendered="#{documentoBacking.verGrEstPro}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-3,ui-g-12 ui-md-3" >
+                                <h:outputLabel value="OT Auter :" style="font-weight: bold;"/>
+                                <p:inputText id="pEstPro1" value="#{documentoBacking.cruceDocumentoTO.OT_AUTER}"  />
+                                <h:outputLabel value="OTM :" style="font-weight: bold;"/>
+                                <p:inputText id="pEstPro2" value="#{documentoBacking.cruceDocumentoTO.OTM}"  />
+                                <h:outputLabel value="Fecha OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="pEstPro3" value="#{documentoBacking.cruceDocumentoTO.fecha_otm}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>    
+                                <h:outputLabel value="Fecha Recepción OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="pEstPro4" value="#{documentoBacking.cruceDocumentoTO.fec_rec_otm}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>     
+                                <h:outputLabel value="Fecha Ingreso UOCT :" style="font-weight: bold;"/>
+                                <p:calendar id="pEstPro5" value="#{documentoBacking.cruceDocumentoTO.fec_ing_uoct}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>    
+                                <h:outputLabel value="Fecha Aprobación UOCT :" style="font-weight: bold;"/>
+                                <p:calendar id="pEstPro6" value="#{documentoBacking.cruceDocumentoTO.fec_apr_uoct}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>  
+                                <h:outputLabel value="Observación :" style="font-weight: bold;"/>
+                                <p:inputTextarea id="obsDocEstPro" value="#{documentoBacking.cruceDocumentoTO.observacion}"  />                               
+                            </p:panelGrid>
+                            <p:panel id="pnlFilesEstPro" header="Documentos" style="border: 0; padding: 0;" rendered="#{documentoBacking.verGrEstPro}">
+                                <p:panelGrid columns="3" id="grFilesEstPro" rendered="#{documentoBacking.verGrEstPro}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-1,ui-g-12 ui-md-5">
+                                    <h:outputText value="Programación : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuEstPro1_input').click();" />                                     
+                                    <h:outputText value="#{documentoBacking.nombreArchivo1}"/>
+                                    <h:outputText value="Carta Aprobación UOCT : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuEstPro2_input').click();" />                                     
+                                    <h:outputText value="#{documentoBacking.nombreArchivo2}"/>
+                                </p:panelGrid>  
+                            </p:panel>
+                            <p:panelGrid columns="4" id="grSinFin" rendered="#{documentoBacking.verGrEstSinFina}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-3,ui-g-12 ui-md-3" >
+                                <h:outputLabel value="OT Auter :" style="font-weight: bold;"/>
+                                <p:inputText id="pSinFin1" value="#{documentoBacking.cruceDocumentoTO.OT_AUTER}"  />
+                                <h:outputLabel value="OTM :" style="font-weight: bold;"/>
+                                <p:inputText id="pSinFin2" value="#{documentoBacking.cruceDocumentoTO.OTM}"  />
+                                <h:outputLabel value="Fecha OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="pSinFin3" value="#{documentoBacking.cruceDocumentoTO.fecha_otm}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>    
+                                <h:outputLabel value="Fecha Recepción OTM :" style="font-weight: bold;"/>
+                                <p:calendar id="pSinFin4" value="#{documentoBacking.cruceDocumentoTO.fec_rec_otm}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>     
+                                <h:outputLabel value="Fecha Ingreso UOCT :" style="font-weight: bold;"/>
+                                <p:calendar id="pSinFin5" value="#{documentoBacking.cruceDocumentoTO.fec_ing_uoct}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>    
+                                <h:outputLabel value="Fecha Aprobación UOCT :" style="font-weight: bold;"/>
+                                <p:calendar id="pSinFin6" value="#{documentoBacking.cruceDocumentoTO.fec_apr_uoct}" 
+                                            pattern="dd-MM-yyyy" mask="true" locale="es" ></p:calendar>  
+                                <h:outputLabel value="Observación :" style="font-weight: bold;"/>
+                                <p:inputTextarea id="obsDocSinFin" value="#{documentoBacking.cruceDocumentoTO.observacion}"  />                               
+                            </p:panelGrid>
+                            <p:panel id="pnlSinFin" header="Documentos" style="border: 0; padding: 0;" rendered="#{documentoBacking.verGrEstSinFina}">
+                                <p:panelGrid columns="3" id="grFilesSinFin" rendered="#{documentoBacking.verGrEstSinFina}" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-1,ui-g-12 ui-md-5">
+                                    <h:outputText value="Informe de Sintonía Fina : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuSinFin1_input').click();" />
+                                    <h:outputText value="#{documentoBacking.nombreArchivo1}"/>    
+                                    <h:outputText value="Carta de Aprobación UOCT : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuSinFin2_input').click();" />                                     
+                                    <h:outputText value="#{documentoBacking.nombreArchivo2}"/>
+                                    <h:outputText value="Sintonía Fina Aprobada : " style="font-weight: bold;"/>
+                                    <p:commandButton icon="fas fa-file-upload" title="Cargar" onclick="$('#form1\\:fuSinFin3_input').click();" />                                     
+                                    <h:outputText value="#{documentoBacking.nombreArchivo3}"/>
+                                </p:panelGrid>  
+                            </p:panel>
+
+                            <p:commandButton value="Subir" action="#{documentoBacking.guardarDocumento}" style="margin-top: 5px;" 
+                                             update="tableDocumento popupNew messages" />
+                            <p:fileUpload id="generic" widgetVar="generic" auto="true"
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesGen"                                                  
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="1" />                                    
+                            </p:fileUpload>
+                            <p:fileUpload id="fuMediciones1" widgetVar="fuMediciones1" accept=".xlsx, .xls, .csv" auto="true"
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFiles"                                                  
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="2" />                                    
+                            </p:fileUpload>
+                            <p:fileUpload id="fuMediciones2" widgetVar="fuMediciones2" accept=".pdf" auto="true"
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFiles" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="2" />    
+                            </p:fileUpload>
+                            <p:fileUpload id="fuJusti1" accept=".xlsx, .xls, .csv" auto="true"
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesJus"                                                  
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="3" />                                    
+                            </p:fileUpload>
+                            <p:fileUpload id="fuJusti2" accept=".pdf" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesJus" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="3" />
+                            </p:fileUpload> 
+                            <p:fileUpload id="fuJusti3" accept=".pdf" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesJus" 
+                                          label="Buscar" style="visibility: hidden; display: none;" >
+                                <f:attribute name="tipo" value="3" />
+                            </p:fileUpload>  
+                            <p:fileUpload id="fuProy1" accept=".pdf" auto="true"
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesProy"                                                  
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="4" />                                    
+                            </p:fileUpload>
+                            <p:fileUpload id="fuProy2" accept=".pdf" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesProy" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="4" />
+                            </p:fileUpload> 
+                            <p:fileUpload id="fuProy3" accept=".xlsx, .xls, .csv" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesProy" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="4" />
+                            </p:fileUpload> 
+                            <p:fileUpload id="fuProy4" accept=".pdf" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesProy" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="4" />
+                            </p:fileUpload>  
+                            <p:fileUpload id="fuProy5" accept=".pdf" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesProy" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="4" />
+                            </p:fileUpload>   
+                            <p:fileUpload id="fuEstPer1" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesEstPer" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="5" />
+                            </p:fileUpload> 
+                            <p:fileUpload id="fuEstPer2" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesEstPer" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="5" />
+                            </p:fileUpload>  
+                            <p:fileUpload id="fuEstPer3" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesEstPer" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="5" />
+                            </p:fileUpload>   
+                            <p:fileUpload id="fuEstPro1" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesEstPro" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="6" />
+                            </p:fileUpload> 
+                            <p:fileUpload id="fuEstPro2" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesEstPro" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="6" />
+                            </p:fileUpload>  
+                            <p:fileUpload id="fuEstPro3" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesEstPro" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="6" />
+                            </p:fileUpload>   
+                            <p:fileUpload id="fuEstPro4" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlFilesEstPro" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="6" />
+                            </p:fileUpload>   
+                            <p:fileUpload id="fuSinFin1" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlSinFin" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="7" />
+                            </p:fileUpload> 
+                            <p:fileUpload id="fuSinFin2" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlSinFin" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="7" />
+                            </p:fileUpload>  
+                            <p:fileUpload id="fuSinFin3" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlSinFin" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="7" />
+                            </p:fileUpload>   
+                            <p:fileUpload id="fuSinFin4" auto="true" 
+                                          fileUploadListener="#{documentoBacking.uploadFiles}" update="messages pnlSinFin" 
+                                          label="Buscar" style="visibility: hidden; display: none;">
+                                <f:attribute name="tipo" value="7" />
+                            </p:fileUpload>   
+                        </p:panel>
+                    </div>
+                </div>
+            </p:dialog> 
+            <p:dataTable value="#{documentoBacking.listaPuntos}" var="table"  
+                         paginator="true" rows="15"
+                         reflow="true"
+                         emptyMessage="No existen registros."
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                         paginatorPosition="bottom"
+                         id="table">
+                <p:column  headerText="N° Cruce" sortBy="#{table.idcruce}" filterBy="#{table.idcruce}" filterMatchMode="contains">
+                    <h:outputText value="#{table.idcruce}"/>
+                </p:column>
+                <p:column  headerText="Ubicación" sortBy="#{table.ubicacion}" filterBy="#{table.ubicacion}" filterMatchMode="contains">
+                    <h:outputText value="#{table.ubicacion}"/>
+                </p:column>
+                <p:column  headerText="Latitud" sortBy="#{table.latitud}" filterBy="#{table.latitud}" filterMatchMode="contains">
+                    <h:outputText value="#{table.latitud}"/>
+                </p:column>
+                <p:column  headerText="Longitud" sortBy="#{table.longitud}" filterBy="#{table.longitud}" filterMatchMode="contains">
+                    <h:outputText value="#{table.longitud}"/>
+                </p:column>
+                <p:column  headerText="Código Sistema" sortBy="#{table.junction}" filterBy="#{table.junction}" filterMatchMode="contains">
+                    <h:outputText value="#{table.junction}"/>
+                </p:column>
+                <p:column  headerText="Red" sortBy="#{table.red}" filterBy="#{table.red}" filterMatchMode="contains">
+                    <h:outputText value="#{table.red}"/>
+                </p:column>
+                <p:column>
+                    <f:facet  name="header">Acción</f:facet>
+                    <p:commandButton  icon="fas fa-cogs"  action="#{documentoBacking.editarDocumento}" update="form1:popupEdit">
+                        <f:setPropertyActionListener target="#{documentoBacking.idSeleccionado}" value="#{table.idcruce}"/>
+                    </p:commandButton>
+                    <p:commandButton  icon="fas fa-plus" style="margin-left: 5px;"  action="#{documentoBacking.crearDocumento}" update="form1:popupNew">
+                        <f:setPropertyActionListener target="#{documentoBacking.idSeleccionado}" value="#{table.idcruce}"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>
+                <p:tabView id="config-form-tabs" >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Busqueda"/>                             
+                        </f:facet>
+                        <h:form id="config-form">
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel value="Comuna :"/> 
+                                        <p:selectOneMenu  id="idComuna" value="#{documentoBacking.idComuna}" valueChangeListener="#{documentoBacking.cambioComuna}" disabled="#{documentoBacking.comboHabilitada}" >
+                                            <f:selectItems value="#{parametrosBacking.listaComunas}"  var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"/>
+                                            <p:ajax event="change" process="@this" update="form1:table"/>
+                                        </p:selectOneMenu>   
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab >                  
+                </p:tabView>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+

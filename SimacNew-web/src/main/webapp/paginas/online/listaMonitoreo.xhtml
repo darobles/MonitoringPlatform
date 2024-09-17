@@ -1,0 +1,237 @@
+<?xml version="1.0"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:define name="viewname">
+        <li>Online</li>
+        <li>/</li>
+        <li><p:link outcome="lista">Lista Monitoreo</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <h:outputStylesheet>                     
+            .C-1 .ui-chkbox-box {
+            background: #008000 !important;
+            }
+
+            .C-2 .ui-chkbox-box {
+            background: #017BCB !important;
+            }
+
+            .C-3 .ui-chkbox-box {
+            background: #C62829 !important;
+            }
+
+            .C-4 .ui-chkbox-box {
+            background: #7F7F7F !important;
+            }
+            .ui-selectcheckboxmenu-close .ui-corner-all
+            {
+            display: none !important;
+            }
+            .ui-panelgrid-header{
+            background: #001970 !important;
+            font-weight: bold !important;
+            color: white !important;
+            }
+            .ui-selectcheckboxmenu-header .ui-selectcheckboxmenu-close{
+            display: none !important;
+            }
+            .tableBorder{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+            .tableBorder th{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+            .tableBorder td{
+            border-collapse: collapse !important;
+            border: 1px solid #d1d9ff !important;
+            }
+            .col1
+            {
+            font-weight: bold;
+            }
+            .col2
+            {
+            }
+            @media screen and (max-width: 768px ) {
+            .modalResponsivo { width: 90% !important; height: 80% !important;} }
+
+            @media screen and (min-width: 1024px ) {
+            .modalResponsivo { width: 50% !important; }
+            }
+        </h:outputStylesheet>
+        <h:outputScript>
+            function handleError(){
+                document.location.href="/";
+            }
+        </h:outputScript>
+        <h:form id="form">   
+            <p:dialog id="dlgPnl" widgetVar="dlgPnl" hideEffect="clip" closeOnEscape="true" 
+                      closable="true" height="500px"  styleClass="modalResponsivo"  class="ui-g-4 ui-md-4 ui-sm-8" >
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                             columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                    <f:facet name="header">
+                        <h:outputText value="Información del Cruce"/>
+                    </f:facet>
+                    <h:outputText value="Id Cruce:" />
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.idCruce}"/>
+                    <h:outputText value="Ubicación:"/>
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.ubicacion}" />
+                    <h:outputText value="Código Sistema: " rendered="#{monitoreoBacking.mostrarInfoConf}"/>
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.codigoSistema}" rendered="#{monitoreoBacking.mostrarInfoConf}"/>
+                    <h:outputText value="Nombre de Red:" rendered="#{monitoreoBacking.mostrarInfoConf}"/>
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.red}" rendered="#{monitoreoBacking.mostrarInfoConf}"/>
+                    <h:outputText value="Controlador:" rendered="#{monitoreoBacking.mostrarInfoConf}"/>
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.controlador}" rendered="#{monitoreoBacking.mostrarInfoConf}"/>
+                </p:panelGrid>
+                <br></br>
+                <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder"                                                                      
+                             columnClasses="ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3,ui-g-6 ui-md-3 colUno,ui-g-6 ui-md-3">
+                    <f:facet name="header">
+                        <h:outputText value="Detalle Sensores"/>
+                    </f:facet>                                                         
+                    <h:outputText value="Sensor 220" />
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.descripcionValModo220}" />
+                    <h:outputText value="Sensor UPS" />
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.descripcionValModoUps}" />
+                    <h:outputText value="Sensor Luces"/>
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.descripcionValModoLam}" />
+                    <h:outputText value="Sensor UTC"/>
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.descripcionValModoUtc}" />
+
+                </p:panelGrid>
+                <br></br>
+                <br></br>
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                             columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos">
+                    <h:outputText id="nombreUsuario" value="Usuario: "/>
+                    <h:outputText value="#{loginBacking.usuario.nombre} #{loginBacking.usuario.apellidoPaterno}"/>
+                </p:panelGrid>
+                <br></br>
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid tableBorder" 
+                             columnClasses="ui-g-12 ui-md-4 colUno,ui-g-12 ui-md-8 colDos"
+                             rendered="#{monitoreoBacking.mostrarInfoConf}">
+                    <f:facet name="header">
+                        <h:outputText value="Información de Equipo Monitor"/>
+                    </f:facet>
+                    <h:outputText value="Nº de Equipo Monitor:"/>
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.numeroEquipo}"/>
+                    <h:outputText value="IP Asignado:"/>
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.direccionIP}" />
+                    <h:outputText value="Nº de Teléfono"/>
+                    <h:outputText value="#{monitoreoBacking.cruceEstado.telefono}" />
+                </p:panelGrid>
+            </p:dialog>
+            <p:poll interval="#{monitoreoBacking.intervalo}" listener="#{monitoreoBacking.refresco}" oncomplete="PF('dataTableWidgetVar').filter()" update="table" process="@this" autoStart="true" onerror="handleError()"/>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="card card-w-title">
+                        <h:panelGroup id="idTabla">
+                            <h:panelGrid id="idGrillaTabla" columns="1"  >
+                                <p:panel id="pnlExp" rendered="#{monitoreoBacking.verExportar}">
+                                    <p:commandButton icon="fa fa-file-excel-o" ajax="false"  immediate="true" title="Excel">
+                                        <p:dataExporter type="xls" target="table" pageOnly="false" fileName="monitoreo" />
+                                    </p:commandButton>
+                                    <p:commandButton icon="fa fa-file-pdf-o" ajax="false" title="PDF" immediate="true" style=" margin-left: 5px;">
+                                        <p:dataExporter type="pdf" target="table" pageOnly="false" fileName="monitoreo" preProcessor="#{monitoreoBacking.preProcessPDF}"/>
+                                    </p:commandButton>
+                                    <p:commandButton type="button" icon="fa fa-print" title="Imprimir"
+                                        style="margin-left: 5px;">
+                                        <p:printer target="table" />
+                                    </p:commandButton>
+                                </p:panel>
+                                <p:dataGrid columns="4" value="#{monitoreoBacking.listaEstOpeDimac}" var="item" rowIndexVar="index">
+                                    <p:column>
+                                        <p:selectBooleanCheckbox id="selEst" value="#{monitoreoBacking.check1[index]}" converter="javax.faces.Boolean"  styleClass="#{monitoreoBacking.getColor(index)}">
+                                            <p:ajax event="change" process="@form" listener="#{monitoreoBacking.processChecked}" oncomplete="PF('dataTableWidgetVar').filter()" immediate="true"/>
+                                        </p:selectBooleanCheckbox>
+                                        <h:outputText value="#{item.descripcion}" />
+                                    </p:column>
+                                </p:dataGrid>
+                                <p:dataTable value="#{monitoreoBacking.listaCruce}" var="monitor" id="table" 
+                                             widgetVar="dataTableWidgetVar"
+                                             paginator="true" rows="30"
+                                             reflow="true"
+                                             emptyMessage="No existen registros"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                             paginatorPosition="bottom">
+                                    <p:column  headerText=" ID Cruce" filterMatchMode="contains"  filterBy="#{monitor.idCruce}" >
+                                        <h:outputText id="idCruce" value="#{monitor.idCruce}"/>
+
+                                    </p:column>
+                                    <p:column  headerText="Ubicacion"  filterMatchMode="contains"  filterBy="#{monitor.ubicacion}" >
+                                        <h:outputText value="#{monitor.ubicacion}" />
+                                    </p:column>
+                                    <p:column  headerText="Comuna"  filterMatchMode="contains"  filterBy="#{monitor.descripcionComuna}">
+                                        <h:outputText value="#{monitor.descripcionComuna}" />
+                                    </p:column>
+                                    <p:column  headerText="Informado"  filterMatchMode="contains"  filterBy="#{monitor.descripcionFecha}">
+                                        <h:outputText value="#{monitor.descripcionFecha}"/>
+                                    </p:column>                            
+                                    <p:column  headerText="Estado"  filterMatchMode="contains"  filterBy="#{monitor.descripcionEstadoOperativo}" >
+                                        <p:commandLink  value="#{monitor.descripcionEstadoOperativo}" action="#{monitoreoBacking.cargarCruce}" oncomplete="PF('dlgPnl').show();" update="form:dlgPnl" process="@form" immediate="true">
+                                            <f:setPropertyActionListener target="#{monitoreoBacking.cruceEstado}" value="#{monitor}"/>
+                                        </p:commandLink>
+                                    </p:column>
+                                    <p:column  headerText="Sensor 220"  filterMatchMode="contains"  filterBy="#{monitor.descripcionValModo220}">
+                                        <h:outputText value="#{monitor.descripcionValModo220}"/>
+                                    </p:column>
+                                    <p:column  headerText="Sensor UPS" filterMatchMode="contains"  filterBy="#{monitor.descripcionValModoUps}">
+                                        <h:outputText value="#{monitor.descripcionValModoUps}"/>
+                                    </p:column>
+                                    <p:column  headerText="Sensor Luces" filterMatchMode="contains"  filterBy="#{monitor.descripcionValModoLam}">
+                                        <h:outputText value="#{monitor.descripcionValModoLam}"/>
+                                    </p:column>
+                                    <p:column  headerText="Sensor UTC"  filterMatchMode="contains"  filterBy="#{monitor.descripcionValModoUtc}" >
+                                        <h:outputText value="#{monitor.descripcionValModoUtc}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+        <div id="layout-config" class="layout-config">
+            <div class="layout-config-content">
+                <a href="#" id="layout-config-button" class="layout-config-button">
+                    <i class="fa fa-search faa-pulse animated-hover"></i>
+                </a>
+                <a href="#" class="layout-config-close">
+                    <i class="fa fa-times"></i>
+                </a>
+                <p:tabView id="config-form-tabs" >
+                    <p:tab >             
+                        <f:facet name="title">
+                            <i class="fa fa-search"></i>
+                            <h:outputText value="Busqueda"/>                             
+                        </f:facet>
+                        <h:form id="config-form">
+                            <div class="ui-g-12">
+                                <div class="card card-w-title">
+                                    <p:panelGrid id="pnl" columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-g-12 ui-md-4 col1,ui-g-12 ui-md-8 col2">
+                                        <h:outputLabel for="menu"  value="Comuna:"  style="font-weight:bold"/> 
+                                        <p:selectCheckboxMenu id="menu" value="#{monitoreoBacking.comunaSeleccionadas}" label="Seleccionar Comuna" 
+                                                              filter="true" filterMatchMode="startsWith" appendTo="@this"  >
+                                            <f:selectItems value="#{monitoreoBacking.listaComunasMonitoreo}" var="valor" itemValue="#{valor.idComuna}" itemLabel="#{valor.nombre}"/>
+                                            <p:ajax />
+                                        </p:selectCheckboxMenu>                                       
+                                        <p:commandButton value="Buscar" actionListener="#{monitoreoBacking.cargarLista}" process="@this" update="form config-form-tabs" immediate="true" onclick="$('.layout-config-button').click()" />
+                                        <h:outputLabel value=""/> 
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:tab>
+                </p:tabView>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
